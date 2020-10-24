@@ -4,8 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{699AC67E-C1A5-408D-B183-3201266E0643}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FEBBBA61-F540-42F7-8DF5-E03A78DED84D} = {FEBBBA61-F540-42F7-8DF5-E03A78DED84D}
+		{017B6090-47EB-44C5-9F09-0A51E0E4FA21} = {017B6090-47EB-44C5-9F09-0A51E0E4FA21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{FEBBBA61-F540-42F7-8DF5-E03A78DED84D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repo", "Repo\Repo.csproj", "{017B6090-47EB-44C5-9F09-0A51E0E4FA21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{594D5859-3D84-4D94-8694-99A6F585E82A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,14 @@ Global
 		{FEBBBA61-F540-42F7-8DF5-E03A78DED84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEBBBA61-F540-42F7-8DF5-E03A78DED84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEBBBA61-F540-42F7-8DF5-E03A78DED84D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{017B6090-47EB-44C5-9F09-0A51E0E4FA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{017B6090-47EB-44C5-9F09-0A51E0E4FA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017B6090-47EB-44C5-9F09-0A51E0E4FA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{017B6090-47EB-44C5-9F09-0A51E0E4FA21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{594D5859-3D84-4D94-8694-99A6F585E82A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{594D5859-3D84-4D94-8694-99A6F585E82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{594D5859-3D84-4D94-8694-99A6F585E82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{594D5859-3D84-4D94-8694-99A6F585E82A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

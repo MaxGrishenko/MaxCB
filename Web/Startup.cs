@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Repo;
+using Service;
 
 namespace Web
 {
@@ -23,6 +26,15 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+            services.AddMvc();
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Repo")));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IRecipeService, RecipeService>();
+            services.AddTransient<IIngredientService, IngredientService>();
+            services.AddTransient<IMethodService, MethodService>();
+            services.AddTransient<ITipService, TipService>();
+
             services.AddControllersWithViews();
         }
 
