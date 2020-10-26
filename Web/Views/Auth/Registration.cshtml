@@ -1,0 +1,26 @@
+﻿@model Web.Models.RegisterViewModel
+
+<div class="card">
+    <h1 class="card-header alert-success">Регистрация нового пользователя</h1>
+    <div class="card-body">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Email"></label>
+                <input class="form-control" asp-for="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Password"></label>
+                <input class="form-control" asp-for="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="PasswordConfirm"></label>
+                <input class="form-control" asp-for="PasswordConfirm" />
+                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+            </div>
+            <input class="form-control btn btn-success" type="submit" value="Зарегистрироваться!" />
+        </form>
+    </div>
+</div>

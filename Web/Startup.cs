@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,13 +29,14 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddMvc();
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Repo")));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<IIngredientService, IngredientService>();
             services.AddTransient<IMethodService, MethodService>();
             services.AddTransient<ITipService, TipService>();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddControllersWithViews();
         }
@@ -56,7 +59,8 @@ namespace Web
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();    //Ты кто?
+            app.UseAuthorization();     //Имеешь ли права?
 
             app.UseEndpoints(endpoints =>
             {

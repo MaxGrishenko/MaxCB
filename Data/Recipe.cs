@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data
 {
@@ -7,19 +8,23 @@ namespace Data
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        // FK?
         public int Category { get; set; }
         public int PrepTime { get; set; }
         public int CookTime { get; set; }
         public int Marinade { get; set; }
-        public int Makes { get; set; }
         public int Difficulty { get; set; }
-        // FK
-        public List<Ingredient> Ingredients { get; set; }
-        // FK
-        public List<Method> Methods { get; set; }
-        // FK
-        public List<Tip> Tips { get; set; }
-        public string ImageName { get; set; }
+
+
+        public virtual Post Post { get; set; }
+        
+        public virtual ApplicationUser User { get; set; }
+        public string UserId { get; set; }
+
+        public virtual IEnumerable<Ingredient> Ingredients { get; set; }
+        public virtual IEnumerable<Method> Methods { get; set; }
+        public virtual IEnumerable<Tip> Tips { get; set; }
+
+        public virtual Image Image { get; set; }
+        public long ImageId { get; set; }
     }
 }
