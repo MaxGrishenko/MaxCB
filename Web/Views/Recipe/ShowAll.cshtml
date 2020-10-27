@@ -1,0 +1,40 @@
+﻿@model List<Web.Models.PostViewModel>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Data.ApplicationUser> SignInManager
+
+<div class="row justify-content-center">
+    @foreach (var item in Model)
+    {
+        <div class="col-6" style="margin-top:25px">
+            <div class="card" style="width: 30rem;">
+                <img class="card-img-top" src='@item.ImagePath' alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Description</p>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        if (item.CurrentUser.Email == item.CreatorUser.Email)
+                        {
+                            <a asp-controller="Recipe" asp-action="Delete" asp-route-id="@item.RecipeId" class="btn btn-outline-danger float-right">Удалить</a>
+                            <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@item.RecipeId" class="btn btn-outline-primary float-right" style="margin-right:5px">Редактировать</a>
+                            <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Recipe" asp-action="Subscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" class="btn btn-outline-primary float-right" style="margin-right:5px">Добавить себе</a>
+                            <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
+                    }
+
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Опубликовал: @item.CurrentUser</small>
+                </div>
+            </div>
+        </div>
+    }
+</div>

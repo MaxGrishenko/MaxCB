@@ -10,7 +10,7 @@ using Repo;
 namespace Repo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20201026160119_Initial")]
+    [Migration("20201027105132_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,8 +40,8 @@ namespace Repo.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<long?>("ImageId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -78,10 +78,6 @@ namespace Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId")
-                        .IsUnique()
-                        .HasFilter("[ImageId] IS NOT NULL");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -116,21 +112,6 @@ namespace Repo.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comment");
-                });
-
-            modelBuilder.Entity("Data.Image", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("Data.Ingredient", b =>
@@ -250,8 +231,8 @@ namespace Repo.Migrations
                     b.Property<int>("Difficulty")
                         .HasColumnType("int");
 
-                    b.Property<long>("ImageId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Marinade")
                         .HasColumnType("int");
@@ -266,9 +247,6 @@ namespace Repo.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -426,13 +404,6 @@ namespace Repo.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Data.ApplicationUser", b =>
-                {
-                    b.HasOne("Data.Image", "Image")
-                        .WithOne("User")
-                        .HasForeignKey("Data.ApplicationUser", "ImageId");
-                });
-
             modelBuilder.Entity("Data.Comment", b =>
                 {
                     b.HasOne("Data.Post", "Post")
@@ -503,12 +474,6 @@ namespace Repo.Migrations
 
             modelBuilder.Entity("Data.Recipe", b =>
                 {
-                    b.HasOne("Data.Image", "Image")
-                        .WithOne("Recipe")
-                        .HasForeignKey("Data.Recipe", "ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Data.ApplicationUser", "User")
                         .WithMany("Recipes")
                         .HasForeignKey("UserId");

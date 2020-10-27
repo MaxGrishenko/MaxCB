@@ -13,7 +13,7 @@ namespace Data
         public int CookTime { get; set; }
         public int Marinade { get; set; }
         public int Difficulty { get; set; }
-
+        public string? ImagePath { get; set; }
 
         public virtual Post Post { get; set; }
         
@@ -23,8 +23,5 @@ namespace Data
         public virtual IEnumerable<Ingredient> Ingredients { get; set; }
         public virtual IEnumerable<Method> Methods { get; set; }
         public virtual IEnumerable<Tip> Tips { get; set; }
-
-        public virtual Image Image { get; set; }
-        public long ImageId { get; set; }
     }
 }

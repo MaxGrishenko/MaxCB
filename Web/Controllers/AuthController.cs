@@ -18,7 +18,8 @@ namespace Web.Controllers
             this._signInManager = signInManager;
         }
 
-        // Регистрация новых пользователей
+        
+
         [HttpGet]
         public IActionResult Registration()
         {
@@ -48,7 +49,8 @@ namespace Web.Controllers
             return View(model);
         }
 
-        // Вход для пользователей 
+        
+
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
@@ -70,7 +72,6 @@ namespace Web.Controllers
                     else
                     {
                         return RedirectToAction("Index", "Home");
-                        //макс хуй соси 4лен)0)0))
                     }
                 }
                 else
@@ -79,6 +80,15 @@ namespace Web.Controllers
                 }
             }
             return View(model);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

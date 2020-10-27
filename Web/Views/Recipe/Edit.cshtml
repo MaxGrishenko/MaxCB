@@ -1,0 +1,94 @@
+﻿@model RecipeViewModel
+    <script src="~/js/recipe.js"></script>
+
+@{
+    var jsonIngredients = Json.Serialize(Model.Ingredients);
+    var jsonMethods = Json.Serialize(Model.Methods);
+    var jsonTips = Json.Serialize(Model.Tips);
+}
+
+<div class="card">
+    <h1 class="card-header alert-primary">Редактирование рецепта</h1>
+    <div class="card-body">
+        <form asp-controller="Recipe" asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Title"></label>
+                <input class="form-control" type="text" asp-for="Title" value="@Model.Title" placeholder="Введите название вашего рецепта">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Description"></label>
+                <textarea class="form-control" asp-for="Description" placeholder="Краткое описание вашего рецепта"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Category"></label>
+                <select class="form-control" asp-for="Category" asp-items="Model.Categories"></select>
+            </div>
+
+            <hr />
+            <div class="form-group text-center font-weight-bolder">Требуемое время для</div>
+            <div class="row text-center">
+                <div class="col align-text-bottom">
+                    <label asp-for="PrepTime"></label>
+                </div>
+                <div class="col align-text-bottom">
+                    <label asp-for="CookTime"></label>
+                </div>
+                <div class="col align-text-bottom">
+                    <label asp-for="Marinade"></label>
+                </div>
+                <div class="w-100"></div>
+                <div class="col">
+                    <input class="form-control" type="number" asp-for="PrepTime" value=@Model.PrepTime placeholder="В минутах">
+                </div>
+                <div class="col">
+                    <input class="form-control" type="number" asp-for="CookTime" value=@Model.CookTime placeholder="В минутах" />
+                </div>
+                <div class="col">
+                    <input class="form-control" type="number" asp-for="Marinade" value=@Model.Marinade placeholder="В минутах" />
+                </div>
+            </div>
+            <br />
+            <hr />
+
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Difficulty"></label>
+                <select class="form-control" asp-for="Difficulty" asp-items="Model.Difficulties"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Ingredients"></label>
+                <div id="IngredientDiv">
+                    <input class="form-control" type="text" asp-for="Ingredients" name="Ingredients" value=@Model.Ingredients[0] placeholder="Введите какой-нибудь ингредиент" />
+                </div>
+                <input class="form-control btn btn-outline-info" type="button" value="Добавить новый ингредиент" onclick="AddType(`ingredient`, ``,  ``)" />
+            </div>
+
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Methods"></label>
+                <div id="MethodDiv">
+                    <textarea class="form-control" asp-for="Methods" id="m0" placeholder="Введите первый шаг приготовления!"></textarea>
+                </div>
+                <input class="form-control btn btn-outline-info" type="button" value="Добавить новый шаг" onclick="AddType(`method`, ``,  ``)" />
+            </div>
+
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Tips"></label>
+                <div id="TipDiv">
+                    <textarea class="form-control" asp-for="Tips" id="t0" placeholder="Возможно у вас есть какие-то хитрости в приготовлении?"></textarea>
+                </div>
+                <input class="form-control btn btn-outline-info" type="button" value="Добавить подсказку или совет" onclick="AddType(`tip`, ``,  ``)" />
+            </div>
+
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="RecipeImage">Текущий файл: @Model.ImageName</label><br />
+                <input type="file" asp-for="RecipeImage" accept=".png, .jpg, .jpeg">
+            </div>
+
+            <input class="form-control btn btn-primary" type="submit" value="Изменить рецепт!" />
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.onload = function () { AddTypes('@jsonIngredients', '@jsonMethods', '@jsonTips') };
+</script>

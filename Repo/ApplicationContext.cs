@@ -30,9 +30,6 @@ namespace Repo
             modelBuilder.Entity<ApplicationUser>().HasMany(q => q.Likes).WithOne(w => w.User).HasForeignKey(x => x.UserId);
             modelBuilder.Entity<ApplicationUser>().HasMany(q => q.Comments).WithOne(w => w.User).HasForeignKey(x => x.UserId);
 
-            // User -> Image [One to One]
-            modelBuilder.Entity<ApplicationUser>().HasOne(q => q.Image).WithOne(w => w.User).HasForeignKey<ApplicationUser>(x => x.ImageId);
-
             // Recipe -> User [One to One]
             modelBuilder.Entity<Recipe>().HasOne(q => q.User).WithMany(w => w.Recipes).HasForeignKey(x => x.UserId);
 
@@ -41,8 +38,6 @@ namespace Repo
             modelBuilder.Entity<Recipe>().HasMany(q => q.Methods).WithOne(w => w.Recipe).HasForeignKey(e => e.RecipeId);
             modelBuilder.Entity<Recipe>().HasMany(q => q.Tips).WithOne(w => w.Recipe).HasForeignKey(e => e.RecipeId);
 
-            // Recipe -> Image [One to One]
-            modelBuilder.Entity<Recipe>().HasOne(q => q.Image).WithOne(w => w.Recipe).HasForeignKey<Recipe>(x => x.ImageId);
         }
     }
 }
