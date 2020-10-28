@@ -11,6 +11,8 @@ namespace Service.Interfaces
         IEnumerable<Post> GetPosts();
         Post GetPost(long id);
         void SubscribePost(long id, string userId);
+        void UnsubscribePost(long id, string userId);
+        bool SubscribeCheck(long id, string userId);
         void InsertPost(Post post, string userId);
         void UpdatePost(Post post);
         void DeletePost(long id);

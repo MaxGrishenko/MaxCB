@@ -21,8 +21,15 @@
                         }
                         else
                         {
-                            <a asp-controller="Recipe" asp-action="Subscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" class="btn btn-outline-primary float-right" style="margin-right:5px">Добавить себе</a>
-                            <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
+                            if (item.SubscribeFlag)
+                            {
+                                <a asp-controller="Recipe" asp-action="Unsubscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" asp-route-returnAction="ShowAll"  class="btn btn-outline-danger float-right" style="margin-right:5px">Отписаться</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Recipe" asp-action="Subscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" asp-route-returnAction="ShowAll" class="btn btn-outline-info float-right" style="margin-right:5px">Подписаться</a>
+                            }
+                            <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" asp-route-returnAction="ShowAll" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
                         }
                     }
                     else
@@ -32,7 +39,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <small class="text-muted">Опубликовал: @item.CurrentUser</small>
+                    <small class="text-muted">Опубликовал: @item.CreatorUser.Email</small>
                 </div>
             </div>
         </div>

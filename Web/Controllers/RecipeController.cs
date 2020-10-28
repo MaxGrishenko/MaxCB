@@ -166,7 +166,7 @@ namespace Web.Controllers
                     Description = recipeEntity.Description,
                     RecipeId = recipeEntity.Id,
                     PostId = item.Id,
-                    
+                    SubscribeFlag = _postService.SubscribeCheck(item.Id, userId),
                     CreatorUser = await _userManager.FindByIdAsync(recipeEntity.UserId),
                     CurrentUser = await _userManager.FindByIdAsync(userId)
                 });
@@ -188,6 +188,7 @@ namespace Web.Controllers
                     Description = recipeEntity.Description,
                     RecipeId = recipeEntity.Id,
                     PostId = item.Id,
+                    SubscribeFlag = _postService.SubscribeCheck(item.Id, userId),
                     CreatorUser = await _userManager.FindByIdAsync(recipeEntity.UserId),
                     CurrentUser = await _userManager.FindByIdAsync(userId)
                 });
@@ -275,10 +276,16 @@ namespace Web.Controllers
             return user.Email;
         }
 
-        public IActionResult Subscribe(long postId, string userId)
+        public IActionResult Subscribe(long postId, string userId, string returnAction)
         {
             _postService.SubscribePost(postId, userId);
-            return RedirectToAction("ShowAll");
+            return RedirectToAction(returnAction);
+        }
+
+        public IActionResult Unsubscribe(long postId, string userId, string returnAction)
+        {
+            _postService.UnsubscribePost(postId, userId);
+            return RedirectToAction(returnAction);
         }
 
 

@@ -17,8 +17,16 @@
                     }
                     else
                     {
-                        <a class="btn btn-outline-primary float-right" style="margin-right:5px">Отписаться</a>
-                        <a class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
+                        if (item.SubscribeFlag)
+                        {
+                            <a asp-controller="Recipe" asp-action="Unsubscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" asp-route-returnAction="ShowMy" class="btn btn-outline-danger float-right" style="margin-right:5px">Отписаться</a>
+
+                        }
+                        else
+                        {
+                            <a asp-controller="Recipe" asp-action="Subscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" asp-route-returnAction="ShowMy" class="btn btn-outline-info float-right" style="margin-right:5px">Подписаться</a>
+                        }
+                        <a asp-controller="Recipe" asp-action="ShowMy" asp-route-id="@item.RecipeId" asp-route-returnAction="ShowMy" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
                     }
                 </div>
                 <div class="card-footer">

@@ -14,7 +14,7 @@ namespace Web.Models
 
         public long RecipeId { get; set; }
         public long PostId { get; set; }
-
+        public bool SubscribeFlag { get; set; }
 
         public ApplicationUser CreatorUser { get; set; }
         public ApplicationUser CurrentUser { get; set; }

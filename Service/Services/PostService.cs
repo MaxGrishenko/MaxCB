@@ -1,5 +1,6 @@
 ﻿using Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Repo;
 using Service.Interfaces;
 using System;
@@ -51,6 +52,30 @@ namespace Service.Services
                 UserId = userId
             });
         }
+        public void UnsubscribePost(long id, string userId)
+        {
+            postUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.PostId == id && u.UserId == userId)
+                {
+                    postUserRepository.Remove(u);
+                    postUserRepository.SaveChanges();
+                }
+            });
+        }
+        public bool SubscribeCheck(long id, string userId)
+        {
+            var postUsers = postUserRepository.GetAll().ToList();
+            foreach(var item in postUsers)
+            {
+                if (item.PostId == id && item.UserId == userId)
+                {
+                    return true;
+
+                }
+            }
+            return false;
+        }
         public void InsertPost(Post post, string userId)
         {
             postRepository.Insert(post);
@@ -61,7 +86,6 @@ namespace Service.Services
             };
             postUserRepository.Insert(postUserEntity);
         }
-
         public void UpdatePost(Post post)
         {
             postRepository.Update(post);
