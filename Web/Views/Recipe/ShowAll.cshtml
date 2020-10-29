@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<Data.ApplicationUser> SignInManager
 
-<div class="row justify-content-center">
+<div id="div1" class="row justify-content-center">
     @foreach (var item in Model)
     {
         <div class="col-6" style="margin-top:25px">
@@ -11,32 +11,26 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>
                     <p class="card-text">@item.Description</p>
+                    <button class="postButton btn btn-warning" value="@item.PostId" type="button">Просмотреть</button>
                     @if (SignInManager.IsSignedIn(User))
                     {
                         if (item.CurrentUser.Email == item.CreatorUser.Email)
                         {
                             <a asp-controller="Recipe" asp-action="Delete" asp-route-id="@item.RecipeId" class="btn btn-outline-danger float-right">Удалить</a>
-                            <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@item.RecipeId" class="btn btn-outline-primary float-right" style="margin-right:5px">Редактировать</a>
-                            <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
+                            <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@item.RecipeId" class="btn btn-primary float-right" style="margin-right:5px">Редактировать</a>
                         }
                         else
                         {
                             if (item.SubscribeFlag)
                             {
-                                <a asp-controller="Recipe" asp-action="Unsubscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" asp-route-returnAction="ShowAll"  class="btn btn-outline-danger float-right" style="margin-right:5px">Отписаться</a>
+                                <button class="subButton btn btn-outline-danger" value="@item.PostId" name="sub" type="button">Отписаться</button>
                             }
                             else
                             {
-                                <a asp-controller="Recipe" asp-action="Subscribe" asp-route-postId="@item.PostId" asp-route-userId="@item.CurrentUser.Id" asp-route-returnAction="ShowAll" class="btn btn-outline-info float-right" style="margin-right:5px">Подписаться</a>
+                                <button class="subButton btn btn-outline-success" value="@item.PostId" name="unsub" type="button">Подписаться</button>
                             }
-                            <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" asp-route-returnAction="ShowAll" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
                         }
                     }
-                    else
-                    {
-                        <a asp-controller="Recipe" asp-action="Show" asp-route-id="@item.RecipeId" class="btn btn-outline-success float-right" style="margin-right:5px">Просмотреть</a>
-                    }
-
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">Опубликовал: @item.CreatorUser.Email</small>
@@ -44,4 +38,64 @@
             </div>
         </div>
     }
+    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div id="postContainer" class="modal-content"></div>
+        </div>
+    </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        $('.subButton').click(function () {
+            let postId = $(this).attr('value');
+
+            if ($(this).attr('name') == 'sub') {
+                $(this).attr('class', 'subButton btn btn-outline-success');
+                $(this).attr('name', 'unsub');
+                $(this).html('Подписаться');
+            }
+            else {
+                $(this).attr('class', 'subButton btn btn-outline-danger'); 
+                $(this).attr('name', 'sub');
+                $(this).html('Отписаться');
+            }
+            let subFlag = $(this).attr('name');
+            $.ajax({
+                type: 'POST',
+                url: 'Subscribe',
+                dataType: 'html',
+                data: { 'postId': postId, 'subFlag': subFlag },
+                success: function () {
+                    console.log("Post " + subFlag);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        $('.postButton').click(function () {
+            let postId = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: 'GetPartial',
+                dataType: 'html',
+                data: { 'postId': postId },
+                success: function (data) {
+                    console.log("Show DetailPost")
+                    $('#postContainer').append(data);
+                    $('#postModalButton').click();
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        $('#postModal').on('hide.bs.modal', function (event) {
+            console.log("Remove DetailPost");
+            $('#postContainer').children().remove();
+        });
+    </script>
+}

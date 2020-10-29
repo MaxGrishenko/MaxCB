@@ -20,7 +20,7 @@ namespace Repo
             modelBuilder.Entity<PostUser>().HasOne(p => p.Post).WithMany(p => p.Users).HasForeignKey(x => x.PostId).OnDelete(DeleteBehavior.Restrict);
 
             // Post -> Recipe [One to One]
-            modelBuilder.Entity<Post>().HasOne(q => q.Recipe).WithOne(w => w.Post).HasForeignKey<Post>(x => x.RecipeId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Post>().HasOne(q => q.Recipe).WithOne(w => w.Post).HasForeignKey<Post>(x => x.RecipeId);
 
             // Post <- Like/Comment [One to Many]
             modelBuilder.Entity<Post>().HasMany(q => q.Likes).WithOne(w => w.Post).HasForeignKey(x => x.PostId);

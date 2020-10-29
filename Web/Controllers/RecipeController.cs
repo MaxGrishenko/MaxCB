@@ -50,6 +50,9 @@ namespace Web.Controllers
 
 
 
+
+
+
         [HttpGet]
         [Authorize]
         public IActionResult Add()
@@ -92,10 +95,8 @@ namespace Web.Controllers
             }
             else return View(model);
         }
-        
-
-
         [HttpGet]
+        [Authorize]
         public IActionResult Edit(long id)
         {
             Recipe recipeEntity = _recipeService.GetRecipe(id);
@@ -146,8 +147,14 @@ namespace Web.Controllers
             _recipeService.UpdateRecipe(recipeEntity);
             return RedirectToAction("ShowAll");
         }
-
-
+        [HttpPost]
+        [Authorize]
+        public IActionResult Delete(long postId)
+        {
+            //_postService.DeletePost(postId);
+            //Todo удалить изображение по Post->Recipe->ImagePath
+            return Ok();
+        }
 
         [HttpGet]
         [Authorize]
@@ -195,7 +202,6 @@ namespace Web.Controllers
             }
             return View(models);
         }
-
         [Authorize]
         public IActionResult AddConst()
         {
@@ -270,23 +276,23 @@ namespace Web.Controllers
 
             return RedirectToAction("ShowMy");
         }
-        private async Task<string> GetUserEmailAsync(string userId)
+        [HttpPost]
+        [Authorize]
+        public IActionResult Subscribe(long postId, string subFlag)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            return user.Email;
+            string userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            if (subFlag == "sub") { _postService.SubscribePost(postId, userId); }
+            else _postService.UnsubscribePost(postId, userId);
+            return Ok();
+        }
+        [HttpPost]
+        public IActionResult GetPartial(long postId)
+        {
+            Recipe recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
+            return PartialView("_ShowRecipe", recipeEntity);
         }
 
-        public IActionResult Subscribe(long postId, string userId, string returnAction)
-        {
-            _postService.SubscribePost(postId, userId);
-            return RedirectToAction(returnAction);
-        }
 
-        public IActionResult Unsubscribe(long postId, string userId, string returnAction)
-        {
-            _postService.UnsubscribePost(postId, userId);
-            return RedirectToAction(returnAction);
-        }
 
 
         private string GetImagePath(IFormFile recipeImage, string prevImagePath = null)
