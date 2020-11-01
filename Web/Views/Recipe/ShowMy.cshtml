@@ -1,11 +1,21 @@
 ﻿@model List<Web.Models.PostViewModel>
 
 <style>
-    button {float:right; margin-right:10px}
-    a {float:right; margin-right:10px;}
+    button {
+        float: right;
+        margin-right: 10px
+    }
+    a {
+        float: right;
+        margin-right: 10px;
+    }
+    img {
+        width: 100%;
+        max-width: 600px;
+    }
 </style>
 
-
+<h1>Мои рецепты/подписки</h1>
 <div class="row justify-content-center">
     @foreach (var item in Model)
     {
@@ -20,7 +30,7 @@
                     @if (item.CurrentUser.Email == item.CreatorUser.Email)
                     {
                         <button class="delButton btn btn-outline-danger @item.PostId" value="@item.PostId" name="@item.Title">Удалить</button>
-                        <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@item.RecipeId" class="btn btn-outline-primary float-right @item.PostId">Редактировать</a>
+                        <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn btn-outline-primary float-right @item.PostId">Редактировать</a>
                     }
                     else
                     {
@@ -35,15 +45,15 @@
         </div>
     }
     @*Modal for showDetailPost*@
-    <button id="postModalButton" hidden="hidden" data-toggle="modal" data-target="#postModal" />
+    <button id="postModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#postModal"></button>
     <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div id="postContainer" class="modal-content">
+
                 @*Parial View*@
             </div>
         </div>
-    </div>
-    @*Modal for deletePost*@
+    </div>    @*Modal for deletePost*@
     <button id="delModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#deleteModal"></button>
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -64,7 +74,7 @@
 </div>
 
 
-@section scripts{ 
+@section scripts{
     <script type="text/javascript">
         function shadowPost(btn, postId) {
             $('.' + postId).attr('style', 'opacity : 0.4; pointer-events: none;');
@@ -89,7 +99,7 @@
                 type: 'POST',
                 url: 'Delete',
                 dataType: 'html',
-                data: { 'postId': postId},
+                data: { 'postId': postId },
                 success: function () {
                     console.log("Delete Post");
                     shadowPost(this, postId);

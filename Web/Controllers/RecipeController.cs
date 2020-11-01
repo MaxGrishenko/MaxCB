@@ -48,111 +48,115 @@ namespace Web.Controllers
             _postService = postService;
         }
 
-
-
-
-
-
         [HttpGet]
         [Authorize]
-        public IActionResult Add()
+        public IActionResult AddorEdit(long recipeId = 0)
         {
-            RecipeViewModel model = new RecipeViewModel();
+            if (recipeId == 0)
+            {
+                return View(new RecipeViewModel() 
+                { 
+                    IsNew = true, 
+                    Categories = GetCategories(),
+                    Category = 0, 
+                    Difficulties = GetDifficulties(), 
+                    Difficulty=0, 
+                    ImagePath = "/Image/emptyImage.png"
+                }); 
+            }
+            else
+            {
+                var recipeEntity = _recipeService.GetRecipe(recipeId);
+                return View(new RecipeViewModel()
+                {
+                    Id = recipeEntity.Id,
+                    Title = recipeEntity.Title,
+                    Description = recipeEntity.Description,
+                    Categories = GetCategories(),
+                    Category = recipeEntity.Category,
+                    Difficulties = GetDifficulties(),
+                    Difficulty = recipeEntity.Difficulty,
+                    Ingredients = _ingredientService.GetIngredients(recipeId).ToList().Select(u => u.Name.ToString()).ToArray(),
+                    Methods = _methodService.GetMethods(recipeId).Select(u => u.Name.ToString()).ToArray(),
+                    Tips = _tipService.GetTips(recipeId).Select(u => u.Name.ToString()).ToArray(),
+                    ImagePath = recipeEntity.ImagePath,
+                });
+            }
+        }
+            
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddorEdit(RecipeViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.IsNew)
+                {
+                    var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+                    var recipeEntity = new Recipe()
+                    {
+                        Title = model.Title,
+                        Description = model.Description,
+                        Category = model.Category,
+                        PrepTime = (int)model.PrepTime,
+                        CookTime = (int)model.CookTime,
+                        Marinade = (int)model.Marinade,
+                        Difficulty = model.Difficulty,
+                        ImagePath = GetImagePath(model.RecipeImage),
+                        UserId = userId
+                    };
+                    _recipeService.InsertRecipe(recipeEntity);
+                    GetIngredients(model.Ingredients, recipeEntity);
+                    GetMethods(model.Methods, recipeEntity);
+                    GetTips(model.Tips, recipeEntity);
+
+                    var postEntity = new Post()
+                    {
+                        RecipeId = recipeEntity.Id
+                    };
+                    _postService.InsertPost(postEntity, userId);
+                }
+                else
+                {
+                    Recipe recipeEntity = _recipeService.GetRecipe(model.Id);
+
+                    _ingredientService.DeleteIngredients(recipeEntity.Id);
+                    _methodService.DeleteMethods(recipeEntity.Id);
+                    _tipService.DeleteTips(recipeEntity.Id);
+                    GetIngredients(model.Ingredients, recipeEntity);
+                    GetMethods(model.Methods, recipeEntity);
+                    GetTips(model.Tips, recipeEntity);
+
+                    recipeEntity.Title = model.Title;
+                    recipeEntity.Description = model.Description;
+                    recipeEntity.Category = model.Category;
+                    recipeEntity.PrepTime = (int)model.PrepTime;
+                    recipeEntity.CookTime = (int)model.CookTime;
+                    recipeEntity.Marinade = (int)model.Marinade;
+                    recipeEntity.Difficulty = model.Difficulty;
+                    if (model.RecipeImage != null)
+                    {
+                        recipeEntity.ImagePath = GetImagePath(model.RecipeImage, recipeEntity.ImagePath.Substring(7));
+                    }
+                    else recipeEntity.ImagePath = GetImagePath(model.RecipeImage);
+
+                    _recipeService.UpdateRecipe(recipeEntity);
+                }
+                return RedirectToAction("ShowMy");
+            }
             model.Categories = GetCategories();
             model.Difficulties = GetDifficulties();
             return View(model);
         }
-        [HttpPost]
-        public IActionResult Add(RecipeViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-                var recipeEntity = new Recipe()
-                {
-                    Title = model.Title,
-                    Description = model.Description,
-                    Category = model.Category,
-                    PrepTime = (int)model.PrepTime,
-                    CookTime = (int)model.CookTime,
-                    Marinade = (int)model.Marinade,
-                    Difficulty = model.Difficulty,
-                    ImagePath = GetImagePath(model.RecipeImage),
-                    UserId = userId
-                };
-                _recipeService.InsertRecipe(recipeEntity);
-                GetIngredients(model.Ingredients, recipeEntity);
-                GetMethods(model.Methods, recipeEntity);
-                GetTips(model.Tips, recipeEntity);
 
-                var postEntity = new Post()
-                {
-                    RecipeId = recipeEntity.Id
-                };
-                _postService.InsertPost(postEntity, userId);
-
-                return RedirectToAction("Index", "Home");
-            }
-            else return View(model);
-        }
-        [HttpGet]
-        [Authorize]
-        public IActionResult Edit(long id)
-        {
-            Recipe recipeEntity = _recipeService.GetRecipe(id);
-            RecipeViewModel model = new RecipeViewModel()
-            {
-                Id = recipeEntity.Id,
-                Title = recipeEntity.Title,
-                Description = recipeEntity.Description,
-                Categories = GetCategories(),
-                Category = recipeEntity.Category,
-                PrepTime = recipeEntity.PrepTime,
-                CookTime = recipeEntity.CookTime,
-                Marinade = recipeEntity.Marinade,
-                Difficulties = GetDifficulties(),
-                Difficulty = recipeEntity.Difficulty,
-                Ingredients = _ingredientService.GetIngredients(id).ToList().Select(u => u.Name.ToString()).ToArray(),
-                Methods = _methodService.GetMethods(id).Select(u => u.Name.ToString()).ToArray(),
-                Tips = _tipService.GetTips(id).Select(u => u.Name.ToString()).ToArray(),
-                ImageName = recipeEntity.ImagePath.Substring(7)
-            };
-            return View(model);
-        }
-        [HttpPost]
-        public IActionResult Edit(RecipeViewModel model)
-        {
-            Recipe recipeEntity = _recipeService.GetRecipe(model.Id);
-
-            _ingredientService.DeleteIngredients(recipeEntity.Id);
-            _methodService.DeleteMethods(recipeEntity.Id);
-            _tipService.DeleteTips(recipeEntity.Id);
-            GetIngredients(model.Ingredients, recipeEntity);
-            GetMethods(model.Methods, recipeEntity);
-            GetTips(model.Tips, recipeEntity);
-
-            recipeEntity.Title = model.Title;
-            recipeEntity.Description = model.Description;
-            recipeEntity.Category = model.Category;
-            recipeEntity.PrepTime = (int)model.PrepTime;
-            recipeEntity.CookTime = (int)model.CookTime;
-            recipeEntity.Marinade = (int)model.Marinade;
-            recipeEntity.Difficulty = model.Difficulty;
-            if (model.RecipeImage != null)
-            {
-                recipeEntity.ImagePath = GetImagePath(model.RecipeImage, recipeEntity.ImagePath.Substring(7));
-            }
-            else recipeEntity.ImagePath = GetImagePath(model.RecipeImage);
-
-            _recipeService.UpdateRecipe(recipeEntity);
-            return RedirectToAction("ShowAll");
-        }
         [HttpPost]
         [Authorize]
         public IActionResult Delete(long postId)
         {
-            //_postService.DeletePost(postId);
-            //Todo удалить изображение по Post->Recipe->ImagePath
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string imagePath = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId).ImagePath;
+            _postService.DeletePost(postId);
+            if (imagePath != "/Image/test1.jpg" && imagePath != "/Image/emptyImage.jpg") { System.IO.File.Delete(wwwRootPath + imagePath);}
             return Ok();
         }
 
@@ -202,80 +206,6 @@ namespace Web.Controllers
             }
             return View(models);
         }
-        [Authorize]
-        public IActionResult AddConst()
-        {
-            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-            Recipe recipeEntity = new Recipe()
-            {
-                Title = "Тестовый рецепт",
-                Description = "Стандратное описание",
-                Category = 2,
-                PrepTime = 10,
-                CookTime = 30,
-                Marinade = 60,
-                Difficulty = 2,
-                ImagePath = "/Image/blini.jpg",
-                UserId = userId
-            };
-            _recipeService.InsertRecipe(recipeEntity);
-            Ingredient ingredient1 = new Ingredient()
-            {
-                Name = "1-ый ингредиент",
-                Recipe = recipeEntity
-            };
-            Ingredient ingredient2 = new Ingredient()
-            {
-                Name = "2-ый ингредиент",
-                Recipe = recipeEntity
-            };
-            Ingredient ingredient3 = new Ingredient()
-            {
-                Name = "3-ый ингредиент",
-                Recipe = recipeEntity
-            };
-            Ingredient ingredient4 = new Ingredient()
-            {
-                Name = "4-ый ингредиент",
-                Recipe = recipeEntity
-            };
-            Method method1 = new Method()
-            {
-                Name = "1-ый шаг",
-                Recipe = recipeEntity
-            };
-            Method method2 = new Method()
-            {
-                Name = "2-ый шаг",
-                Recipe = recipeEntity
-            };
-            Method method3 = new Method()
-            {
-                Name = "3-ый шаг",
-                Recipe = recipeEntity
-            };
-            Tip tip1 = new Tip()
-            {
-                Name = "1-ая подсказка",
-                Recipe = recipeEntity
-            };
-            _ingredientService.InsertIngredient(ingredient1);
-            _ingredientService.InsertIngredient(ingredient2);
-            _ingredientService.InsertIngredient(ingredient3);
-            _ingredientService.InsertIngredient(ingredient4);
-            _methodService.InsertMethod(method1);
-            _methodService.InsertMethod(method2);
-            _methodService.InsertMethod(method3);
-            _tipService.InsertTip(tip1);
-
-            var postEntity = new Post()
-            {
-                RecipeId = recipeEntity.Id
-            };
-            _postService.InsertPost(postEntity, userId);
-
-            return RedirectToAction("ShowMy");
-        }
         [HttpPost]
         [Authorize]
         public IActionResult Subscribe(long postId, string subFlag)
@@ -288,11 +218,23 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult GetPartial(long postId)
         {
-            Recipe recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
-            return PartialView("_ShowRecipe", recipeEntity);
+            var recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
+            var model = new DetailPostViewModel()
+            {
+                Title = recipeEntity.Title,
+                Description = recipeEntity.Description,
+                CategoryName = "TODO INT->STRING",
+                PrepTime = recipeEntity.PrepTime,
+                CookTime = recipeEntity.CookTime,
+                Marinade = recipeEntity.Marinade,
+                DifficultyName = "TODO INT->STRING",
+                ImagePath = recipeEntity.ImagePath,
+                Ingredients = _ingredientService.GetIngredients(recipeEntity.Id).ToList(),
+                Methods = _methodService.GetMethods(recipeEntity.Id).ToList(),
+                Tips = _tipService.GetTips(recipeEntity.Id).ToList(),
+            };
+            return PartialView("_ShowRecipe", model);
         }
-
-
 
 
         private string GetImagePath(IFormFile recipeImage, string prevImagePath = null)
@@ -374,6 +316,73 @@ namespace Web.Controllers
                 new SelectListItem() {Text = "Тяжело", Value = "3"},
                 new SelectListItem() {Text = "Гордон Рамзи", Value = "4"},
             };
+        }
+
+
+        [Authorize]
+        public IActionResult AddConst()
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            Recipe recipeEntity = new Recipe()
+            {
+                Title = "Плов со свининой",
+                Description = "Плов - это простая еда. И готовится плов легко и просто! Без всяких понтов и заморочек!",
+                Category = 3,
+                PrepTime = 20,
+                CookTime = 80,
+                Marinade = 0,
+                Difficulty = 2,
+                ImagePath = "/Image/test1.jpg",
+                UserId = userId
+            };
+            _recipeService.InsertRecipe(recipeEntity);
+
+            var ingredient1 = new Ingredient() { Name = "Морковь 2 штуки", Recipe = recipeEntity };
+            var ingredient2 = new Ingredient() { Name = "Свинина 500 г", Recipe = recipeEntity };
+            var ingredient3 = new Ingredient() { Name = "Репчатый лук 2 штуки", Recipe = recipeEntity };
+            var ingredient4 = new Ingredient() { Name = "Рис 2 стакана", Recipe = recipeEntity };
+            var ingredient5 = new Ingredient() { Name = "Растительное масло 50 мл", Recipe = recipeEntity };
+            var ingredient6 = new Ingredient() { Name = "Соль по вкусу", Recipe = recipeEntity };
+            var ingredient7 = new Ingredient() { Name = "Специи для плова", Recipe = recipeEntity };
+            var ingredient8 = new Ingredient() { Name = "Чеснок 1 головка", Recipe = recipeEntity };
+            var method1 = new Method() { Name = "Мясо вымыть, обсушить, разрезать на кусочки.", Recipe = recipeEntity };
+            var method2 = new Method() { Name = "Очистить, помыть и нарезать тонкими полукольцами репчатый лук.", Recipe = recipeEntity };
+            var method3 = new Method() { Name = "Морковь очистить, помыть и нарезать соломкой.", Recipe = recipeEntity };
+            var method4 = new Method() { Name = "Сделать зирвак (это основа плова, а именно - мясо, морковь, лук и специи). Для этого разогреть казанок. Налить растительное масло. Хорошо его прожарить. Выложить подготовленный лук. Жарить до золотистого цвета около 5–7 минут, помешивая", Recipe = recipeEntity };
+            var method5 = new Method() { Name = "Выложить подготовленное мясо. Все готовить до состояния, когда мясо покроется зажаренной корочкой, около 10 минут.", Recipe = recipeEntity };
+            var method6 = new Method() { Name = "Затем добавить морковь. Обжарить все вместе, помешивая, 3–5 минут.", Recipe = recipeEntity };
+            var method7 = new Method() { Name = "Вскипятить чайник. Обжаренные овощи и мясо залить кипятком. Посолить, поперчить, добавить специи для плова. Варить на среднем огне 20 минут.", Recipe = recipeEntity };
+            var method8 = new Method() { Name = "Положить рис, осторожно разровнять его по поверхности. В серединку поместить головку чеснока. Долить воды так, чтобы она покрывала рис выше на 2 см. Варить плов на максимальном огне без крышки почти до полного испарения жидкости, около 10–15 минут.", Recipe = recipeEntity };
+            var method9 = new Method() { Name = "Как только вода испарилась, сделать минимальный огонь. В плове сделать несколько отверстий ручкой ложки. Накрыть крышкой и оставить плов со свининой упариваться на 15 минут.", Recipe = recipeEntity };
+            var tip1 = new Tip() { Name = "Вода должна покрывать мясо с овощами где-то сантиметра на два.", Recipe = recipeEntity };
+            var tip2 = new Tip() { Name = "Рис не перемешивать - аккуратно разровнять.", Recipe = recipeEntity };
+
+            _ingredientService.InsertIngredient(ingredient1);
+            _ingredientService.InsertIngredient(ingredient2);
+            _ingredientService.InsertIngredient(ingredient3);
+            _ingredientService.InsertIngredient(ingredient4);
+            _ingredientService.InsertIngredient(ingredient5);
+            _ingredientService.InsertIngredient(ingredient6);
+            _ingredientService.InsertIngredient(ingredient7);
+            _ingredientService.InsertIngredient(ingredient8);
+            _methodService.InsertMethod(method1);
+            _methodService.InsertMethod(method2);
+            _methodService.InsertMethod(method3);
+            _methodService.InsertMethod(method4);
+            _methodService.InsertMethod(method5);
+            _methodService.InsertMethod(method6);
+            _methodService.InsertMethod(method7);
+            _methodService.InsertMethod(method8);
+            _methodService.InsertMethod(method9);
+            _tipService.InsertTip(tip1);
+            _tipService.InsertTip(tip2);
+            var postEntity = new Post()
+            {
+                RecipeId = recipeEntity.Id
+            };
+            _postService.InsertPost(postEntity, userId);
+
+            return RedirectToAction("ShowMy");
         }
     }
 }

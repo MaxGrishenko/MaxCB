@@ -17,11 +17,13 @@ namespace Service.Services
     {
         private IRepository<Post> postRepository;
         private IRepository<PostUser> postUserRepository;
-
-        public PostService(IRepository<Post> postRepository, IRepository<PostUser> postUserRepository)
+        private IRepository<Recipe> recipeRepository;
+         
+        public PostService(IRepository<Post> postRepository, IRepository<PostUser> postUserRepository, IRepository<Recipe> recipeRepository)
         {
             this.postRepository = postRepository;
             this.postUserRepository = postUserRepository;
+            this.recipeRepository = recipeRepository;
         }
 
         public IEnumerable<Post> GetPosts(string userId)
@@ -92,9 +94,20 @@ namespace Service.Services
         }
         public void DeletePost(long id)
         {
-            Post post = GetPost(id);
-            postRepository.Remove(post);
+            Post postEntity = GetPost(id);
+            postUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.PostId == id)
+                {
+                    postUserRepository.Remove(u);
+                }
+            });
+            recipeRepository.Remove(recipeRepository.Get(postEntity.RecipeId));
+            postRepository.Remove(postEntity);
+
+            recipeRepository.SaveChanges();
             postRepository.SaveChanges();
+            postUserRepository.SaveChanges();
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿// When Edit, we need create and fill dynamically created fields
-function AddTypes(Ing, Met, Tip) {
-    Ing = ConvertStringToArray(Ing);
-    Met = ConvertStringToArray(Met);
-    Tip = ConvertStringToArray(Tip);
 
+
+function AddTypes(Ing, Met, Tip) {
+
+    Ing = JSON.parse(Ing);
+    Met = JSON.parse(Met);
+    Tip = JSON.parse(Tip);
     for (let i = 1; i < Ing.length; i++) {
         AddType('ingredient', Ing[i], '');
     }
@@ -23,11 +25,6 @@ function AddTypes(Ing, Met, Tip) {
             AddType('tip', Tip[i], i.toString());
         }
     }
-}
-
-// After JsonSerialize string[] C# to JS Array of string 
-function ConvertStringToArray(str) {
-    return Array.from(str.replace(/"|\]|\[/gi, "").split(","));
 }
 
 function AddType(type, text, id) {

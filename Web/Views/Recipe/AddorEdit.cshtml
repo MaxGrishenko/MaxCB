@@ -1,0 +1,247 @@
+﻿@model RecipeViewModel
+@using Microsoft.AspNetCore.Html
+
+@{
+    IHtmlContent jsonIngredients = null;
+    IHtmlContent jsonMethods = null;
+    IHtmlContent jsonTips = null;
+    if (Model.Ingredients != null) { jsonIngredients = Json.Serialize(Model.Ingredients); }
+    if (Model.Methods != null) { jsonMethods = Json.Serialize(Model.Methods); }
+    if (Model.Tips != null) { jsonTips = Json.Serialize(Model.Tips); }
+}
+
+<style>
+    .textC {
+        text-align-last: center;
+    }
+    .textE {
+        text-align-last: end;
+    }
+    img{
+        width:100%;
+        max-width:600px;
+    }
+</style>
+
+<div class="card">
+    @if (Model.IsNew)
+    {<h1 class="card-header alert-success">Создание рецепта</h1> }
+    else
+    { <h1 class="card-header alert-primary">Редактирование рецепта</h1>}
+
+    <div class="card-body" id="mainContainer">
+        <form asp-controller="Recipe" asp-action="AddorEdit" method="post" enctype="multipart/form-data">
+            <input class="form-control" type="hidden" asp-for="IsNew" value="@Model.IsNew" />
+            <input class="form-control" type="hidden" asp-for="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label class="font-weight-bolder h5" asp-for="Title"></label>
+                <input class="form-control" type="text" asp-for="Title" value="@Model.Title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div><hr />
+            <div class="form-group">
+                <label class="font-weight-bolder h5" asp-for="Description"></label>
+                <input class="form-control" type="text" asp-for="Description" value="@Model.Description" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div><hr />
+            <div class="row text-center">
+                <div class="col align-text-bottom">
+                    <label class="font-weight-bolder h5" asp-for="Category"></label>
+                    <select class="form-control textC" asp-for="Category" asp-items="Model.Categories"></select>
+                </div>
+                <div class="col align-text-bottom">
+                    <label class="font-weight-bolder h5" asp-for="Difficulty"></label>
+                    <select class="form-control textC" asp-for="Difficulty" asp-items="Model.Difficulties"></select>
+                </div>
+            </div> <hr />
+            <div class="form-group text-center font-weight-bolder h5">Требуемое время для</div>
+            <div class="row text-center">
+                <div class="col align-text-bottom">
+                    <label asp-for="PrepTime"></label>
+                </div>
+                <div class="col align-text-bottom">
+                    <label asp-for="CookTime"></label>
+                </div>
+                <div class="col align-text-bottom">
+                    <label asp-for="Marinade"></label>
+                </div>
+                <div class="w-100"></div>
+                <div class="col input-group">
+                    <input class="form-control textE" min="0" max="7200" type="number" asp-for="PrepTime" value=@Model.PrepTime aria-describedby="minAddon">
+                    <span class="input-group-text" id="minAddon">Мин.</span>
+                </div>
+                <div class="col input-group">
+                    <input class="form-control textE" min="0" max="7200" type="number" asp-for="CookTime" value=@Model.CookTime aria-describedby="minAddon">
+                    <span class="input-group-text" id="minAddon">Мин.</span>
+                </div>
+                <div class="col input-group">
+                    <input class="form-control textE" min="0" max="7200" type="number" asp-for="Marinade" value=@Model.Marinade aria-describedby="minAddon">
+                    <span class="input-group-text" id="minAddon">Мин.</span>
+                </div>
+            </div><hr />
+
+            <div class="card">
+                <div class="card-header alert-secondary" id="ingredientContainer">
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseIngredient" aria-expanded="true" aria-controls="collapseOne">Список ингредиентов</button>
+                    <span asp-validation-for="Ingredients" class="text-danger"></span>
+                </div>
+
+                <div id="collapseIngredient" class="collapse" aria-labelledby="ingredientContainer" data-parent="#mainContainer">
+                    <div class="card-body">
+                        <div id="IngredientDiv">
+                            <input id="i0" class="form-control" type="text" asp-for="Ingredients" name="Ingredients" />
+                        </div>
+                        <br />
+                        <input onclick="AddType(`ingredient`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="Добавить новый ингредиент!" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header alert-secondary" id="methodContainer">
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseMethod" aria-expanded="true" aria-controls="collapseTwo">Способ приготовления</button>
+                    <span asp-validation-for="Methods" class="text-danger"></span>
+                </div>
+
+                <div id="collapseMethod" class="collapse" aria-labelledby="methodContainer" data-parent="#mainContainer">
+                    <div class="card-body">
+                        <div id="MethodDiv">
+                            <textarea class="form-control" asp-for="Methods" id="m0"></textarea>
+                        </div>
+                        <br />
+                        <input onclick="AddType(`method`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="Добавить новый шаг!" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header alert-secondary" id="tipContainer">
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTip" aria-expanded="true" aria-controls="collapseThree">Подсказки и советы</button>
+                    <span asp-validation-for="Tips" class="text-danger"></span>
+                </div>
+
+                <div id="collapseTip" class="collapse" aria-labelledby="tipContainer" data-parent="#mainContainer">
+                    <div class="card-body">
+                        <div id="TipDiv">
+                            <textarea class="form-control" asp-for="Tips" id="t0"></textarea>
+                        </div>
+                        <br />
+                        <input onclick="AddType(`tip`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="Добавить новый совет!" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="text-center">
+                <label class="font-weight-bolder h5" asp-for="ImagePath"></label>
+            </div>
+            <div class="text-center">
+                <img id="imageContainer" src="@Model.ImagePath" alt="Recipe photo">
+            </div>
+            <input id="imageFile" asp-for="@Model.RecipeImage" type="file" hidden="hidden" />
+            <input id="imageInput" class="form-control" type="hidden" asp-for="ImagePath" value="@Model.ImagePath" />
+            <br />
+
+            @if (Model.IsNew)
+            {
+
+                <input class="form-control btn btn-success" type="submit" value="Добавить рецепт!" />
+            }
+            else
+            {
+                <input class="form-control btn btn-primary" type="submit" value="Изменить рецепт!" />
+            }
+        </form>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        window.onload = function () { AddTypes('@jsonIngredients', '@jsonMethods', '@jsonTips') };
+
+        function AddTypes(Ing, Met, Tip) {
+
+            Ing = JSON.parse(Ing);
+            Met = JSON.parse(Met);
+            Tip = JSON.parse(Tip);
+            for (let i = 0; i < Ing.length; i++) {
+                if (i == 0) {
+                    $('#i0').attr('value', Ing[i]);
+                }
+                else {
+                    if (Ing[i] == null) {
+                        AddType('ingredient', '', '');
+                    }
+                    else AddType('ingredient', Ing[i], '');
+                }      
+            } 
+            for (let i = 0; i < Met.length; i++) {
+                if (!i) {
+                    SetTextArea(Met[i], "m0");
+                }
+                else {
+                    AddType('method', Met[i], i.toString());
+                }
+            }
+            for (let i = 0; i < Tip.length; i++) {
+                if (!i) {
+                    SetTextArea(Tip[i], "t0");
+                }
+                else {
+                    AddType('tip', Tip[i], i.toString());
+                }
+            }
+        }
+
+        function AddType(type, text, id) {
+            const division = document.createElement("DIV");
+            switch (type) {
+                case 'ingredient': division.innerHTML = '<hr/><div class="input-group" ><input onclick="DeleteType(this, `ingredient`)" class="btn btn-outline-danger" type="button" value="Удалить"/> <input class="form-control" asp-for=Ingredients" name="Ingredients" type="text"  value="' + text + '" placeholder="Введите новый ингредиент!" aria-describedby="numberAddon"/></div>';
+                    document.getElementById("IngredientDiv").appendChild(division);
+                    break;
+                case 'method': division.innerHTML = '<hr/><div class="input-group"><input onclick="DeleteType(this, `method`)" class="btn btn-outline-danger" type="button" value="Удалить"/><textarea id="m' + id + '" class="form-control" asp-for="Methods" name="Methods" placeholder="Опишите новый шаг"></textarea></div>';
+                    document.getElementById("MethodDiv").appendChild(division);
+                    SetTextArea(text, "m" + id)
+                    break;
+                case 'tip': division.innerHTML = '<hr/><div class="input-group"><input onclick="DeleteType(this, `tip`)" class="btn btn-outline-danger" type="button" value="Удалить"/><textarea id="t' + id + '" class="form-control" asp-for="Tips" name="Tips" placeholder="Расскажите о новой подсказке"></textarea ></div>';
+                    document.getElementById("TipDiv").appendChild(division);
+                    SetTextArea(text, "t" + id)
+                    break;
+            }
+        }
+
+        function SetTextArea(text, id) {
+            document.getElementById(id).innerHTML = text;
+        }
+
+        function DeleteType(div, type) {
+            switch (type) {
+                case 'ingredient': document.getElementById("IngredientDiv").removeChild(div.parentNode.parentNode);
+                    break;
+                case 'method': document.getElementById("MethodDiv").removeChild(div.parentNode.parentNode);
+                    break;
+                case 'tip': document.getElementById("TipDiv").removeChild(div.parentNode.parentNode);
+                    break;
+            }
+        }
+
+        $('#imageContainer').click(function () {
+            $('#imageFile').click();
+        });
+        $('#imageFile').change(function () {
+            let extension = $(this).val().toLowerCase();
+            let regex = new RegExp("(.*?)\.(jpg|png|jpeg)$");
+
+            if (this.files && this.files[0] && regex.test(extension)) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imageContainer').attr('src', e.target.result);
+                    $('#imageInput').attr('value', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+            else {
+                alert("Не поддреживаемый формат изображения!\nТолько .jpg .png .jpeg");
+            }
+        });
+    </script>
+}

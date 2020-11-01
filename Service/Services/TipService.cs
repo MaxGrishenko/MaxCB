@@ -24,6 +24,10 @@ namespace Service
                     tips.Add(u);
                 }
             });
+            if (tips.Count == 1)
+            {
+                tips[0].Name = string.Empty;
+            }
             return tips;
         }
         public void DeleteTips(long recipeId)

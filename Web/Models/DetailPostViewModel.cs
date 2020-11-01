@@ -8,6 +8,16 @@ namespace Web.Models
 {
     public class DetailPostViewModel
     {
-        public Recipe Recipe { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string CategoryName { get; set; }
+        public int PrepTime { get; set; }
+        public int CookTime { get; set; }
+        public int Marinade { get; set; }
+        public string DifficultyName { get; set; }
+        public string ImagePath { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
+        public List<Method> Methods { get; set; }
+        public List<Tip> Tips { get; set; }
     }
 }
