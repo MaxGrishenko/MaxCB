@@ -83,7 +83,6 @@ namespace Web.Controllers
                 });
             }
         }
-            
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddorEdit(RecipeViewModel model)
@@ -142,13 +141,12 @@ namespace Web.Controllers
 
                     _recipeService.UpdateRecipe(recipeEntity);
                 }
-                return RedirectToAction("ShowMy");
+                return RedirectToAction("Show");
             }
             model.Categories = GetCategories();
             model.Difficulties = GetDifficulties();
             return View(model);
         }
-
         [HttpPost]
         [Authorize]
         public IActionResult Delete(long postId)
@@ -160,17 +158,36 @@ namespace Web.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> ShowMy()
+        [HttpPost]
+        public async Task<IActionResult> PartialPost(string parameter = "all")
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-            var posts = _postService.GetPosts(userId).ToList();
-            var models = new List<PostViewModel>();
+            var model = new List<PostViewModel>();
+            IEnumerable<Post> posts;
+            string userId;
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+                switch (parameter)
+                {
+                    case "all":
+                        posts = _postService.GetPosts().ToList();
+                        break;
+                    case "my":
+                        posts = _postService.GetPosts(userId).ToList();
+                        break;
+                    default:return View("Show");
+                    
+                }
+            }
+            else
+            {
+                userId = string.Empty;
+                posts = _postService.GetPosts().ToList();
+            }
             foreach (var item in posts)
             {
                 var recipeEntity = _recipeService.GetRecipe(item.RecipeId);
-                models.Add(new PostViewModel()
+                model.Add(new PostViewModel()
                 {
                     ImagePath = recipeEntity.ImagePath,
                     Title = recipeEntity.Title,
@@ -182,30 +199,19 @@ namespace Web.Controllers
                     CurrentUser = await _userManager.FindByIdAsync(userId)
                 });
             }
-            return View(models);
+            return PartialView("_ShowPosts", model);
         }
-        public async Task<IActionResult> ShowAll()
+        [HttpGet]
+        public IActionResult Show()
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-            var models = new List<PostViewModel>();
-            var posts = _postService.GetPosts().ToList();
-            foreach(var item in posts)
-            {
-                var recipeEntity = _recipeService.GetRecipe(item.RecipeId);
-                models.Add(new PostViewModel()
-                {
-                    ImagePath = recipeEntity.ImagePath,
-                    Title = recipeEntity.Title,
-                    Description = recipeEntity.Description,
-                    RecipeId = recipeEntity.Id,
-                    PostId = item.Id,
-                    SubscribeFlag = _postService.SubscribeCheck(item.Id, userId),
-                    CreatorUser = await _userManager.FindByIdAsync(recipeEntity.UserId),
-                    CurrentUser = await _userManager.FindByIdAsync(userId)
-                });
-            }
-            return View(models);
+            return View();
         }
+
+
+
+
+
+
         [HttpPost]
         [Authorize]
         public IActionResult Subscribe(long postId, string subFlag)
