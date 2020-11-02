@@ -201,6 +201,42 @@ namespace Web.Controllers
             }
             return PartialView("_ShowPosts", model);
         }
+        [HttpPost]
+        public async Task<IActionResult> PartialComments(long postId)
+        {
+            var model = new List<CommentViewModel>();
+            var comments = _postService.GetComments(postId);
+            foreach(var item in comments)
+            {
+                model.Add(new CommentViewModel()
+                {
+                    CommentId = item.Id,
+                    Name = item.Name,
+                    User = await _userManager.FindByIdAsync(item.UserId)
+                });
+            }
+            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            ViewData["postId"] = postId;
+            ViewData["email"] = user.Email;
+           
+            return PartialView("_ShowComments", model);
+        }
+        [HttpPost]
+        public IActionResult MakeComment(string name, long postId)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            return Ok(_postService.MakeComment(name,postId,userId));
+        }
+        [HttpPost]
+        public IActionResult DeleteComment(long commentId)
+        {
+            _postService.DeleteComment(commentId);
+            return Ok(commentId);
+        }
+
+
+
         [HttpGet]
         public IActionResult Show()
         {
@@ -227,6 +263,7 @@ namespace Web.Controllers
             var recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
             var model = new DetailPostViewModel()
             {
+                PostId = postId, 
                 Title = recipeEntity.Title,
                 Description = recipeEntity.Description,
                 CategoryName = "TODO INT->STRING",

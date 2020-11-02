@@ -9,7 +9,10 @@ namespace Service.Interfaces
     {
         IEnumerable<Post> GetPosts(string UserId);
         IEnumerable<Post> GetPosts();
+        public IEnumerable<Comment> GetComments(long postId);
         Post GetPost(long id);
+        public long MakeComment(string name, long postId, string userId);
+        public void DeleteComment(long commentId);
         void SubscribePost(long id, string userId);
         void UnsubscribePost(long id, string userId);
         bool SubscribeCheck(long id, string userId);

@@ -18,12 +18,14 @@ namespace Service.Services
         private IRepository<Post> postRepository;
         private IRepository<PostUser> postUserRepository;
         private IRepository<Recipe> recipeRepository;
+        private IRepository<Comment> commentRepository;
          
-        public PostService(IRepository<Post> postRepository, IRepository<PostUser> postUserRepository, IRepository<Recipe> recipeRepository)
+        public PostService(IRepository<Post> postRepository, IRepository<PostUser> postUserRepository, IRepository<Recipe> recipeRepository, IRepository<Comment> commentRepository)
         {
             this.postRepository = postRepository;
             this.postUserRepository = postUserRepository;
             this.recipeRepository = recipeRepository;
+            this.commentRepository = commentRepository;
         }
 
         public IEnumerable<Post> GetPosts(string userId)
@@ -42,6 +44,37 @@ namespace Service.Services
         {
             return postRepository.GetAll();
         }
+        
+        public IEnumerable<Comment> GetComments(long postId)
+        {
+            var comments = new List<Comment>();
+            commentRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.PostId == postId)
+                {
+                    comments.Add(commentRepository.Get(u.Id));
+                }
+            });
+            return comments;
+        }
+        public long MakeComment(string name, long postId, string userId)
+        {
+            var commentEntity = new Comment()
+            {
+                Name = name,
+                PostId = postId,
+                UserId = userId
+            };
+            commentRepository.Insert(commentEntity);
+            return commentEntity.Id;
+        }
+        public void DeleteComment(long commentId)
+        {
+            commentRepository.Remove(commentRepository.Get(commentId));
+            commentRepository.SaveChanges();
+        }
+
+        
         public Post GetPost(long id)
         {
             return postRepository.Get(id);

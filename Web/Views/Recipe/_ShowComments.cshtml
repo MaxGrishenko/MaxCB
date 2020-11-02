@@ -1,0 +1,82 @@
+﻿@model List<Web.Models.CommentViewModel>
+
+
+<div class="container">
+    <br />
+    <div class="input-group mb-3">
+        <textarea class="form-control" id="commentArea" placeholder="Оставьте ваш отзыв!"></textarea>
+        <button id="commentButton" class="btn btn-outline-success">Отправить</button>
+    </div>
+    <hr />
+
+    <h5 id="textEmpty" class="text-center text-muted" hidden="hidden">Пока комментариев нет, но вы можете оставить его первым!</h5>
+
+    <div id="comments">
+        @foreach (var item in Model)
+        {
+            <div id="CommentDiv" class="input-group">
+                <div>
+                    <h6>@item.User.Email</h6>
+                    <h5>@item.Name</h5>
+                </div>
+                <button value="@item.CommentId" class="btn btn-outline-danger float-right" onclick="deleteComment(this)">Удалить</button>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    function deleteComment(button) {
+        $.ajax({
+            type: 'POST',
+            url: 'DeleteComment',
+            dataType: 'html',
+            data: { 'commentId': $(button).val() },
+            success: function (commentId) {
+                console.log('Delete comment: ' + commentId);
+                button.parentNode.innerHTML = '';
+                checkEmpty();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    };
+
+    $('#commentButton').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: 'MakeComment',
+            dataType: 'html',
+            data: { 'name': $('#commentArea').val(), 'postId': @ViewData["postId"] },
+            success: function (commentId) {
+                console.log('Make comment: ' + commentId);
+
+                let divMain = document.createElement('div');
+                divMain.setAttribute('class', 'input-group');
+                divMain.setAttribute('id', 'CommentDiv');
+                let div = document.createElement('div');
+                let email = document.createElement('h6');
+                let name = document.createElement('h5')
+                email.textContent = '@ViewData["email"]';
+                name.textContent = $('#commentArea').val();
+                let button = document.createElement('button');
+                button.setAttribute('class', 'btn btn-outline-danger');
+                button.setAttribute('onclick', 'deleteComment(this)');
+                button.setAttribute('value', commentId);
+                button.textContent = 'Удалить';
+
+                div.appendChild(email);
+                div.appendChild(name);
+                divMain.appendChild(div);
+                divMain.appendChild(button);
+                $('#comments').append(divMain);
+
+                $('#commentArea').val('');
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+</script>
