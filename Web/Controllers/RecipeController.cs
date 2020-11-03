@@ -164,6 +164,7 @@ namespace Web.Controllers
             var model = new List<PostViewModel>();
             IEnumerable<Post> posts;
             string userId;
+            ViewData["parameter"] = parameter;
             if (User.Identity.IsAuthenticated)
             {
                 userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
