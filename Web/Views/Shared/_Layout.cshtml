@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<Data.ApplicationUser> SignInManager
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,8 +26,29 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Recipe" asp-action="AddorEdit">*Добавить*</a>
                     </li>
+
+
                 </ul>
+
+
                 <ul class="navbar-nav navbar-right">
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="ru">
+                            <img style="max-height:32px; max-width:32px" src="@Localizer["imgRu"]"/>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="en">
+                            <img style="max-height:32px; max-width:32px" src=@Localizer["imgEn"] />
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="de">
+                            <img style="max-height:32px; max-width:32px" src=@Localizer["imgDe"] />
+                        </a>
+                    </li>
+
+
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item">
@@ -57,8 +80,14 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            console.log('Good news');
+        };
+    </script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+

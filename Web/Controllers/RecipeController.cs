@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Repo;
@@ -47,7 +48,7 @@ namespace Web.Controllers
             _tipService = tipService;
             _postService = postService;
         }
-
+        // CrUD
         [HttpGet]
         [Authorize]
         public IActionResult AddorEdit(long recipeId = 0)
@@ -157,7 +158,7 @@ namespace Web.Controllers
             if (imagePath != "/Image/test1.jpg" && imagePath != "/Image/emptyImage.jpg") { System.IO.File.Delete(wwwRootPath + imagePath);}
             return Ok();
         }
-
+        // Partial
         [HttpPost]
         public async Task<IActionResult> PartialPost(string parameter = "all")
         {
@@ -203,6 +204,27 @@ namespace Web.Controllers
             return PartialView("_ShowPosts", model);
         }
         [HttpPost]
+        public IActionResult PartialRecipe(long postId)
+        {
+            var recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
+            var model = new DetailPostViewModel()
+            {
+                PostId = postId,
+                Title = recipeEntity.Title,
+                Description = recipeEntity.Description,
+                CategoryName = "TODO INT->STRING",
+                PrepTime = recipeEntity.PrepTime,
+                CookTime = recipeEntity.CookTime,
+                Marinade = recipeEntity.Marinade,
+                DifficultyName = "TODO INT->STRING",
+                ImagePath = recipeEntity.ImagePath,
+                Ingredients = _ingredientService.GetIngredients(recipeEntity.Id).ToList(),
+                Methods = _methodService.GetMethods(recipeEntity.Id).ToList(),
+                Tips = _tipService.GetTips(recipeEntity.Id).ToList(),
+            };
+            return PartialView("_ShowRecipe", model);
+        }
+        [HttpPost]
         public async Task<IActionResult> PartialComments(long postId)
         {
             var model = new List<CommentViewModel>();
@@ -223,6 +245,7 @@ namespace Web.Controllers
            
             return PartialView("_ShowComments", model);
         }
+        // Work with Comments
         [HttpPost]
         public IActionResult MakeComment(string name, long postId)
         {
@@ -235,7 +258,18 @@ namespace Web.Controllers
             _postService.DeleteComment(commentId);
             return Ok(commentId);
         }
+        // 
+        [HttpGet]
+        public IActionResult SetLanguage(string culture)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
 
+            return RedirectToAction("Show");
+        }
 
 
         [HttpGet]
@@ -258,27 +292,7 @@ namespace Web.Controllers
             else _postService.UnsubscribePost(postId, userId);
             return Ok();
         }
-        [HttpPost]
-        public IActionResult PartialRecipe(long postId)
-        {
-            var recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
-            var model = new DetailPostViewModel()
-            {
-                PostId = postId, 
-                Title = recipeEntity.Title,
-                Description = recipeEntity.Description,
-                CategoryName = "TODO INT->STRING",
-                PrepTime = recipeEntity.PrepTime,
-                CookTime = recipeEntity.CookTime,
-                Marinade = recipeEntity.Marinade,
-                DifficultyName = "TODO INT->STRING",
-                ImagePath = recipeEntity.ImagePath,
-                Ingredients = _ingredientService.GetIngredients(recipeEntity.Id).ToList(),
-                Methods = _methodService.GetMethods(recipeEntity.Id).ToList(),
-                Tips = _tipService.GetTips(recipeEntity.Id).ToList(),
-            };
-            return PartialView("_ShowRecipe", model);
-        }
+        
 
 
         private string GetImagePath(IFormFile recipeImage, string prevImagePath = null)
