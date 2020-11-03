@@ -145,7 +145,7 @@
         let postId = $(this).attr('value');
         $.ajax({
             type: 'POST',
-            url: 'GetPartial',
+            url: 'PartialRecipe',
             dataType: 'html',
             data: { 'postId': postId },
             success: function (data) {

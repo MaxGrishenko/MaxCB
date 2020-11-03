@@ -1,6 +1,5 @@
 ﻿@model List<Web.Models.CommentViewModel>
 
-
 <div class="container">
     <br />
     <div class="input-group mb-3">
@@ -19,7 +18,10 @@
                     <h6>@item.User.Email</h6>
                     <h5>@item.Name</h5>
                 </div>
-                <button value="@item.CommentId" class="btn btn-outline-danger float-right" onclick="deleteComment(this)">Удалить</button>
+                @if (ViewData["email"].ToString() == @item.User.Email)
+                {
+                    <button value="@item.CommentId" class="btn btn-outline-danger float-right" onclick="deleteComment(this)">Удалить</button>
+                }
             </div>
         }
     </div>

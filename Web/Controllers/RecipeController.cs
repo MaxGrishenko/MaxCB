@@ -258,7 +258,7 @@ namespace Web.Controllers
             return Ok();
         }
         [HttpPost]
-        public IActionResult GetPartial(long postId)
+        public IActionResult PartialRecipe(long postId)
         {
             var recipeEntity = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId);
             var model = new DetailPostViewModel()
