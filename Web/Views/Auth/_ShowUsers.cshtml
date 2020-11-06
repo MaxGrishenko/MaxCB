@@ -1,0 +1,109 @@
+﻿@model List<Web.Models.UserViewModel>
+@{ 
+    int counterRow = -1;
+}
+
+@if (Model.Count == 0){
+    <h2>Не найдено</h2>
+}
+else
+{
+    <div id="mainContainer" class="table-responsive-sm">
+        <table id="tableId" class="table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Имя пользователя</th>
+                    <th scope="col">Электронная почта</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string radioNameGroup = "radio" + counterRow.ToString();
+                    counterRow++;
+                    <tr id=@item.userId class="mb-auto">
+                        <th scope="row">@item.userId</th>
+                        <td>@item.name</td>
+                        <td>@item.email</td>
+                        <td align="left">
+                            <div class="container">
+                                <div class="form-check row">
+                                    @if (item.role == "Manager")
+                                    {
+                                        <input checked value="Manager" type="radio" class="custom-radio form-check-input" id="'radioM'+@counterRow" name=@radioNameGroup>
+
+                                    }
+                                    else
+                                    {
+                                        <input value="Manager" type="radio" class="custom-radio form-check-input" id="'radioM'+@counterRow" name=@radioNameGroup>
+                                    }
+                                    <label class="form-check-label" for="'radioM'+@counterRow">Менеджер</label>
+                                </div>
+                                <div class="form-check row">
+                                    @if (item.role == "User")
+                                    {
+                                        <input checked value="User" type="radio" class="custom-radio form-check-input" id="'radioU'+@counterRow" name=@radioNameGroup>
+                                    }
+                                    else
+                                    {
+                                        <input value="User" type="radio" class="custom-radio form-check-input" id="'radioU'+@counterRow" name=@radioNameGroup>
+                                    }
+                                    <label class="form-check-label" for="'radioU'+@counterRow">Стандартный</label>
+                                </div>
+                                <div class="form-check row">
+                                    @if (item.role == "Banned")
+                                    {
+                                        <input checked value="Banned" type="radio" class="custom-radio form-check-input" id="'radioB'+@counterRow" name=@radioNameGroup>
+
+                                    }
+                                    else
+                                    {
+                                        <input value="Banned" type="radio" class="custom-radio form-check-input" id="'radioB'+@counterRow" name=@radioNameGroup>
+
+                                    }
+                                    <label class="form-check-label" for="'radioB'+@counterRow">Блокировка</label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="deleteButton btn btn-outline-danger form-control">Удалить</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script type="text/javascript">
+    $('.custom-radio').click(function () {
+        let role = $(this).val();
+        let userId = $(this).parent().parent().parent().parent().attr('id');
+        $.ajax({
+            type: 'POST',
+            url: 'ChangeRole',
+            dataType: 'html',
+            data: { 'userId': userId, 'role': role},
+            success: function () {
+                console.log('Set ' + userId + ' role to ' + role);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+
+    $('.deleteButton').click(function () {
+        console.log(document.getElementById("tableId").rows.length)
+        if (document.getElementById("tableId").rows.length == 2) {
+            $(this).parent().parent().parent().parent().remove();
+            let h5 = document.createElement("h5");
+            h5.textContent = "Нет пользователей!";
+            $('#mainContainer').append(h5);
+        }
+        else $(this).parent().parent().remove();      
+    });
+</script>

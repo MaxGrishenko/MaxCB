@@ -24,6 +24,7 @@ namespace Web.Controllers
         private readonly ApplicationContext _applicationContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IRecipeService _recipeService;
         private readonly IIngredientService _ingredientService;
         private readonly IMethodService _methodService;
@@ -33,6 +34,7 @@ namespace Web.Controllers
         public RecipeController(ApplicationContext applicationContext,
                                  IWebHostEnvironment webHostEnvironment,
                                  UserManager<ApplicationUser> userManager,
+                                 RoleManager<IdentityRole> roleManager,
                                  IRecipeService recipeService,
                                  IIngredientService ingredientService,
                                  IMethodService methodService,
@@ -42,6 +44,7 @@ namespace Web.Controllers
             _applicationContext = applicationContext;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _roleManager = roleManager;
             _recipeService = recipeService;
             _ingredientService = ingredientService;
             _methodService = methodService;

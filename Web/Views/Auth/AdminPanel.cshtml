@@ -1,0 +1,68 @@
+﻿<style>
+    .form-check{
+        margin-left:5px;
+    }
+</style>
+
+
+<div>
+    <h1 class="text-center">Панель администрирования!</h1>
+    <div class="container alert alert-secondary">
+        <h3>Поиск пользователей:</h3>
+        <hr/>
+        <div class="row">
+            <input id="inputPar" class="form-control" type="text" placeholder="Введите почту или имя пользователя">
+        </div>
+        <div class="row">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="managerCheck">
+                <label class="form-check-label" for="managerCheck">Менеджер</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="userCheck">
+                <label class="form-check-label" for="userCheck">Обычный пользователь</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="bannedCheck">
+                <label class="form-check-label" for="bannedCheck">Заблокированный пользователь</label>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <button id="searchUsersButton" type="button" class="btn btn-primary btn-lg btn-block">Искать: </button>
+        </div>
+    </div>
+
+    <div class="container alert alert-info">
+        <h3>Список пользователей:</h3>
+        <hr/>
+        <div class="text-center" id="userContainer">
+            <h5>Ничего не найдено</h5>
+        </div>
+    </div>
+</div>
+
+@section scripts{ 
+    <script type="text/javascript">
+        window.onload = function () {
+            $('#searchUsersButton').click();
+        };
+
+        $('#searchUsersButton').click(function () {
+            $('#userContainer').empty();
+            $.ajax({
+                type: 'POST',
+                url: 'PartialUsers',
+                dataType: 'html',
+                data: { 'inputPar': $('#inputPar').val(), 'comboPar': null },
+                success: function (data) {
+                    console.log("Show Users");
+                    $('#userContainer').append(data);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+    </script>
+}
