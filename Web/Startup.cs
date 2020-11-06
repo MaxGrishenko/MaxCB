@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ using Repo;
 using Service;
 using Service.Interfaces;
 using Service.Services;
+using Web.Attributes.Localization;
 
 namespace Web
 {
@@ -43,6 +45,8 @@ namespace Web
             services.AddTransient<ITipService, TipService>();
             services.AddTransient<IPostService, PostService>();
 
+            services.AddSingleton<IValidationAttributeAdapterProvider, LocalizationValidationAttributeAdapterProvider>();
+
             services.AddIdentity<ApplicationUser, IdentityRole>(options=>
             {
                 options.Password.RequiredLength = 6;
@@ -50,7 +54,7 @@ namespace Web
             }).AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-            services.AddControllersWithViews().AddViewLocalization();
+            services.AddControllersWithViews().AddDataAnnotationsLocalization().AddViewLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -55,27 +55,25 @@ namespace Web.Controllers
         {
             if (recipeId == 0)
             {
+                ViewData["returnAction"] = "/Recipe/AddorEdit";
                 return View(new RecipeViewModel() 
                 { 
                     IsNew = true, 
-                    Categories = GetCategories(),
                     Category = 0, 
-                    Difficulties = GetDifficulties(), 
                     Difficulty=0, 
                     ImagePath = "/Image/emptyImage.png"
                 }); 
             }
             else
             {
+                ViewData["returnAction"] = "/Recipe/AddorEdit?recipeId=" + recipeId.ToString();
                 var recipeEntity = _recipeService.GetRecipe(recipeId);
                 return View(new RecipeViewModel()
                 {
                     Id = recipeEntity.Id,
                     Title = recipeEntity.Title,
                     Description = recipeEntity.Description,
-                    Categories = GetCategories(),
                     Category = recipeEntity.Category,
-                    Difficulties = GetDifficulties(),
                     Difficulty = recipeEntity.Difficulty,
                     Ingredients = _ingredientService.GetIngredients(recipeId).ToList().Select(u => u.Name.ToString()).ToArray(),
                     Methods = _methodService.GetMethods(recipeId).Select(u => u.Name.ToString()).ToArray(),
@@ -144,8 +142,15 @@ namespace Web.Controllers
                 }
                 return RedirectToAction("Show");
             }
-            model.Categories = GetCategories();
-            model.Difficulties = GetDifficulties();
+            if (model.IsNew)
+            {
+                ViewData["returnAction"] = "/Recipe/AddorEdit/";
+            }
+            else
+            {
+
+                ViewData["returnAction"] = "/Recipe/AddorEdit?recipeId=" + model.Id.ToString();
+            }
             return View(model);
         }
         [HttpPost]
@@ -260,21 +265,21 @@ namespace Web.Controllers
         }
         // 
         [HttpGet]
-        public IActionResult SetLanguage(string culture)
+        public IActionResult SetLanguage(string culture, string returnAction)
         {
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-
-            return RedirectToAction("Show");
+            return Redirect(returnAction);
         }
 
 
         [HttpGet]
         public IActionResult Show()
         {
+            ViewData["returnAction"] = "/Recipe/Show";
             return View();
         }
 

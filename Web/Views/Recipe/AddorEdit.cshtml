@@ -1,5 +1,7 @@
 ﻿@model RecipeViewModel
 @using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     IHtmlContent jsonIngredients = null;
@@ -8,26 +10,45 @@
     if (Model.Ingredients != null) { jsonIngredients = Json.Serialize(Model.Ingredients); }
     if (Model.Methods != null) { jsonMethods = Json.Serialize(Model.Methods); }
     if (Model.Tips != null) { jsonTips = Json.Serialize(Model.Tips); }
+
+    var Cat = new SelectListItem[]
+    {
+        new SelectListItem() {Text = @Localizer["category_0"].Value.Trim(), Value = "0"},
+        new SelectListItem() {Text = @Localizer["category_1"].Value.Trim(), Value = "1"},
+        new SelectListItem() {Text = @Localizer["category_2"].Value.Trim(), Value = "2"},
+        new SelectListItem() {Text = @Localizer["category_3"].Value.Trim(), Value = "3"},
+        new SelectListItem() {Text = @Localizer["category_4"].Value.Trim(), Value = "4"},
+    };
+    var Dif = new SelectListItem[]
+    {
+        new SelectListItem() {Text = @Localizer["difficult_0"].Value.Trim(), Value = "0"},
+        new SelectListItem() {Text = @Localizer["difficult_1"].Value.Trim(), Value = "1"},
+        new SelectListItem() {Text = @Localizer["difficult_2"].Value.Trim(), Value = "2"},
+        new SelectListItem() {Text = @Localizer["difficult_3"].Value.Trim(), Value = "3"},
+        new SelectListItem() {Text = @Localizer["difficult_4"].Value.Trim(), Value = "4"},
+    };
 }
 
 <style>
     .textC {
         text-align-last: center;
     }
+
     .textE {
         text-align-last: end;
     }
-    img{
-        width:100%;
-        max-width:600px;
+
+    img {
+        width: 100%;
+        max-width: 600px;
     }
 </style>
 
 <div class="card">
     @if (Model.IsNew)
-    {<h1 class="card-header alert-success">Создание рецепта</h1> }
+    {<h1 class="card-header alert-success">@Localizer["header_add"]</h1> }
     else
-    { <h1 class="card-header alert-primary">Редактирование рецепта</h1>}
+    { <h1 class="card-header alert-primary">@Localizer["header_edit"]</h1>}
 
     <div class="card-body" id="mainContainer">
         <form asp-controller="Recipe" asp-action="AddorEdit" method="post" enctype="multipart/form-data">
@@ -46,14 +67,14 @@
             <div class="row text-center">
                 <div class="col align-text-bottom">
                     <label class="font-weight-bolder h5" asp-for="Category"></label>
-                    <select class="form-control textC" asp-for="Category" asp-items="Model.Categories"></select>
+                    <select class="form-control textC" asp-for="Category" asp-items=Cat></select>
                 </div>
                 <div class="col align-text-bottom">
                     <label class="font-weight-bolder h5" asp-for="Difficulty"></label>
-                    <select class="form-control textC" asp-for="Difficulty" asp-items="Model.Difficulties"></select>
+                    <select class="form-control textC" asp-for="Difficulty" asp-items=Dif></select>
                 </div>
             </div> <hr />
-            <div class="form-group text-center font-weight-bolder h5">Требуемое время для</div>
+                   <div class="form-group text-center font-weight-bolder h5">@Localizer["time_need"]</div>
             <div class="row text-center">
                 <div class="col align-text-bottom">
                     <label asp-for="PrepTime"></label>
@@ -67,21 +88,21 @@
                 <div class="w-100"></div>
                 <div class="col input-group">
                     <input class="form-control textE" min="0" max="7200" type="number" asp-for="PrepTime" value=@Model.PrepTime aria-describedby="minAddon">
-                    <span class="input-group-text" id="minAddon">Мин.</span>
+                    <span class="input-group-text" id="minAddon">@Localizer["minute"]</span>
                 </div>
                 <div class="col input-group">
                     <input class="form-control textE" min="0" max="7200" type="number" asp-for="CookTime" value=@Model.CookTime aria-describedby="minAddon">
-                    <span class="input-group-text" id="minAddon">Мин.</span>
+                    <span class="input-group-text" id="minAddon">@Localizer["minute"]</span>
                 </div>
                 <div class="col input-group">
                     <input class="form-control textE" min="0" max="7200" type="number" asp-for="Marinade" value=@Model.Marinade aria-describedby="minAddon">
-                    <span class="input-group-text" id="minAddon">Мин.</span>
+                    <span class="input-group-text" id="minAddon">@Localizer["minute"]</span>
                 </div>
             </div><hr />
 
             <div class="card">
                 <div class="card-header alert-secondary" id="ingredientContainer">
-                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseIngredient" aria-expanded="true" aria-controls="collapseOne">Список ингредиентов</button>
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseIngredient" aria-expanded="true" aria-controls="collapseOne">@Localizer["list_ingredient"]</button>
                     <span asp-validation-for="Ingredients" class="text-danger"></span>
                 </div>
 
@@ -91,14 +112,14 @@
                             <input id="i0" class="form-control" type="text" asp-for="Ingredients" name="Ingredients" />
                         </div>
                         <br />
-                        <input onclick="AddType(`ingredient`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="Добавить новый ингредиент!" />
+                        <input onclick="AddType(`ingredient`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="@Localizer["add_ingredient"]" />
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header alert-secondary" id="methodContainer">
-                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseMethod" aria-expanded="true" aria-controls="collapseTwo">Способ приготовления</button>
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseMethod" aria-expanded="true" aria-controls="collapseTwo">@Localizer["list_method"]</button>
                     <span asp-validation-for="Methods" class="text-danger"></span>
                 </div>
 
@@ -108,14 +129,14 @@
                             <textarea class="form-control" asp-for="Methods" id="m0"></textarea>
                         </div>
                         <br />
-                        <input onclick="AddType(`method`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="Добавить новый шаг!" />
+                        <input onclick="AddType(`method`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="@Localizer["add_method"]" />
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header alert-secondary" id="tipContainer">
-                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTip" aria-expanded="true" aria-controls="collapseThree">Подсказки и советы</button>
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTip" aria-expanded="true" aria-controls="collapseThree">@Localizer["list_tip"]</button>
                     <span asp-validation-for="Tips" class="text-danger"></span>
                 </div>
 
@@ -125,7 +146,7 @@
                             <textarea class="form-control" asp-for="Tips" id="t0"></textarea>
                         </div>
                         <br />
-                        <input onclick="AddType(`tip`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="Добавить новый совет!" />
+                        <input onclick="AddType(`tip`, ``,  ``)" class="align-content-center btn btn-outline-info" type="button" value="@Localizer["add_tip"]" />
                     </div>
                 </div>
             </div>
@@ -144,11 +165,11 @@
             @if (Model.IsNew)
             {
 
-                <input class="form-control btn btn-success" type="submit" value="Добавить рецепт!" />
+                <input class="form-control btn btn-success" type="submit" value="@Localizer["submit_add"]" />
             }
             else
             {
-                <input class="form-control btn btn-primary" type="submit" value="Изменить рецепт!" />
+                <input class="form-control btn btn-primary" type="submit" value="@Localizer["submit_edit"]" />
             }
         </form>
     </div>
@@ -172,8 +193,8 @@
                         AddType('ingredient', '', '');
                     }
                     else AddType('ingredient', Ing[i], '');
-                }      
-            } 
+                }
+            }
             for (let i = 0; i < Met.length; i++) {
                 if (!i) {
                     SetTextArea(Met[i], "m0");

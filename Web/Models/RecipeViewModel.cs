@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using Web.Attributes;
 
@@ -18,53 +19,51 @@ namespace Web.Models
         [HiddenInput]
         public bool IsNew { get; set; } = false;
 
-        [Required (ErrorMessage = "Не указано название рецепта")]
-        [StringLength(30, MinimumLength = 3, ErrorMessage = "Длина названия должна быть от 3 до 30 символов")]
-        [RegularExpression("[a-zA-Zа-яА-Я ]+", ErrorMessage = "Некорректный ввод *Только латинские и кириллические буквы*")]
-        [Display(Name = "Название рецепта: ", Prompt = "Введите название вашего рецепта")]
+        [Required (ErrorMessage = "title_required")]
+        [StringLength(30, MinimumLength = 3, ErrorMessage = "title_length")]
+        [RegularExpression("[a-zA-Zа-яА-Я ]+", ErrorMessage = "title_regular")]
+        [Display(Name = "title_name", Prompt = "title_promt")]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Не указано краткое описание рецепта")]
-        [StringLength(100, MinimumLength = 10, ErrorMessage = "Длина описания должна быть от 10 до 100 символов")]
-        [RegularExpression(@"^[a-zA-Zа-яА-Я.,?!:\-\(\) ]+$", ErrorMessage = "Некорректный ввод *Только латинские, кириллические буквы и символы (.,? !:-) *")]
-        [Display(Name = "Краткое описание: ", Prompt = "Краткое описание вашего рецепта")]
+        [Required(ErrorMessage = "description_required")]
+        [StringLength(100, MinimumLength = 10, ErrorMessage = "description_length")]
+        [RegularExpression(@"^[a-zA-Zа-яА-Я.,?!:\-\(\) ]+$", ErrorMessage = "description_regular")]
+        [Display(Name = "description_name", Prompt = "description_promt")]
         public string Description { get; set; }
 
-        [Display(Name = "Категория блюда:")]
+        [Display(Name = "categories_name")]
         public int Category { get; set; } = 0;
-        public IEnumerable<SelectListItem> Categories { get; set; }
 
-        [Display(Name = "Сложность приготовления:")]
+        [Display(Name = "difficulties_name")]
         public int Difficulty { get; set; } = 0;
-        public IEnumerable<SelectListItem> Difficulties { get; set; }
 
-        [Display(Name = "Подготовки:")]
+        [Display(Name = "prep_time_name")]
         public int PrepTime { get; set; } = 0;
-        [Display(Name = "Приготовления:")]
+        [Display(Name = "cook_time_name")]
         public int CookTime { get; set; } = 0;
-        [Display(Name = "Мариновки:")]
+        [Display(Name = "marinade_name")]
         public int Marinade { get; set; } = 0;
 
-        [StringArrayRequired(ErrorMessage = "Один или несколько ингредиентов не указаны!")]
-        [StringArrayLength(3, 300, ErrorMessage = "Описание ингредиента должна быть от 3 до 300 символов")]   
-        [StringArrayRegular(@"^[a-zA-Zа-яА-Я0-9.,?!:\-\(\) ]+$", ErrorMessage = "Некорректный ввод * Только латинские, кириллические буквы, цифры и символы (.,? !:-) *")]
-        [Display(Name = "Используемые ингредиенты:", Prompt = "Введите первый ингредиент!")]
+        [StringArrayRequired(ErrorMessage = "ingredients_required")]
+        [StringArrayLength(3, 300, ErrorMessage = "ingredients_length")]   
+        [StringArrayRegular(@"^[a-zA-Zа-яА-Я0-9.,?!:\-\(\) ]+$", ErrorMessage = "ingredients_regular")]
+        [Display(Name = "ingredients_name", Prompt = "ingredients_promt")]
         public string[] Ingredients { get; set; }
 
-        [StringArrayRequired(ErrorMessage = "Один или несколько шагов не указано!")]
-        [StringArrayLength(10, 300, ErrorMessage = "Описание шага должно быть от 10 до 300 символов")]
-        [StringArrayRegular(@"^[a-zA-Zа-яА-Я0-9.,?!:\-\(\) ]+$", ErrorMessage = "Некорректный ввод * Только латинские, кириллические буквы, цифры и символы (.,? !:-) *")]
-        [Display(Name = "Шаги приготовления:", Prompt = "Введите первый шаг притовления!")]
+        [StringArrayRequired(ErrorMessage = "methods_required")]
+        [StringArrayLength(10, 300, ErrorMessage = "methods_length")]
+        [StringArrayRegular(@"^[a-zA-Zа-яА-Я0-9.,?!:\-\(\) ]+$", ErrorMessage = "methods_regular")]
+        [Display(Name = "methods_name", Prompt = "methods_promt")]
         public string[] Methods { get; set; }
 
-        [StringArrayLength(3, 300, ErrorMessage = "Описание подсказки должно быть от 3 до 300 символов")]
-        [StringArrayRegular(@"^[a-zA-Zа-яА-Я0-9.,?!:\-\(\) ]+$", ErrorMessage = "Некорректный ввод * Только латинские, кириллические буквы, цифры и символы (.,? !:-) *")]
-        [Display(Name = "Подсказки и советы:", Prompt = "Поделитесь какой-нибудь хитростью в приготовлении!")]
+        [StringArrayLength(3, 300, ErrorMessage = "tips_length")]
+        [StringArrayRegular(@"^[a-zA-Zа-яА-Я0-9.,?!:\-\(\) ]+$", ErrorMessage = "tips_regular")]
+        [Display(Name = "tips_name", Prompt = "tips_promt")]
         public string[] Tips { get; set; }
 
         public IFormFile RecipeImage { get; set; }
 
-        [Display(Name = "Загрузите фото вашего блюда!")]
+        [Display(Name = "image_path_name")]
         public string ImagePath { get; set; }
     }
 }

@@ -17,7 +17,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MaxCookBook</a>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["returnAction"]</a>
                 </div>
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
@@ -33,17 +33,17 @@
 
                 <ul class="navbar-nav navbar-right">
                     <li class="nav-item">
-                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="ru">
+                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="ru" asp-route-returnAction="@ViewData["returnAction"]">
                             <img style="max-height:32px; max-width:32px" src="@Localizer["imgRu"]"/>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="en">
+                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="en" asp-route-returnAction="@ViewData["returnAction"]">
                             <img style="max-height:32px; max-width:32px" src=@Localizer["imgEn"] />
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="de">
+                        <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="de" asp-route-returnAction="@ViewData["returnAction"]">
                             <img style="max-height:32px; max-width:32px" src=@Localizer["imgDe"] />
                         </a>
                     </li>

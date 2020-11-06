@@ -14,7 +14,8 @@ namespace Web.Attributes
 
             if (array == null || array.Any(item => string.IsNullOrEmpty(item)))
             {
-                return new ValidationResult(this.ErrorMessage);
+                string errorMessage = FormatErrorMessage(ErrorMessageString);
+                return new ValidationResult(errorMessage);
             }
             else
             {
