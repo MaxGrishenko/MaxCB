@@ -1,22 +1,25 @@
 ﻿@model List<Web.Models.UserViewModel>
-@{ 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
     int counterRow = -1;
 }
 
-@if (Model.Count == 0){
-    <h2>Не найдено</h2>
+@if (Model.Count == 0)
+{
+    <h2>@Localizer["search_empty"]</h2>
 }
 else
 {
-    <div id="mainContainer" class="table-responsive-sm">
-        <table id="tableId" class="table-striped">
+    <div id="mainContainer" class="table-responsive-sm" style="max-width:100%">
+        <table id="tableId" class="table-striped" style="width:100%">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Имя пользователя</th>
-                    <th scope="col">Электронная почта</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Действия</th>
+                    <th scope="col">@Localizer["column_id"]</th>
+                    <th scope="col">@Localizer["column_name"]</th>
+                    <th scope="col">@Localizer["column_email"]</th>
+                    <th scope="col">@Localizer["column_role"]</th>
+                    <th scope="col">@Localizer["column_action"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +27,7 @@ else
                 {
                     string radioNameGroup = "radio" + counterRow.ToString();
                     counterRow++;
-                    <tr id=@item.userId class="mb-auto">
+                    <tr id=@item.userId title=@item.name class="mb-auto">
                         <th scope="row">@item.userId</th>
                         <td>@item.name</td>
                         <td>@item.email</td>
@@ -40,7 +43,7 @@ else
                                     {
                                         <input value="Manager" type="radio" class="custom-radio form-check-input" id="'radioM'+@counterRow" name=@radioNameGroup>
                                     }
-                                    <label class="form-check-label" for="'radioM'+@counterRow">Менеджер</label>
+                                <label class="form-check-label" for="'radioM'+@counterRow">@Localizer["role_manager"]</label>
                                 </div>
                                 <div class="form-check row">
                                     @if (item.role == "User")
@@ -51,7 +54,7 @@ else
                                     {
                                         <input value="User" type="radio" class="custom-radio form-check-input" id="'radioU'+@counterRow" name=@radioNameGroup>
                                     }
-                                    <label class="form-check-label" for="'radioU'+@counterRow">Стандартный</label>
+                                <label class="form-check-label" for="'radioU'+@counterRow">@Localizer["role_user"]</label>
                                 </div>
                                 <div class="form-check row">
                                     @if (item.role == "Banned")
@@ -64,17 +67,36 @@ else
                                         <input value="Banned" type="radio" class="custom-radio form-check-input" id="'radioB'+@counterRow" name=@radioNameGroup>
 
                                     }
-                                    <label class="form-check-label" for="'radioB'+@counterRow">Блокировка</label>
+                                <label class="form-check-label" for="'radioB'+@counterRow">@Localizer["role_banned"]</label>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <button class="deleteButton btn btn-outline-danger form-control">Удалить</button>
+                            <button class="delButton btn btn-outline-danger form-control">@Localizer["action_delete"]</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+    </div>
+
+    @*Modal for delUser*@
+    <button id="delModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#deleteModal"></button>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalTitle"></h5>
+                </div>
+                <div class="modal-body text-left">
+                    @Localizer["delete_description"]
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["delete_no"]</button>
+                    <button id="delUserButton" type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["delete_yes"]</button>
+                </div>
+            </div>
+        </div>
     </div>
 }
 
@@ -86,7 +108,7 @@ else
             type: 'POST',
             url: 'ChangeRole',
             dataType: 'html',
-            data: { 'userId': userId, 'role': role},
+            data: { 'userId': userId, 'role': role },
             success: function () {
                 console.log('Set ' + userId + ' role to ' + role);
             },
@@ -96,14 +118,35 @@ else
         });
     });
 
-    $('.deleteButton').click(function () {
-        console.log(document.getElementById("tableId").rows.length)
-        if (document.getElementById("tableId").rows.length == 2) {
-            $(this).parent().parent().parent().parent().remove();
-            let h5 = document.createElement("h5");
-            h5.textContent = "Нет пользователей!";
-            $('#mainContainer').append(h5);
-        }
-        else $(this).parent().parent().remove();      
+    $('.delButton').click(function () {
+        let container = $(this).parent().parent();
+        console.log(`Delete '` + container.attr('title') + `'?`);
+        $('#delModalButton').click();
+        $('#delModalTitle').html(`@Localizer["action_delete"] ` + $(this).parent().parent().attr('title') + `'?`);
+        $('#delUserButton').attr('value', container.attr('id'));
+    });
+
+    $('#delUserButton').click(function () {
+        let userId = $(this).val();
+        console.log(userId);
+        $.ajax({
+            type: 'POST',
+            url: 'DeleteUser',
+            dataType: 'html',
+            data: { 'userId': userId },
+            success: function () {
+                console.log('Delete user: ' + userId);
+                if (document.getElementById("tableId").rows.length == 2) {
+                    document.getElementById("tableId").remove();
+                    let h5 = document.createElement("h5");
+                    h5.textContent = "Нет пользователей!";
+                    $('#mainContainer').append(h5);
+                }
+                else document.getElementById(userId).remove();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
     });
 </script>

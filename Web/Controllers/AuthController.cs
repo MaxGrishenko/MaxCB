@@ -7,23 +7,95 @@ using Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
+using Service.Interfaces;
 using Web.Models;
 
 namespace Web.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly  UserManager<ApplicationUser> _userManager;
+        private readonly IPostService _postService;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(UserManager<ApplicationUser> userManager,
+        public AuthController(IPostService postService,
+                              UserManager<ApplicationUser> userManager,
                               SignInManager<ApplicationUser> signInManager,
                               RoleManager<IdentityRole> roleManager)
         {
+            this._postService = postService;
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
+        }
+        // AdminPanelWork
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminPanel()
+        {
+            ViewData["returnAction"] = "/Auth/AdminPanel";
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> PartialUsers(string inputPar = null, string comboPar = "empty")
+        {
+            var model = new List<UserViewModel>();
+            foreach (var user in _userManager.Users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles[0].ToString();
+                if (comboPar.Contains(role) || (comboPar == "empty" && role != "Admin")) 
+                {
+                    var emailCheck = user.Email.Substring(0, user.Email.IndexOf('@')).ToLower();
+                    var nameCheck = user.UserName.ToLower();
+                    if (inputPar == null || emailCheck.Contains(inputPar.ToLower()) || nameCheck.Contains(inputPar.ToLower()))
+                    {
+                        model.Add(new UserViewModel()
+                        {
+                            userId = user.Id,
+                            name = user.UserName,
+                            email = user.Email,
+                            role = roles[0].ToString()
+                        });
+                    }
+                }
+            }
+            return PartialView("_ShowUsers", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeRole(string userId, string role)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                foreach(var item in roles)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, item);
+                }
+                var result = await _userManager.AddToRoleAsync(user, role);
+            }
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                _postService.DeleteUserPosts(userId);
+                _postService.DeleteUserPosts(userId);
+                await _userManager.DeleteAsync(user);
+            }
+            return Ok();
+        }
+        // ManagerPanelWork
+        [Authorize(Roles = "Admin, Manager")]
+        public IActionResult ReportPanel()
+        {
+            return View();
         }
 
         public async Task<bool> CreateInitialRoles()
@@ -55,74 +127,7 @@ namespace Web.Controllers
             return false;
         }
 
-        // Admin
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public IActionResult AdminPanel()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> PartialUsers(String inputPar = null, string comboPar = null)
-        {
-            var model = new List<UserViewModel>();
-            foreach (var user in _userManager.Users)
-            {
-                bool findFlag = false;
-                if (comboPar != null)
-                {
-                    //wrong => continue
-                }
-                if (inputPar != null)
-                {
-                    if (user.Email.Substring(0, user.Email.IndexOf('@')).ToLower().Contains(inputPar.ToLower()))
-                        findFlag = true;
-                    /*
-                    if (user.UserName.ToLower().Contains(inputPar.ToLower()))
-                        findFlag = true;
-                    */
-                }
-                //if (!findFlag) continue;
-
-                var roles = await _userManager.GetRolesAsync(user);
-                model.Add(new UserViewModel()
-                {
-                    userId = user.Id,
-                    name = user.UserName,
-                    email = user.Email,
-                    role = roles[0].ToString()
-                }); 
-            }
-
-            return PartialView("_ShowUsers", model);
-        }
-        
-        public async Task<IActionResult> ChangeRole(string userId, string role)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                foreach(var item in roles)
-                {
-                    await _userManager.RemoveFromRoleAsync(user, item);
-                }
-                var result = await _userManager.AddToRoleAsync(user, role);
-            }
-            return Ok();
-        }
-
-
-
-        [Authorize(Roles = "Admin, Manager")]
-        public IActionResult ReportPanel()
-        {
-            return View();
-        }
-
-
-
-            [HttpGet]
         public IActionResult Registration()
         {
             return View();

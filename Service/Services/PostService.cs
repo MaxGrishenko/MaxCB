@@ -5,6 +5,7 @@ using Repo;
 using Service.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Security.Claims;
@@ -19,7 +20,7 @@ namespace Service.Services
         private IRepository<PostUser> postUserRepository;
         private IRepository<Recipe> recipeRepository;
         private IRepository<Comment> commentRepository;
-         
+
         public PostService(IRepository<Post> postRepository, IRepository<PostUser> postUserRepository, IRepository<Recipe> recipeRepository, IRepository<Comment> commentRepository)
         {
             this.postRepository = postRepository;
@@ -141,6 +142,44 @@ namespace Service.Services
             recipeRepository.SaveChanges();
             postRepository.SaveChanges();
             postUserRepository.SaveChanges();
+        }
+
+        public void DeleteUserComments(string userId)
+        {
+            commentRepository.GetAll().ToList().ForEach(u => {
+                if (u.UserId == userId)
+                {
+                    commentRepository.Remove(u);
+                }
+            });
+            commentRepository.SaveChanges();
+        }
+
+        public void DeleteUserPosts(string userId)
+        {
+            DeleteUserComments(userId);
+
+            var postsId = new List<long>();
+            postUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                var postEntity = postRepository.Get(u.PostId);
+                var recipeEntity = recipeRepository.Get(postEntity.RecipeId);
+                if (recipeEntity.UserId == userId)
+                {
+                    postsId.Add(u.PostId);
+                }
+            });
+            
+            foreach (var postId in postsId)
+            {
+                postUserRepository.GetAll().ToList().ForEach(u =>
+                {
+                    if (u.PostId == postId)
+                    {
+                        DeletePost(postId);
+                    }
+                });
+            }
         }
     }
 }
