@@ -266,6 +266,25 @@ namespace Web.Controllers
             _postService.DeleteComment(commentId);
             return Ok(commentId);
         }
+
+        [HttpPost]
+        public IActionResult ReportComment(long commentId, string targetId)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            if (!_postService.CheckReportCommentExist(userId, commentId))
+            {
+                var reportEntity = new Report()
+                {
+                    TargetId = targetId,
+                    CommentId = commentId
+                };
+                _postService.MakeReport(reportEntity, userId);
+                return Ok("Add");
+            }
+            return Ok("Exist");
+        }
+
+
         // 
         [HttpGet]
         public IActionResult SetLanguage(string culture, string returnAction)

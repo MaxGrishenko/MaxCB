@@ -1,1 +1,73 @@
-﻿
+﻿@model List<Web.Models.ReportViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    int counterRow = -1;
+}
+
+<style>
+    .bEnd {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        width:100%;
+    }
+</style>
+
+<div class="container alert alert-dark">
+
+    <h1 class="text-center">Репорт-панель</h1>
+    <div class="container alert alert-warning">
+        <h3>Полученные жалобы:</h3>
+        <hr />
+
+        <div id="mainContainer" class="table-responsive-sm text-center" style="max-width:100%">
+            <table id="tableId" class="table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">Нарушитель:</th>
+                        <th scope="col">Количество жалоб:</th>
+                        <th scope="col">Тип:</th>
+                        <th scope="col">Итог:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string radioNameGroup = "radio" + counterRow.ToString();
+                        counterRow++;
+                        <tr class="mb-auto">
+                            <th scope="row">@item.UserId</th>
+                            <td>@item.Amount</td>
+                            <td>
+                                <div>
+                                    @if (item.ReportType == "comment")
+                                    {
+                                        <text>Комментарий</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Комментарий</text>
+                                    }
+                                </div>
+                                <div>
+                                    <button class="pad delButton btn btn-success">Просмотреть</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <button class="bEnd delReportButton btn btn-outline-primary">Снять обвинения</button>
+                                </div>
+                                <div>
+                                    <button class="bEnd delObjButton btn btn-outline-danger">Удалить объект</button>
+                                </div>
+                                <div>
+                                    <button class="bEnd delButton btn btn-outline-dark">Удалить и заблокировать</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -10,7 +10,7 @@ using Repo;
 namespace Repo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20201107154517_Initial")]
+    [Migration("20201108171509_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,28 +134,6 @@ namespace Repo.Migrations
                     b.ToTable("Ingredient");
                 });
 
-            modelBuilder.Entity("Data.Like", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("PostId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Like");
-                });
-
             modelBuilder.Entity("Data.Method", b =>
                 {
                     b.Property<long>("Id")
@@ -212,6 +190,31 @@ namespace Repo.Migrations
                     b.ToTable("PostUser");
                 });
 
+            modelBuilder.Entity("Data.Rating", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("PostId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Rating");
+                });
+
             modelBuilder.Entity("Data.Recipe", b =>
                 {
                     b.Property<long>("Id")
@@ -251,6 +254,45 @@ namespace Repo.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Recipe");
+                });
+
+            modelBuilder.Entity("Data.Report", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("CommentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PostId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TargetId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Report");
+                });
+
+            modelBuilder.Entity("Data.ReportUser", b =>
+                {
+                    b.Property<long>("ReportId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ReportId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReportUser");
                 });
 
             modelBuilder.Entity("Data.Tip", b =>
@@ -426,19 +468,6 @@ namespace Repo.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data.Like", b =>
-                {
-                    b.HasOne("Data.Post", "Post")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.ApplicationUser", "User")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Data.Method", b =>
                 {
                     b.HasOne("Data.Recipe", "Recipe")
@@ -472,11 +501,39 @@ namespace Repo.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Data.Rating", b =>
+                {
+                    b.HasOne("Data.Post", "Post")
+                        .WithMany("Ratings")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.ApplicationUser", "User")
+                        .WithMany("Ratings")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Data.Recipe", b =>
                 {
                     b.HasOne("Data.ApplicationUser", "User")
                         .WithMany("Recipes")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Data.ReportUser", b =>
+                {
+                    b.HasOne("Data.Report", "Report")
+                        .WithMany("Users")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Data.ApplicationUser", "User")
+                        .WithMany("Reports")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Data.Tip", b =>

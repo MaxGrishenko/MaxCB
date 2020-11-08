@@ -22,6 +22,10 @@
                 {
                     <button value="@item.CommentId" class="btn btn-outline-danger float-right" onclick="deleteComment(this)">Удалить</button>
                 }
+                else
+                {
+                    <button value="@item.CommentId" name="@item.User.Id" class="btn btn-outline-warning float-right" onclick="reportComment(this)">Пожаловаться</button>
+                }
             </div>
         }
     </div>
@@ -44,6 +48,29 @@
             }
         });
     };
+    function reportComment(button) {
+        let commentId = $(button).val();
+        let targetId = $(button).attr('name');
+        $.ajax({
+            type: 'POST',
+            url: 'ReportComment',
+            dataType: 'html',
+            data: { 'commentId': commentId, 'targetId': targetId },
+            success: function (result) {
+                if (result == 'Add') {
+                    console.log(`Report comment '` + commentId + `' by '` + targetId + `'`);
+                }
+                else {
+                    console.log('This report already exist!');
+                }
+                
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+
 
     $('#commentButton').click(function () {
         $.ajax({

@@ -48,6 +48,21 @@ namespace Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Report",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TargetId = table.Column<string>(nullable: true),
+                    CommentId = table.Column<long>(nullable: false),
+                    PostId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Report", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -181,6 +196,31 @@ namespace Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ReportUser",
+                columns: table => new
+                {
+                    ReportId = table.Column<long>(nullable: false),
+                    UserId = table.Column<string>(nullable: false),
+                    Id = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportUser", x => new { x.ReportId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_ReportUser_Report_ReportId",
+                        column: x => x.ReportId,
+                        principalTable: "Report",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ReportUser_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ingredient",
                 columns: table => new
                 {
@@ -287,32 +327,6 @@ namespace Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Like",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(nullable: true),
-                    PostId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Like", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Like_Post_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Post",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Like_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PostUser",
                 columns: table => new
                 {
@@ -331,6 +345,33 @@ namespace Repo.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PostUser_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rating",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Stars = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    PostId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rating", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rating_Post_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Post",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Rating_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -392,16 +433,6 @@ namespace Repo.Migrations
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Like_PostId",
-                table: "Like",
-                column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Like_UserId",
-                table: "Like",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Method_RecipeId",
                 table: "Method",
                 column: "RecipeId");
@@ -418,8 +449,23 @@ namespace Repo.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rating_PostId",
+                table: "Rating",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rating_UserId",
+                table: "Rating",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Recipe_UserId",
                 table: "Recipe",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReportUser_UserId",
+                table: "ReportUser",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -452,13 +498,16 @@ namespace Repo.Migrations
                 name: "Ingredient");
 
             migrationBuilder.DropTable(
-                name: "Like");
-
-            migrationBuilder.DropTable(
                 name: "Method");
 
             migrationBuilder.DropTable(
                 name: "PostUser");
+
+            migrationBuilder.DropTable(
+                name: "Rating");
+
+            migrationBuilder.DropTable(
+                name: "ReportUser");
 
             migrationBuilder.DropTable(
                 name: "Tip");
@@ -468,6 +517,9 @@ namespace Repo.Migrations
 
             migrationBuilder.DropTable(
                 name: "Post");
+
+            migrationBuilder.DropTable(
+                name: "Report");
 
             migrationBuilder.DropTable(
                 name: "Recipe");

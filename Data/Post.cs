@@ -10,7 +10,7 @@ namespace Data
         public long RecipeId { get; set; }
 
         public virtual IEnumerable<PostUser> Users { get; set; }
-        public virtual IEnumerable<Like> Likes { get; set; }
+        public virtual IEnumerable<Rating> Ratings { get; set; }
         public virtual IEnumerable<Comment> Comments { get; set; }
     }
 }

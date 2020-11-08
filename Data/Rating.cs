@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Data
 {
-    public class Like : BaseEntity
+    public class Rating : BaseEntity
     {
+        public int Stars { get; set; }
         public virtual ApplicationUser User { get; set; }
         public string UserId { get; set; }
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.VisualBasic.CompilerServices;
 using Service.Interfaces;
 using Web.Models;
 
@@ -95,8 +96,46 @@ namespace Web.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public IActionResult ReportPanel()
         {
-            return View();
+            var dict = new Dictionary<string, ReportViewModel>();
+            _postService.GetReports().ToList().ForEach(u =>
+            {
+                var key = u.TargetId;
+                string type;
+                long objectId;
+                if (u.CommentId != -1)
+                {
+                    key = u.CommentId.ToString() + key;
+                    type = "comment";
+                    objectId = u.CommentId;
+                }
+                else
+                {
+                    key = u.PostId.ToString() + key;
+                    type = "post";
+                    objectId = u.PostId;
+                }
+                if (!dict.ContainsKey(key))
+                {
+                    dict.Add(key, new ReportViewModel()
+                    {
+                        Amount = 1,
+                        ReportType = type,
+                        ObjectId = objectId,
+                        UserId = u.TargetId
+                    });
+                }
+                else dict[key].Amount += 1;
+            });
+            var opa = dict.Values.ToList();
+            return View(opa);
         }
+        
+
+
+
+
+
+
 
         public async Task<bool> CreateInitialRoles()
         {

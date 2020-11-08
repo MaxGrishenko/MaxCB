@@ -19,15 +19,20 @@ namespace Repo
             modelBuilder.Entity<PostUser>().HasOne(q => q.User).WithMany(w => w.Posts).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PostUser>().HasOne(p => p.Post).WithMany(p => p.Users).HasForeignKey(x => x.PostId).OnDelete(DeleteBehavior.Restrict);
 
+            // Report <-> ApplicationUser [Many to Many]
+            modelBuilder.Entity<ReportUser>().HasKey(x => new { x.ReportId, x.UserId });
+            modelBuilder.Entity<ReportUser>().HasOne(q => q.User).WithMany(w => w.Reports).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ReportUser>().HasOne(p => p.Report).WithMany(p => p.Users).HasForeignKey(x => x.ReportId).OnDelete(DeleteBehavior.Restrict);
+
             // Post -> Recipe [One to One]
             modelBuilder.Entity<Post>().HasOne(q => q.Recipe).WithOne(w => w.Post).HasForeignKey<Post>(x => x.RecipeId);
 
-            // Post <- Like/Comment [One to Many]
-            modelBuilder.Entity<Post>().HasMany(q => q.Likes).WithOne(w => w.Post).HasForeignKey(x => x.PostId);
+            // Post <- Rating/Comment [One to Many]
+            modelBuilder.Entity<Post>().HasMany(q => q.Ratings).WithOne(w => w.Post).HasForeignKey(x => x.PostId);
             modelBuilder.Entity<Post>().HasMany(q => q.Comments).WithOne(w => w.Post).HasForeignKey(x => x.PostId);
 
-            // User <- Like/Comment [One to Many]
-            modelBuilder.Entity<ApplicationUser>().HasMany(q => q.Likes).WithOne(w => w.User).HasForeignKey(x => x.UserId);
+            // User <- Rating/Comment [One to Many]
+            modelBuilder.Entity<ApplicationUser>().HasMany(q => q.Ratings).WithOne(w => w.User).HasForeignKey(x => x.UserId);
             modelBuilder.Entity<ApplicationUser>().HasMany(q => q.Comments).WithOne(w => w.User).HasForeignKey(x => x.UserId);
 
             // Recipe -> User [One to One]

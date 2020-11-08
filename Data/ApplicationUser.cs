@@ -10,8 +10,10 @@ namespace Data
     {
         public string ImagePath { get; set; }
         public virtual ICollection<PostUser> Posts { get; set; }
+        public virtual ICollection<ReportUser> Reports {get; set; }
+
         public virtual ICollection<Recipe> Recipes { get; set; }
-        public virtual ICollection<Like> Likes { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
     }
 }
