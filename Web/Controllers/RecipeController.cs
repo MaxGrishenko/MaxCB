@@ -266,7 +266,6 @@ namespace Web.Controllers
             _postService.DeleteComment(commentId);
             return Ok(commentId);
         }
-
         [HttpPost]
         public IActionResult ReportComment(long commentId, string targetId)
         {
@@ -283,6 +282,7 @@ namespace Web.Controllers
             }
             return Ok("Exist");
         }
+
 
 
         // 
@@ -380,29 +380,6 @@ namespace Web.Controllers
                 _ingredientService.InsertIngredient(ingredientEntity);
             }
         }
-        private IEnumerable<SelectListItem> GetCategories()
-        {
-            return new SelectListItem[]
-            {
-                new SelectListItem() {Text = "Не указана", Value = "0"},
-                new SelectListItem() {Text = "Завтрак", Value = "1"},
-                new SelectListItem() {Text = "Обед", Value = "2"},
-                new SelectListItem() {Text = "Ужин", Value = "3"},
-                new SelectListItem() {Text = "Другое", Value = "4"},
-            };
-        }
-        private IEnumerable<SelectListItem> GetDifficulties()
-        {
-            return new SelectListItem[]
-            {
-                new SelectListItem() {Text = "Не указана", Value = "0"},
-                new SelectListItem() {Text = "Просто", Value = "1"},
-                new SelectListItem() {Text = "Нормально", Value = "2"},
-                new SelectListItem() {Text = "Тяжело", Value = "3"},
-                new SelectListItem() {Text = "Гордон Рамзи", Value = "4"},
-            };
-        }
-
 
         [Authorize]
         public IActionResult AddConst()

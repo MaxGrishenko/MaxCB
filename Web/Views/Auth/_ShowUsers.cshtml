@@ -139,7 +139,7 @@ else
                 if (document.getElementById("tableId").rows.length == 2) {
                     document.getElementById("tableId").remove();
                     let h5 = document.createElement("h5");
-                    h5.textContent = "Нет пользователей!";
+                    h5.textContent = "@Localizer["search_empty"]";
                     $('#mainContainer').append(h5);
                 }
                 else document.getElementById(userId).remove();

@@ -28,6 +28,7 @@ namespace Service.Interfaces
         void MakeReport(Report report, string userId);
         bool CheckReportCommentExist(string userId, long commentId);
         bool CheckReportPostExist(string userId, long postId);
-        void DeleteRepotCommentFromUser(string targetId, long commentId);
+        void DeleteReportsFromComment(string targetId, long commentId);
+        void DeleteReportsFromPost(string targetId, long postId);
     }
 }

@@ -1,73 +1,163 @@
 ﻿@model List<Web.Models.ReportViewModel>
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@{
-    int counterRow = -1;
-}
 
 <style>
     .bEnd {
         margin-top: 5px;
         margin-bottom: 5px;
-        width:100%;
+        width: 100%;
     }
 </style>
 
 <div class="container alert alert-dark">
-
     <h1 class="text-center">Репорт-панель</h1>
     <div class="container alert alert-warning">
         <h3>Полученные жалобы:</h3>
         <hr />
-
-        <div id="mainContainer" class="table-responsive-sm text-center" style="max-width:100%">
-            <table id="tableId" class="table-striped" style="width:100%">
-                <thead>
-                    <tr>
-                        <th scope="col">Нарушитель:</th>
-                        <th scope="col">Количество жалоб:</th>
-                        <th scope="col">Тип:</th>
-                        <th scope="col">Итог:</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        string radioNameGroup = "radio" + counterRow.ToString();
-                        counterRow++;
-                        <tr class="mb-auto">
-                            <th scope="row">@item.UserId</th>
-                            <td>@item.Amount</td>
-                            <td>
-                                <div>
-                                    @if (item.ReportType == "comment")
-                                    {
-                                        <text>Комментарий</text>
-                                    }
-                                    else
-                                    {
-                                        <text>Комментарий</text>
-                                    }
-                                </div>
-                                <div>
-                                    <button class="pad delButton btn btn-success">Просмотреть</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <button class="bEnd delReportButton btn btn-outline-primary">Снять обвинения</button>
-                                </div>
-                                <div>
-                                    <button class="bEnd delObjButton btn btn-outline-danger">Удалить объект</button>
-                                </div>
-                                <div>
-                                    <button class="bEnd delButton btn btn-outline-dark">Удалить и заблокировать</button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="text-center">
+            @if (Model.Count == 0)
+            {
+                <h2>Нет жалоб на данный момент!</h2>
+            }
+            else
+            {
+                <div id="mainContainer" class="table-responsive-sm text-center" style="max-width:100%">
+                    <table id="tableId" class="table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">Нарушитель:</th>
+                                <th scope="col">Количество жалоб:</th>
+                                <th scope="col">Тип:</th>
+                                <th scope="col">Итог:</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="@item.ObjectId" name="@item.UserId" resource="@item.ReportType" class="mb-auto">
+                                    <th scope="row">
+                                        @item.UserId
+                                    </th>
+                                    <td>
+                                        @item.Amount
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @if (item.ReportType == "comment")
+                                            {
+                                                <text>Комментарий</text>
+                                            }
+                                            else
+                                            {
+                                                <text>Комментарий</text>
+                                            }
+                                        </div>
+                                        <div>
+                                            <button class="bEnd delButton btn btn-success">Просмотреть</button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <button class="bEnd delRepButton btn btn-outline-primary">Снять обвинения</button>
+                                        </div>
+                                        <div>
+                                            <button class="bEnd delObjButton btn btn-outline-danger">Удалить объект</button>
+                                        </div>
+                                        <div>
+                                            <button class="bEnd banButton btn btn-outline-dark">Удалить и заблокировать</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        function DeleteReports(objectId, targetId, type) {
+            $.ajax({
+                type: 'POST',
+                url: 'DeleteReports',
+                dataType: 'html',
+                data: { 'objectId': objectId, 'targetId': targetId, 'type': type },
+                success: function () {
+                    console.log(`Delete reports from ` + type + `: '` + objectId + `' from: '` + targetId + `'`);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        function DeleteObject(objectId, type) {
+            $.ajax({
+                type: 'POST',
+                url: 'DeleteObject',
+                dataType: 'html',
+                data: { 'objectId': objectId, 'type': type },
+                success: function () {
+                    console.log(`Delete object ` + type + `: '` + objectId + `'`);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        function BanUser(targetId) {
+            $.ajax({
+                type: 'POST',
+                url: 'ChangeRole',
+                dataType: 'html',
+                data: { 'userId': targetId, 'role': 'Banned' },
+                success: function () {
+                    console.log(`Ban user '` + targetId + `'`);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        function Clean(tr) {
+            if (document.getElementById("tableId").rows.length == 2) {
+                document.getElementById("tableId").remove();
+                let h5 = document.createElement("h5");
+                h5.textContent = "Нет жалоб на данный момент!";
+                $('#mainContainer').append(h5);
+            }
+            else $(tr).remove();
+        }
+
+        $('.delRepButton').click(function () {
+            let infoTr = $(this).parent().parent().parent();
+            let objectId = infoTr.attr('id');
+            let targetId = infoTr.attr('name');
+            let type = infoTr.attr('resource');
+            DeleteReports(objectId, targetId, type);
+            Clean(infoTr);
+        });
+        $('.delObjButton').click(function () {
+            let infoTr = $(this).parent().parent().parent();
+            let objectId = infoTr.attr('id');
+            let targetId = infoTr.attr('name');
+            let type = infoTr.attr('resource');
+            DeleteReports(objectId, targetId, type);
+            DeleteObject(objectId, type);
+            Clean(infoTr);
+        });
+        $('.banButton').click(function () {
+            let infoTr = $(this).parent().parent().parent();
+            let objectId = infoTr.attr('id');
+            let targetId = infoTr.attr('name');
+            let type = infoTr.attr('resource');
+            DeleteReports(objectId, targetId, type);
+            DeleteObject(objectId, type);
+            BanUser(targetId);
+            Clean(infoTr);
+        });
+    </script>
+}

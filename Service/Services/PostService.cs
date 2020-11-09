@@ -212,6 +212,7 @@ namespace Service.Services
                 UserId = userId,
             });
         }
+
         public bool CheckReportCommentExist(string userId, long commentId)
         {
             var reportUsers = reportUserRepository.GetAll().ToList();
@@ -237,19 +238,34 @@ namespace Service.Services
             return false;
         }
         
-        public void DeleteRepotCommentFromUser(string targetId, long commentId)
+        public void DeleteReportsFromComment(string targetId, long commentId)
         {
             reportUserRepository.GetAll().ToList().ForEach(u =>
             {
                 var report = reportRepository.Get(u.ReportId);
                 if (report.TargetId == targetId && report.CommentId == commentId)
                 {
-                    reportRepository.Remove(report);
                     reportUserRepository.Remove(u);
+                    reportRepository.Remove(report);
+     
                 }
             });
-            reportRepository.SaveChanges();
             reportUserRepository.SaveChanges();
+            reportRepository.SaveChanges();
+        }
+        public void DeleteReportsFromPost(string targetId, long postId)
+        {
+            reportUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                var report = reportRepository.Get(u.ReportId);
+                if (report.TargetId == targetId && report.PostId == postId)
+                {
+                    reportUserRepository.Remove(u);
+                    reportRepository.Remove(report);  
+                }
+            });
+            reportUserRepository.SaveChanges();
+            reportRepository.SaveChanges();
         }
     }
 }

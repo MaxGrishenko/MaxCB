@@ -31,6 +31,7 @@ namespace Web.Controllers
             this._signInManager = signInManager;
             this._roleManager = roleManager;
         }
+       
         // AdminPanelWork
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -129,43 +130,39 @@ namespace Web.Controllers
             var opa = dict.Values.ToList();
             return View(opa);
         }
-        
-
-
-
-
-
-
-
-        public async Task<bool> CreateInitialRoles()
+        [HttpPost]
+        public IActionResult DeleteReports(long objectId, string targetId, string type)
         {
-            var results = new IdentityResult[]
+            switch (type)
             {
-                await _roleManager.CreateAsync(new IdentityRole("Admin")),
-                await _roleManager.CreateAsync(new IdentityRole("Manager")),
-                await _roleManager.CreateAsync(new IdentityRole("User")),
-                await _roleManager.CreateAsync(new IdentityRole("Banned")),
-            };
-            if (results.All(x => x.Succeeded))
-                return true;
-            else
-                return false;
-        }
-
-        public async Task<bool> UpdateRole(string userId = null, string role = "Admin")
-        {
-            userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                await _userManager.RemoveFromRoleAsync(user, "User");
-                var result = await _userManager.AddToRoleAsync(user, role);
-                if (result.Succeeded)
-                    return true;
+                case "comment":
+                    _postService.DeleteReportsFromComment(targetId, objectId);
+                    break;
+                case "post":
+                    _postService.DeleteReportsFromPost(targetId, objectId);
+                    break;
+                default:
+                    break;
             }
-            return false;
+            return Ok();
         }
-
+        [HttpPost]
+        public IActionResult DeleteObject(long objectId, string type)
+        {
+            switch (type)
+            {
+                case "comment":
+                    _postService.DeleteComment(objectId);
+                    break;
+                case "post":
+                    _postService.DeletePost(objectId);
+                    break;
+                default:
+                    break;
+            }
+            return Ok();
+        }
+        // Login/LogOut Work
         [HttpGet]
         public IActionResult Registration()
         {
@@ -188,23 +185,20 @@ namespace Web.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
             }
             return View(model);
         }
-
-        
-
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
         [HttpPost]
-        public async Task<IActionResult> Login (LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -228,14 +222,39 @@ namespace Web.Controllers
             }
             return View(model);
         }
-
-
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+        // InitialAction
+        public async Task<bool> CreateInitialRoles()
+        {
+            var results = new IdentityResult[]
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Admin")),
+                await _roleManager.CreateAsync(new IdentityRole("Manager")),
+                await _roleManager.CreateAsync(new IdentityRole("User")),
+                await _roleManager.CreateAsync(new IdentityRole("Banned")),
+            };
+            if (results.All(x => x.Succeeded))
+                return true;
+            else
+                return false;
+        }
+        public async Task<bool> UpdateRole(string userId = null, string role = "Admin")
+        {
+            userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                await _userManager.RemoveFromRoleAsync(user, "User");
+                var result = await _userManager.AddToRoleAsync(user, role);
+                if (result.Succeeded)
+                    return true;
+            }
+            return false;
         }
     }
 }
