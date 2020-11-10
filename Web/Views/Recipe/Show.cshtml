@@ -1,36 +1,87 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@{ 
+    var Cat = new SelectListItem[]
+    {
+        new SelectListItem() {Text = "Любая категория", Value = "0"},
+        new SelectListItem() {Text = "На завтрак", Value = "1"},
+        new SelectListItem() {Text = "На обед", Value = "2"},
+        new SelectListItem() {Text = "На ужин", Value = "3"},
+    };
+    var Dif = new SelectListItem[]
+    {
+        new SelectListItem() {Text = "Любая сложность", Value = "0"},
+        new SelectListItem() {Text = "Легко", Value = "1"},
+        new SelectListItem() {Text = "Средне", Value = "2"},
+        new SelectListItem() {Text = "Тяжело", Value = "3"},
+        new SelectListItem() {Text = "Гордон Рамзи", Value = "4"},
+    };
+}
 
-<h1>@Localizer["Header"]</h1>
-<div>
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" name="all" id="allPostsTab" data-toggle="pill" href="#allPostsContainer" role="tab" aria-controls="allPostsContainer" aria-selected="true">Все рецепты</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" name="my" id="myPostsTab" data-toggle="pill" href="#myPostsContainer" role="tab" aria-controls="myPostsContainer" aria-selected="false">Мои рецепты и подписки</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
-        <div class="tab-pane fade show active" id="allPostsContainer" role="tabpanel">
-            <div id="allPosts">
 
-            </div>
+<style>
+    .left{
+        margin-left:10px;
+    }
+    .right{
+        margin-right:10px;
+    }
+</style>
+
+
+<div class="card">
+    <div class="card-header align-middle alert-info">
+        <div class="row">
+            <h1 class="left">Коллекция рецептов:</h1>
+            <form class="form-inline left">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Введите название..." aria-describedby="basic-addon1">
+                    <select class="form-control left" asp-items=Cat></select>
+                    <select class="form-control left" asp-items=Dif></select>
+                    <div class="input-group-prepend">
+                        <a class="btn btn-primary right" href="#">Искать!</a>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="tab-pane fade" id="myPostsContainer" role="tabpanel">
-            <div id="myPosts">
+        <hr/>
+        <div class="row">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item left">
+                    <a class="nav-link btn btn-outline-info active" name="all" id="allPostsTab" data-toggle="pill" href="#allPostsContainer" role="tab" aria-controls="allPostsContainer" aria-selected="true">Все рецепты</a>
+                </li>
+                <li class="nav-item left">
+                    <a class="nav-link btn btn-outline-info" name="my" id="myPostsTab" data-toggle="pill" href="#myPostsContainer" role="tab" aria-controls="myPostsContainer" aria-selected="false">Мои рецепты и подписки</a>
+                </li>
+            </ul>
 
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="allPostsContainer" role="tabpanel">
+                <div id="allPosts">
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="myPostsContainer" role="tabpanel">
+                <div id="myPosts">
+
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
 
 @section scripts{
     <script type="text/javascript">
         window.onload = function () {
             $.ajax({
                 type: 'POST',
-                url: 'PartialPost',
+                url: '@Url.Action("PartialPost", "Recipe")',
                 dataType: 'html',
                 data: { 'parameter': 'all' },
                 success: function (data) {
@@ -57,7 +108,7 @@
             let container = getContainer(parameter);
             $.ajax({
                 type: 'POST',
-                url: 'PartialPost',
+                url: '@Url.Action("PartialPost", "Recipe")',
                 dataType: 'html',
                 data: { 'parameter': parameter },
                 success: function (data) {
@@ -70,7 +121,7 @@
             });
         });
 
-        $('.nav-link').on('hide.bs.tab', function (e) {
+        $('.nav-link').on('hidden.bs.tab', function (e) {
             let container = getContainer($(this).attr('name'));
             container.empty();
         });

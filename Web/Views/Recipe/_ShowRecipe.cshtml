@@ -19,49 +19,51 @@
     </nav>  
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-main" role="tabpanel" aria-labelledby="nav-main-tab">
-            <div class="row">
-                <div class="col-sm-8">
-                    <img class="img-fluid" src="@Model.ImagePath" alt="recipe image cap" />
-                </div>
-                <div class="col-sm-4">
-                    <hr />
-                    <h2 class="text-center">@Model.Title</h2>
-                    <hr />
-                    <div style="display:flex; text-align:center">
-                        <i class="fas fa-hourglass-start"></i>
-                        <h5>@Model.PrepTime</h5>
-                    </div>
-                    <h5>@Model.Description</h5>
-                    <h5>@Model.CategoryName</h5>
-                    <h5>@Model.CookTime</h5>
-                    <h5>@Model.Marinade</h5>
-                    <h5>@Model.DifficultyName</h5>
-                </div>
-            </div>
             <div>
-                <div>
-                    <hr />
-                    <h4>Используемые ингредиенты:</h4>
-                    @for (int i = 0; i < Model.Ingredients.Count(); i++)
-                    {
-                        <h6>@(i+1). @Model.Ingredients[i].Name</h6>
-                    }
+                <div class="row">
+                    <div class="col-sm-8">
+                        <img class="img-fluid" src="@Model.ImagePath" alt="recipe image cap" />
+                    </div>
+                    <div class="col-sm-4">
+                        <hr />
+                        <h2 class="text-center">@Model.Title</h2>
+                        <hr />
+                        <div style="display:flex; text-align:center">
+                            <i class="fas fa-hourglass-start"></i>
+                            <h5>@Model.PrepTime</h5>
+                        </div>
+                        <h5>@Model.Description</h5>
+                        <h5>@Model.CategoryName</h5>
+                        <h5>@Model.CookTime</h5>
+                        <h5>@Model.Marinade</h5>
+                        <h5>@Model.DifficultyName</h5>
+                    </div>
                 </div>
                 <div>
-                    <hr />
-                    <h4>Способ приготовления:</h4>
-                    @for (int i = 0; i < Model.Methods.Count(); i++)
-                    {
-                        <h6>@(i+1). @Model.Methods[i].Name</h6>
-                    }
-                </div>
-                <div>
-                    <hr />
-                    <h4>Подсказки и советы:</h4>
-                    @for (int i = 0; i < Model.Tips.Count(); i++)
-                    {
-                        <h6>@(i+1).  @Model.Tips[i].Name</h6>
-                    }
+                    <div>
+                        <hr />
+                        <h4>Используемые ингредиенты:</h4>
+                        @for (int i = 0; i < Model.Ingredients.Count(); i++)
+                        {
+                            <h6>@(i+1). @Model.Ingredients[i].Name</h6>
+                        }
+                    </div>
+                    <div>
+                        <hr />
+                        <h4>Способ приготовления:</h4>
+                        @for (int i = 0; i < Model.Methods.Count(); i++)
+                        {
+                            <h6>@(i+1). @Model.Methods[i].Name</h6>
+                        }
+                    </div>
+                    <div>
+                        <hr />
+                        <h4>Подсказки и советы:</h4>
+                        @for (int i = 0; i < Model.Tips.Count(); i++)
+                        {
+                            <h6>@(i+1).  @Model.Tips[i].Name</h6>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,9 +77,10 @@
 </div>
 
 <script type="text/javascript">
-    $('#nav-comments-tab').on('hide.bs.tab', function (e) {
+    $('#nav-main-tab').on('hide.bs.tab', function (e) {
         $('#commentsContainer').empty();
     });
+
 
     $('#nav-comments-tab').click(function () {
         $.ajax({

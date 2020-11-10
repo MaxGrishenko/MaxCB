@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace Web.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
+        [EmailAddress]
+        [Display(Name = "Почта")]
         public string Email { get; set; }
 
         [Required]
@@ -21,5 +23,8 @@ namespace Web.Models
         public bool RememberMe { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        // AuthenticationScheme is in Microsoft.AspNetCore.Authentication namespace
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
     }
 }

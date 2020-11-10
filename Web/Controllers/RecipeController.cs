@@ -297,7 +297,7 @@ namespace Web.Controllers
             return Redirect(returnAction);
         }
 
-
+        [Route("")]
         [HttpGet]
         public IActionResult Show()
         {

@@ -55,6 +55,13 @@ namespace Web
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews().AddDataAnnotationsLocalization().AddViewLocalization();
+
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                options.ClientId = "930067103957-4q37v0u22ghdoimarclkqimnlp4pqbnk.apps.googleusercontent.com";
+                options.ClientSecret = "wmcdX3PuWcHTCOzEZjT3kkbX";
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
