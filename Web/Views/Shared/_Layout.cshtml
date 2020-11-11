@@ -21,9 +21,9 @@
         }
     </style>
 </head>
-<body>
+<body style="background-image: linear-gradient(to bottom, #f6d9bb, #f8e1c8, #fbe9d5, #fdf0e2, #fff8f0);">
     <header class="mine site-header">
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color:teal">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-image: linear-gradient(to right, #00733a, #188046, #298d52, #379a5e, #44a86a);">
 
             <a class="navbar-brand" href="#">MaxCookBook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,17 +33,17 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="Show">Коллекция рецетов</a>
+                        <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="Show">@Localizer["nav_collection"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="AddorEdit">Опубликовать рецепт</a>
+                        <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="AddorEdit">@Localizer["nav_add"]</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="ReportPanel">Репорт-панель</a>
+                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="ReportPanel">@Localizer["nav_report_panel"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="AdminPanel">Админ-панель</a>
+                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="AdminPanel">@Localizer["nav_admin_panel"]</a>
                     </li>
                 </ul>
                 <form class="form-inline">
@@ -61,12 +61,12 @@
                 {
                     <form class="form-inline" method="post" asp-controller="Auth" asp-action="Logout">
                         <a class="nav-link text-light" asp-area="" asp-controller="Profile" asp-action="Info">@User.Identity.Name</a>
-                        <button type="submit" class="btn btn-danger">Выйти</button>
+                        <button type="submit" class="btn btn-danger">@Localizer["nav_exit"]</button>
                     </form>
                 }
                 else
                 {
-                    <a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Registration">Регистрация</a>
+                    <a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Registration">@Localizer["nav_login_or_logout"]</a>
                     <a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Login">Вход</a>
                 }
             </div>

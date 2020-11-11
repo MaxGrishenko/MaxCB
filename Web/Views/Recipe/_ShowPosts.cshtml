@@ -17,89 +17,101 @@
         object-fit: cover;
     }
 </style>
-<div class="container-fluid">
-    <div class="row my-auto justify-content-center">
-        @foreach (var item in Model)
-        {
-            <div class="card mt-5 mx-5" style="width:auto; max-width:28rem">
-                <div class="@item.PostId">
-                    <img class="card-img-top imgPosts" src='@item.ImagePath' alt="Card image cap">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title @item.PostId">@item.Title</h5>
-                    <p class="card-text @item.PostId">@item.Description</p>
-                    @if (item.CurrentUser.Email == item.CreatorUser.Email)
-                    {
-                        <button class="delButton buttonPost btn btn-outline-danger @item.PostId" value="@item.PostId" name="@item.Title">Удалить</button>
-                        <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn aPosts btn-outline-primary float-right @item.PostId">Редактировать</a>
-                    }
-                    else
-                    {
-                        if (ViewData["parameter"].ToString() == "all")
+@if (Model.Count == 0)
+{
+    <h2 style="margin-left:10px">Нe найдено рецептов!</h2>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row my-auto justify-content-center">
+            @foreach (var item in Model)
+            {
+                <div class="card mt-5 mx-5 shadow rounded" style="width:auto; max-width:28rem">
+                    <div class="@item.PostId">
+                        <img class="card-img-top imgPosts" src='@item.ImagePath' alt="Card image cap">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title @item.PostId">@item.Title</h5>
+                        <p class="card-text @item.PostId">@item.Description</p>
+                        @if (ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager")
                         {
-                            if (item.SubscribeFlag == false)
+                            <button class="delButton buttonPost btn btn-outline-dark @item.PostId" value="@item.PostId" name="@item.Title">Удалить</button>
+                            <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn aPosts btn-outline-primary float-right @item.PostId">Редактировать</a>
+                        }
+                        else if (ViewData["CurrentUserName"].ToString() != "null")
+                        {
+                            if (ViewData["parameter"].ToString() == "all")
                             {
-                                <button class="allSubButton buttonPost btn btn-outline-warning" value="@item.PostId" name="sub" type="button">Подписаться</button>
+                                if (item.SubscribeFlag == false)
+                                {
+                                    <button class="allSubButton buttonPost btn btn-outline-warning" value="@item.PostId" name="sub" type="button">Подписаться</button>
+                                }
+                                else
+                                {
+                                    <button class="allSubButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">Отписаться</button>
+                                }
                             }
                             else
                             {
-                                <button class="allSubButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">Отписаться</button>
+                                <button class="subButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">Отписаться</button>
                             }
                         }
-                        else
+                        <button class="postButton buttonPost btn btn-outline-success @item.PostId" value="@item.PostId" type="button">Просмотреть</button>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted @item.PostId">Опубликовал: @item.CreatorUser</small>
+                        @if (!(ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager"))
                         {
-                            <button class="subButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">Отписаться</button>
+                            <button class="btn btn-outline-secondary buttonPost">
+                                <i class="fas fa-flag"></i>
+                            </button>
                         }
-                    }
-                    <button class="postButton buttonPost btn btn-outline-success @item.PostId" value="@item.PostId" type="button">Просмотреть</button>
+                    </div>
                 </div>
-                <div class="card-footer">
-                    <small class="text-muted @item.PostId">Опубликовал: @item.CreatorUser</small>
+            }
+            @*Modal for showDetailPost*@
+            <button id="postModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#postModal"></button>
+            <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div id="postContainer" class="modal-content">
+                        @*Parial View*@
+                    </div>
                 </div>
             </div>
-        }
-        @*Modal for showDetailPost*@
-        <button id="postModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#postModal"></button>
-        <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document">
-                <div id="postContainer" class="modal-content">
-
-                    @*Parial View*@
-                </div>
-            </div>
-        </div>
-        @*Modal for deletePost*@
-        <button id="delModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#deleteModal"></button>
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="delModalTitle"></h5>
-                    </div>
-                    <div class="modal-body">
-                        Данный рецепт удалится и у ваших подписчиков!
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn buttonPost btn-secondary" data-dismiss="modal">Назад</button>
-                        <button id="delPostButton" type="button" class="btn buttonPost btn-danger" data-dismiss="modal">Удалить</button>
+            @*Modal for deletePost*@
+            <button id="delModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#deleteModal"></button>
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="delModalTitle"></h5>
+                        </div>
+                        <div class="modal-body">
+                            Данный рецепт удалится и у ваших подписчиков!
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn buttonPost btn-secondary" data-dismiss="modal">Назад</button>
+                            <button id="delPostButton" type="button" class="btn buttonPost btn-danger" data-dismiss="modal">Удалить</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
 
-
+<script src="https://kit.fontawesome.com/034d9c5f61.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
     function shadowPost(btn, postId) {
         $('.' + postId).attr('style', 'opacity : 0.4; pointer-events: none;');
-        $(btn).attr('class', 'subButton btn btn-outline-secondary');
+        $(btn).attr('class', 'subButton btn btn-outline-secondary buttonPost');
         $(btn).attr('style', 'opacity : 1.0');
     };
     function unshadowPost(btn, postId) {
         $('.' + postId).attr('style', 'opacity : 1.0;');
-        $(btn).attr('class', 'subButton btn btn-outline-danger');
-        $(btn).attr('style', 'opacity : 1.0');
+        $(btn).attr('class', 'subButton btn btn-outline-danger buttonPost');
+        $(btn).attr('style', 'opacity : 1.0'); 
     };
 
     $('.delButton').click(function () {
@@ -113,11 +125,11 @@
         let postId = $(this).attr('value');
         $.ajax({
             type: 'POST',
-            url: 'Delete',
+            url: '@Url.Action("Delete", "Recipe")',
             dataType: 'html',
             data: { 'postId': postId },
             success: function () {
-                console.log("Delete Post");
+                console.log("Delete post: '" + postId + "';");
                 shadowPost(this, postId);
                 $(this).attr('class', 'btn btn-danger');
             },
@@ -134,7 +146,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'Subscribe',
+            url: '@Url.Action("Subscribe", "Recipe")',
             dataType: 'html',
             data: { 'postId': postId, 'subFlag': subFlag },
             success: function () {
@@ -142,13 +154,13 @@
                     shadowPost(button, postId);
                     button.attr('name', 'sub');
                     button.html('Вернуть подписку');
-                    console.log('Unsub: ' + postId);
+                    console.log("Unsub post: '" + postId + "';");
                 }
                 else {
                     unshadowPost(button, postId);
                     button.attr('name', 'unsub');
                     button.html('Отписаться');
-                    console.log('Sub: ' + postId);
+                    console.log("Sub post: '" + postId + "';");
                 }
             },
             error: function (err) {
@@ -164,21 +176,21 @@
 
         $.ajax({
             type: 'POST',
-            url: 'Subscribe',
+            url: '@Url.Action("Subscribe", "Recipe")',
             dataType: 'html',
             data: { 'postId': postId, 'subFlag': subFlag },
             success: function () {
                 if (subFlag == 'sub') {
                     button.attr('name', 'unsub');
                     button.html('Отписаться');
-                    button.attr('class', 'allSubButton btn btn-outline-danger');
-                    console.log('Sub: ' + postId);
+                    button.attr('class', 'allSubButton btn btn-outline-danger buttonPost');
+                    console.log("Sub post: '" + postId + "';");
                 }
                 else {
                     button.attr('name', 'sub');
                     button.html('Подписаться');
-                    button.attr('class', 'allSubButton btn btn-outline-warning');
-                    console.log('Unsub: ' + postId);
+                    button.attr('class', 'allSubButton btn btn-outline-warning buttonPost');
+                    console.log("Unsub post: '" + postId + "';");
                 }
 
             },
@@ -193,11 +205,11 @@
         let postId = $(this).attr('value');
         $.ajax({
             type: 'POST',
-            url: 'PartialRecipe',
+            url: '@Url.Action("PartialRecipe", "Recipe")',
             dataType: 'html',
             data: { 'postId': postId },
             success: function (data) {
-                console.log("Show DetailPost");
+                console.log("Show post: '" + postId + "';");
                 $('#postContainer').append(data);
                 $('#postModalButton').click();
             },
@@ -208,7 +220,7 @@
     });
 
     $('#postModal').on('hide.bs.modal', function (event) {
-        console.log("Remove DetailPost");
+        console.log("Close post;");
         $('#postContainer').children().remove();
     });
 </script>

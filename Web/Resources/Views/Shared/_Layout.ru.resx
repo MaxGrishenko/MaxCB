@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Рус</value>
-  </data>
   <data name="imgDe" xml:space="preserve">
     <value>/Image/deOff.png</value>
   </data>
@@ -128,5 +125,23 @@
   </data>
   <data name="imgRu" xml:space="preserve">
     <value>/Image/ruOn.png</value>
+  </data>
+  <data name="nav_add" xml:space="preserve">
+    <value>Опубликовать рецепт</value>
+  </data>
+  <data name="nav_admin_panel" xml:space="preserve">
+    <value>Админ-панель</value>
+  </data>
+  <data name="nav_collection" xml:space="preserve">
+    <value>Коллекция рецептов</value>
+  </data>
+  <data name="nav_exit" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="nav_login_or_logout" xml:space="preserve">
+    <value>Зарегистрироваться / Войти</value>
+  </data>
+  <data name="nav_report_panel" xml:space="preserve">
+    <value>Репорт-панель</value>
   </data>
 </root>

@@ -117,7 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Анг</value>
+  <data name="card_header" xml:space="preserve">
+    <value>Recipe collection:</value>
+  </data>
+  <data name="category_0" xml:space="preserve">
+    <value>Any category</value>
+  </data>
+  <data name="category_1" xml:space="preserve">
+    <value>On breakfast</value>
+  </data>
+  <data name="category_2" xml:space="preserve">
+    <value>For lunch</value>
+  </data>
+  <data name="category_3" xml:space="preserve">
+    <value>For dinner</value>
+  </data>
+  <data name="difficult_0" xml:space="preserve">
+    <value>Any complexity</value>
+  </data>
+  <data name="difficult_1" xml:space="preserve">
+    <value>Simply</value>
+  </data>
+  <data name="difficult_2" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="difficult_3" xml:space="preserve">
+    <value>Hard</value>
+  </data>
+  <data name="difficult_4" xml:space="preserve">
+    <value>Gordon Ramsay</value>
+  </data>
+  <data name="search_button" xml:space="preserve">
+    <value>Search!</value>
+  </data>
+  <data name="search_empty" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>Enter the name...</value>
+  </data>
+  <data name="show_all" xml:space="preserve">
+    <value>All recipes</value>
+  </data>
+  <data name="show_my" xml:space="preserve">
+    <value>My recipes and subscriptions</value>
   </data>
 </root>

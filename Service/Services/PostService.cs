@@ -40,21 +40,56 @@ namespace Service.Services
             this.reportUserRepository = reportUserRepository;
         }
 
-        public IEnumerable<Post> GetPosts(string userId)
+        public IEnumerable<Post> GetPosts(string typePar, string userId, string inpPar, int catPar, int difPar)
         {
             var posts = new List<Post>();
-            postUserRepository.GetAll().ToList().ForEach(u =>
+            if (typePar == "all")
             {
-                if (u.UserId == userId)
+                var postsEntity = postRepository.GetAll();
+                foreach (var postEntity in postsEntity)
                 {
-                    posts.Add(GetPost(u.PostId));
+                    var recipeEntity = recipeRepository.Get(postEntity.Id);
+                    if (catPar != 0 && catPar != recipeEntity.Category)
+                    {
+                        continue;
+                    }
+                    if (difPar != 0 && difPar != recipeEntity.Difficulty)
+                    {
+                        continue;
+                    }
+                    if (inpPar != null && !recipeEntity.Title.ToLower().Contains(inpPar.ToLower()))
+                    {
+                        continue;
+                    }
+                    posts.Add(postEntity);
                 }
-            });
+            }
+            else
+            {
+                var postUsers = postUserRepository.GetAll();
+                foreach (var postUser in postUsers)
+                {
+                    if (userId == postUser.UserId || userId == null)
+                    {
+                        var postEntity = GetPost(postUser.PostId);
+                        var recipeEntity = recipeRepository.Get(postEntity.Id);
+                        if (catPar != 0 && catPar != recipeEntity.Category)
+                        {
+                            continue;
+                        }
+                        if (difPar != 0 && difPar != recipeEntity.Difficulty)
+                        {
+                            continue;
+                        }
+                        if (inpPar != null && !recipeEntity.Title.ToLower().Contains(inpPar.ToLower()))
+                        {
+                            continue;
+                        }
+                        posts.Add(postEntity);
+                    }
+                }
+            }
             return posts;
-        }
-        public IEnumerable<Post> GetPosts()
-        {
-            return postRepository.GetAll();
         }
         
         public IEnumerable<Comment> GetComments(long postId)

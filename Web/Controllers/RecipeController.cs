@@ -168,31 +168,27 @@ namespace Web.Controllers
         }
         // Partial
         [HttpPost]
-        public async Task<IActionResult> PartialPost(string parameter = "all")
+        public async Task<IActionResult> PartialPost(string typePar, string inpPar, int catPar, int difPar)
         {
             var model = new List<PostViewModel>();
             IEnumerable<Post> posts;
             string userId;
-            ViewData["parameter"] = parameter;
+            ViewData["parameter"] = typePar;
             if (User.Identity.IsAuthenticated)
             {
                 userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-                switch (parameter)
-                {
-                    case "all":
-                        posts = _postService.GetPosts().ToList();
-                        break;
-                    case "my":
-                        posts = _postService.GetPosts(userId).ToList();
-                        break;
-                    default:return View("Show");
-                    
-                }
+                var currentUser = await _userManager.FindByIdAsync(userId);
+                var roles = await _userManager.GetRolesAsync(currentUser);
+                ViewData["CurrentUserName"] = currentUser.UserName;
+                ViewData["CurrentUserRole"] = roles[0];
+                posts = _postService.GetPosts(typePar, userId, inpPar, catPar, difPar);
             }
             else
             {
-                userId = string.Empty;
-                posts = _postService.GetPosts().ToList();
+                userId = null;
+                posts = _postService.GetPosts(typePar, userId, inpPar, catPar, difPar);
+                ViewData["CurrentUserName"] = "null";
+                ViewData["CurrentUserRole"] = "null";
             }
             foreach (var item in posts)
             {
@@ -205,8 +201,7 @@ namespace Web.Controllers
                     RecipeId = recipeEntity.Id,
                     PostId = item.Id,
                     SubscribeFlag = _postService.SubscribeCheck(item.Id, userId),
-                    CreatorUser = await _userManager.FindByIdAsync(recipeEntity.UserId),
-                    CurrentUser = await _userManager.FindByIdAsync(userId)
+                    CreatorUser = await _userManager.FindByIdAsync(recipeEntity.UserId)
                 });
             }
             return PartialView("_ShowPosts", model);
@@ -298,12 +293,15 @@ namespace Web.Controllers
         }
 
         [Route("")]
+        [Route("Recipe/Show")]
         [HttpGet]
         public IActionResult Show()
         {
             ViewData["returnAction"] = "/Recipe/Show";
             return View();
         }
+
+        
 
 
 

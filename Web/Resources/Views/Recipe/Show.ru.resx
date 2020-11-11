@@ -117,7 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Рус</value>
+  <data name="card_header" xml:space="preserve">
+    <value>Коллекция рецептов:</value>
+  </data>
+  <data name="category_0" xml:space="preserve">
+    <value>Любая категория</value>
+  </data>
+  <data name="category_1" xml:space="preserve">
+    <value>На завтрак</value>
+  </data>
+  <data name="category_2" xml:space="preserve">
+    <value>На обед</value>
+  </data>
+  <data name="category_3" xml:space="preserve">
+    <value>На ужин</value>
+  </data>
+  <data name="difficult_0" xml:space="preserve">
+    <value>Любая сложность</value>
+  </data>
+  <data name="difficult_1" xml:space="preserve">
+    <value>Просто</value>
+  </data>
+  <data name="difficult_2" xml:space="preserve">
+    <value>Нормально</value>
+  </data>
+  <data name="difficult_3" xml:space="preserve">
+    <value>Тяжело</value>
+  </data>
+  <data name="difficult_4" xml:space="preserve">
+    <value>Гордон Рамзи</value>
+  </data>
+  <data name="search_button" xml:space="preserve">
+    <value>Искать!</value>
+  </data>
+  <data name="search_empty" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>Введите название...</value>
+  </data>
+  <data name="show_all" xml:space="preserve">
+    <value>Все рецепты</value>
+  </data>
+  <data name="show_my" xml:space="preserve">
+    <value>Мои рецепты и подписки</value>
   </data>
 </root>

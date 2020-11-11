@@ -17,6 +17,5 @@ namespace Web.Models
         public bool SubscribeFlag { get; set; }
 
         public ApplicationUser CreatorUser { get; set; }
-        public ApplicationUser CurrentUser { get; set; }
     }
 }

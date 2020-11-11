@@ -5,11 +5,18 @@
 }
 
 <script src="https://kit.fontawesome.com/034d9c5f61.js" crossorigin="anonymous"></script>
+<style>
+    img {
+        width: 100%;
+        height: 30vw;
+        object-fit: cover;
+    }
+</style>
+
 
 <div class="card-header">
     <h2>@Model.Title</h2>
 </div>
-
 <div class="card-body container-fluid">
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -22,7 +29,7 @@
             <div>
                 <div class="row">
                     <div class="col-sm-8">
-                        <img class="img-fluid" src="@Model.ImagePath" alt="recipe image cap" />
+                        <img src="@Model.ImagePath" alt="recipe image cap" />
                     </div>
                     <div class="col-sm-4">
                         <hr />

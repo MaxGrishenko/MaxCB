@@ -117,7 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Немецкий</value>
+  <data name="card_header" xml:space="preserve">
+    <value>Rezeptsammlung:</value>
+  </data>
+  <data name="category_0" xml:space="preserve">
+    <value>Beliebige Kategorie</value>
+  </data>
+  <data name="category_1" xml:space="preserve">
+    <value>Zum Frühstück</value>
+  </data>
+  <data name="category_2" xml:space="preserve">
+    <value>Zum Mittagessen</value>
+  </data>
+  <data name="category_3" xml:space="preserve">
+    <value>Zum Abendessen</value>
+  </data>
+  <data name="difficult_0" xml:space="preserve">
+    <value>Beliebige Komplexität</value>
+  </data>
+  <data name="difficult_1" xml:space="preserve">
+    <value>Gerade</value>
+  </data>
+  <data name="difficult_2" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="difficult_3" xml:space="preserve">
+    <value>Schwer</value>
+  </data>
+  <data name="difficult_4" xml:space="preserve">
+    <value>Gordon Ramsay</value>
+  </data>
+  <data name="search_button" xml:space="preserve">
+    <value>Suche!</value>
+  </data>
+  <data name="search_empty" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>Geben Sie den Titel ein ...</value>
+  </data>
+  <data name="show_all" xml:space="preserve">
+    <value>Alle Rezepte</value>
+  </data>
+  <data name="show_my" xml:space="preserve">
+    <value>Meine Rezepte und Abonnements</value>
   </data>
 </root>

@@ -3,21 +3,20 @@
 @{ 
     var Cat = new SelectListItem[]
     {
-        new SelectListItem() {Text = "Любая категория", Value = "0"},
-        new SelectListItem() {Text = "На завтрак", Value = "1"},
-        new SelectListItem() {Text = "На обед", Value = "2"},
-        new SelectListItem() {Text = "На ужин", Value = "3"},
+        new SelectListItem() {Text = @Localizer["category_0"].Value.Trim(), Value = "0"},
+        new SelectListItem() {Text = @Localizer["category_1"].Value.Trim(), Value = "1"},
+        new SelectListItem() {Text = @Localizer["category_2"].Value.Trim(), Value = "2"},
+        new SelectListItem() {Text = @Localizer["category_3"].Value.Trim(), Value = "3"},
     };
     var Dif = new SelectListItem[]
     {
-        new SelectListItem() {Text = "Любая сложность", Value = "0"},
-        new SelectListItem() {Text = "Легко", Value = "1"},
-        new SelectListItem() {Text = "Средне", Value = "2"},
-        new SelectListItem() {Text = "Тяжело", Value = "3"},
-        new SelectListItem() {Text = "Гордон Рамзи", Value = "4"},
+        new SelectListItem() {Text = @Localizer["difficult_0"].Value.Trim(), Value = "0"},
+        new SelectListItem() {Text = @Localizer["difficult_1"].Value.Trim(), Value = "1"},
+        new SelectListItem() {Text = @Localizer["difficult_2"].Value.Trim(), Value = "2"},
+        new SelectListItem() {Text = @Localizer["difficult_3"].Value.Trim(), Value = "3"},
+        new SelectListItem() {Text = @Localizer["difficult_4"].Value.Trim(), Value = "4"},
     };
 }
-
 
 <style>
     .left{
@@ -28,36 +27,34 @@
     }
 </style>
 
-
-<div class="card">
-    <div class="card-header align-middle alert-info">
+<div id="all" class="card shadow-lg">
+    <div class="card-header align-middle" style="background-image: linear-gradient(to right bottom, #cf8a43, #da9e60, #e4b17e, #edc59c, #f6d9bb); ">
         <div class="row">
-            <h1 class="left">Коллекция рецептов:</h1>
-            <form class="form-inline left">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Введите название..." aria-describedby="basic-addon1">
-                    <select class="form-control left" asp-items=Cat></select>
-                    <select class="form-control left" asp-items=Dif></select>
-                    <div class="input-group-prepend">
-                        <a class="btn btn-primary right" href="#">Искать!</a>
-                    </div>
+            <h1 class="left display-4 font-weight-bold">@Localizer["card_header"]</h1>
+            <div class="form-inline input-group left">
+                <input  id="inpPar" type="text" class="form-control" placeholder="@Localizer["search_placeholder"]" aria-describedby="basic-addon1">
+                <select id="catPar" class="form-control left" asp-items=Cat></select>
+                <select id="difPar" class="form-control left" asp-items=Dif></select>
+                <div class="input-group-prepend">
+                    <button id="searchButton" class="btn btn-primary">@Localizer["search_button"]</button>
+                    <button id="emptyButton" class="btn btn-outline-info right">@Localizer["search_empty"]</button>
                 </div>
-            </form>
+            </div>
         </div>
         <hr/>
         <div class="row">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item left">
-                    <a class="nav-link btn btn-outline-info active" name="all" id="allPostsTab" data-toggle="pill" href="#allPostsContainer" role="tab" aria-controls="allPostsContainer" aria-selected="true">Все рецепты</a>
+                    <a class="nav-link btn btn-outline-info active" name="all" id="allPostsTab" data-toggle="pill" href="#allPostsContainer" role="tab" aria-controls="allPostsContainer" aria-selected="true">@Localizer["show_all"]</a>
                 </li>
                 <li class="nav-item left">
-                    <a class="nav-link btn btn-outline-info" name="my" id="myPostsTab" data-toggle="pill" href="#myPostsContainer" role="tab" aria-controls="myPostsContainer" aria-selected="false">Мои рецепты и подписки</a>
+                    <a class="nav-link btn btn-outline-info" name="my" id="myPostsTab" data-toggle="pill" href="#myPostsContainer" role="tab" aria-controls="myPostsContainer" aria-selected="false">@Localizer["show_my"]</a>
                 </li>
             </ul>
 
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-image: linear-gradient(to bottom, #fff8f0, #fff8f5, #fff9fa, #fefbfd, #fdfdfd);">
         <div class="row tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="allPostsContainer" role="tabpanel">
                 <div id="allPosts">
@@ -73,56 +70,58 @@
     </div>
 </div>
 
-
-
-
 @section scripts{
     <script type="text/javascript">
-        window.onload = function () {
+        function GetPartialPost(typePar = 'all') {
+            let inpPar = $('#inpPar').val();
+            let catPar = $('#catPar').val();
+            let difPar = $('#difPar').val();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialPost", "Recipe")',
                 dataType: 'html',
-                data: { 'parameter': 'all' },
+                data: { 'typePar': typePar, 'inpPar': inpPar, 'catPar': catPar, 'difPar': difPar },
                 success: function (data) {
-                    console.log("Get Posts");
-                    $('#allPosts').append(data);
-                },
-                error: function (err) {
-                    console.log(err);
-                }
-            });
-        };
-
-        function getContainer(parameter) {
-            switch (parameter) {
-                case 'all':
-                    return $('#allPosts');
-                case 'my':
-                    return $('#myPosts');
-            }
-            console.log("WRONG PARAMETER");
-        }
-        $('.nav-link').on('show.bs.tab', function (e) {
-            let parameter = $(this).attr('name');
-            let container = getContainer(parameter);
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("PartialPost", "Recipe")',
-                dataType: 'html',
-                data: { 'parameter': parameter },
-                success: function (data) {
-                    console.log("Get Posts");
+                    console.log(`Get posts: typePar '` + typePar + `', inpPar '` + inpPar + `', catPar '` + catPar + `', difPar '` + difPar + `';`);
+                    let container = GetContainer(typePar);
+                    container.empty();
                     container.append(data);
                 },
                 error: function (err) {
                     console.log(err);
                 }
             });
+        };
+        function GetContainer(typePar) {
+            if (typePar == 'all') return $('#allPosts');
+            if (typePar == 'my') return $('#myPosts');
+        };
+
+        window.onload = function () {
+            GetPartialPost();
+        };
+
+        $('#emptyButton').click(function () {
+            $('#inpPar').val("");
+            $('#catPar').val("0");
+            $('#difPar').val("0");
+            let typePar = $(this).parent().parent().parent().parent().parent().attr('id');
+            GetPartialPost(typePar);
+        });
+
+        $('#searchButton').click(function () {
+            let typePar = $(this).parent().parent().parent().parent().parent().attr('id');
+            GetPartialPost(typePar);
+        });
+
+        $('.nav-link').on('show.bs.tab', function (e) {
+            let typePar = $(this).attr('name');
+            $(this).parent().parent().parent().parent().parent().attr('id', typePar);
+            GetPartialPost(typePar);
         });
 
         $('.nav-link').on('hidden.bs.tab', function (e) {
-            let container = getContainer($(this).attr('name'));
+            let container = GetContainer($(this).attr('name'));
             container.empty();
         });
     </script>
