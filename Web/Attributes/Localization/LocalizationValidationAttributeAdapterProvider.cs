@@ -20,6 +20,10 @@ namespace Web.Attributes.Localization
                 return new StringArrayLengthAttributeAdapter(attribute as StringArrayLengthAttribute, stringLocalizer);
             else if (attribute is StringArrayRegularAttribute)
                 return new StringArrayRegularAttributeAdapter(attribute as StringArrayRegularAttribute, stringLocalizer);
+            else if (attribute is EmailAddressUniqueAttribute)
+                return new EmailAddressUniqueAttributeAdapter(attribute as EmailAddressUniqueAttribute, stringLocalizer);
+            else if (attribute is UserNameUniqueAttribute)
+                return new UserNameUniqueAttributeAdapter(attribute as UserNameUniqueAttribute, stringLocalizer);
             else
                 return _baseProvider.GetAttributeAdapter(attribute, stringLocalizer);
         }

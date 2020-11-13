@@ -1,14 +1,29 @@
 ﻿@model Web.Models.RegisterViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
-<div class="card">
-    <h1 class="card-header alert-success">Регистрация нового пользователя</h1>
-    <div class="card-body">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
+<style>
+    .card {
+        margin: 0 auto;
+        float: none; 
+        margin-bottom: 10px;
+    }
+</style>
+
+
+<div class="card shadow-lg border-success mb-3" style="max-width: 30rem;">
+    <div class="card-header"><h2>@Localizer["registration_title"]</h2></div>
+    <div class="card-body text-success">
+        <form method="post" asp-controller="Auth" asp-action="Registration">
             <div class="form-group">
                 <label class="font-weight-bolder" asp-for="Email"></label>
                 <input class="form-control" asp-for="Email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bolder" asp-for="Name"></label>
+                <input class="form-control" asp-for="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="font-weight-bolder" asp-for="Password"></label>
@@ -20,7 +35,20 @@
                 <input class="form-control" asp-for="PasswordConfirm" />
                 <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
             </div>
-            <input class="form-control btn btn-success" type="submit" value="Зарегистрироваться!" />
+            <input class="form-control btn btn-success" type="submit" value="@Localizer["registration_button"]" />
         </form>
+        <a asp-controller="Auth" asp-action="Login">@Localizer["to_login"]</a>
+        @if (Model.ExternalLogins.Count != 0)
+        {
+            <form method="post" asp-controller="Auth" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
+                <hr />
+                <div>
+                    @foreach (var provider in Model.ExternalLogins)
+                    {
+                    <button type="submit" class="form-control btn btn-outline-primary" name="provider" value="@provider.Name">@Localizer["login_use"] @provider.DisplayName </button>
+                    }
+                </div>
+            </form>
+        }
     </div>
 </div>

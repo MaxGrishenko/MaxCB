@@ -9,17 +9,19 @@ namespace Web.Models
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required (ErrorMessage = "email_required")]
         [EmailAddress]
-        [Display(Name = "Почта")]
+        [StringLength(30)]
+        [Display(Name = "email_display")]
         public string Email { get; set; }
 
-        [Required]
+        [Required (ErrorMessage = "password_required")]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [StringLength(20)]
+        [Display(Name = "password_display")]
         public string Password { get; set; }
 
-        [Display(Name = "Запомнить?")]
+        [Display(Name = "remember_display")]
         public bool RememberMe { get; set; }
 
         public string ReturnUrl { get; set; }

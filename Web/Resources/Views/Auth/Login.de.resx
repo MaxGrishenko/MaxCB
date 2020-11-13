@@ -117,34 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="imgDe" xml:space="preserve">
-    <value>/Image/deOff.png</value>
+  <data name="login_button" xml:space="preserve">
+    <value>Betreten</value>
   </data>
-  <data name="imgEn" xml:space="preserve">
-    <value>/Image/enOn.png</value>
+  <data name="login_title" xml:space="preserve">
+    <value>Eingang:</value>
   </data>
-  <data name="imgRu" xml:space="preserve">
-    <value>/Image/ruOff.png</value>
+  <data name="login_use" xml:space="preserve">
+    <value>Login mit:</value>
   </data>
-  <data name="nav_add" xml:space="preserve">
-    <value>Publish recipe</value>
-  </data>
-  <data name="nav_admin_panel" xml:space="preserve">
-    <value>Admin-panel</value>
-  </data>
-  <data name="nav_collection" xml:space="preserve">
-    <value>Recipe collection</value>
-  </data>
-  <data name="nav_exit" xml:space="preserve">
-    <value>Log off</value>
-  </data>
-  <data name="nav_login" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="nav_registration" xml:space="preserve">
-    <value>Register</value>
-  </data>
-  <data name="nav_report_panel" xml:space="preserve">
-    <value>Report-panel</value>
+  <data name="to_registration" xml:space="preserve">
+    <value>Sie haben noch keinen Account?</value>
   </data>
 </root>

@@ -117,34 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="imgDe" xml:space="preserve">
-    <value>/Image/deOff.png</value>
+  <data name="email_display" xml:space="preserve">
+    <value>Geben Sie Ihre Mail ein</value>
   </data>
-  <data name="imgEn" xml:space="preserve">
-    <value>/Image/enOn.png</value>
+  <data name="email_promt" xml:space="preserve">
+    <value>example@gmail.com</value>
   </data>
-  <data name="imgRu" xml:space="preserve">
-    <value>/Image/ruOff.png</value>
+  <data name="email_required" xml:space="preserve">
+    <value>Geben Sie Ihre Mail ein!</value>
   </data>
-  <data name="nav_add" xml:space="preserve">
-    <value>Publish recipe</value>
+  <data name="email_unique" xml:space="preserve">
+    <value>Diese Mail ist bereits registriert</value>
   </data>
-  <data name="nav_admin_panel" xml:space="preserve">
-    <value>Admin-panel</value>
+  <data name="name_display" xml:space="preserve">
+    <value>Trage deinen Spitznamen ein</value>
   </data>
-  <data name="nav_collection" xml:space="preserve">
-    <value>Recipe collection</value>
+  <data name="name_length" xml:space="preserve">
+    <value>Nur 3-10 Zeichen</value>
   </data>
-  <data name="nav_exit" xml:space="preserve">
-    <value>Log off</value>
+  <data name="name_promt" xml:space="preserve">
+    <value>Überlegen Sie sich einen Spitznamen</value>
   </data>
-  <data name="nav_login" xml:space="preserve">
-    <value>Login</value>
+  <data name="name_regular" xml:space="preserve">
+    <value>Nur lateinische Buchstaben und Zahlen</value>
   </data>
-  <data name="nav_registration" xml:space="preserve">
-    <value>Register</value>
+  <data name="name_required" xml:space="preserve">
+    <value>Trage deinen Spitznamen ein!</value>
   </data>
-  <data name="nav_report_panel" xml:space="preserve">
-    <value>Report-panel</value>
+  <data name="name_unique" xml:space="preserve">
+    <value>Dieser Spitzname ist schon in Gebrauch!</value>
+  </data>
+  <data name="password_confirm_compare" xml:space="preserve">
+    <value>Die Passwörter müssen übereinstimmen</value>
+  </data>
+  <data name="password_confirm_display" xml:space="preserve">
+    <value>Bestätigen Sie das Passwort</value>
+  </data>
+  <data name="password_display" xml:space="preserve">
+    <value>Geben Sie Ihr Passwort ein</value>
+  </data>
+  <data name="password_length" xml:space="preserve">
+    <value>Nur 8-20 Zeichen</value>
+  </data>
+  <data name="password_regular" xml:space="preserve">
+    <value>Nur lateinische Buchstaben und Zahlen</value>
+  </data>
+  <data name="password_required" xml:space="preserve">
+    <value>Geben Sie Ihr Passwort ein!</value>
   </data>
 </root>

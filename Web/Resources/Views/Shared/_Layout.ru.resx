@@ -138,8 +138,11 @@
   <data name="nav_exit" xml:space="preserve">
     <value>Выйти</value>
   </data>
-  <data name="nav_login_or_logout" xml:space="preserve">
-    <value>Зарегистрироваться / Войти</value>
+  <data name="nav_login" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="nav_registration" xml:space="preserve">
+    <value>Зарегистрироваться</value>
   </data>
   <data name="nav_report_panel" xml:space="preserve">
     <value>Репорт-панель</value>

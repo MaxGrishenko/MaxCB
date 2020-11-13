@@ -49,8 +49,12 @@ namespace Web
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options=>
             {
-                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 0;
             }).AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
