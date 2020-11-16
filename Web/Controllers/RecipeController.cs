@@ -248,7 +248,7 @@ namespace Web.Controllers
            
             return PartialView("_ShowComments", model);
         }
-        // Work with Comments
+        // Work with Comment
         [HttpPost]
         public IActionResult MakeComment(string name, long postId)
         {
@@ -271,6 +271,24 @@ namespace Web.Controllers
                 {
                     TargetId = targetId,
                     CommentId = commentId
+                };
+                _postService.MakeReport(reportEntity, userId);
+                return Ok("Add");
+            }
+            return Ok("Exist");
+        }
+        // Work with Post
+        [HttpPost]
+        public async Task <IActionResult> ReportPost(long postId, string targetName)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            if (!_postService.CheckReportPostExist(userId, postId))
+            {
+                var target = await _userManager.FindByNameAsync(targetName);
+                var reportEntity = new Report()
+                {
+                    TargetId = target.Id,
+                    PostId = postId
                 };
                 _postService.MakeReport(reportEntity, userId);
                 return Ok("Add");

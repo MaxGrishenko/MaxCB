@@ -27,7 +27,7 @@ else
         <div class="row my-auto justify-content-center">
             @foreach (var item in Model)
             {
-                <div class="card mt-5 mx-5 shadow rounded" style="width:auto; max-width:28rem">
+                <div class="card mt-5 mx-5 border-success shadow rounded" style="width:auto; max-width:28rem">
                     <div class="@item.PostId">
                         <img class="card-img-top imgPosts" src='@item.ImagePath' alt="Card image cap">
                     </div>
@@ -36,7 +36,7 @@ else
                         <p class="card-text @item.PostId">@item.Description</p>
                         @if (ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager")
                         {
-                            <button class="delButton buttonPost btn btn-outline-dark @item.PostId" value="@item.PostId" name="@item.Title">Удалить</button>
+                            <button class="delButton buttonPost btn btn-outline-dark" data-postId="@item.PostId" data-postTitle="@item.Title">Удалить</button>
                             <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn aPosts btn-outline-primary float-right @item.PostId">Редактировать</a>
                         }
                         else if (ViewData["CurrentUserName"].ToString() != "null")
@@ -61,15 +61,16 @@ else
                     </div>
                     <div class="card-footer">
                         <small class="text-muted @item.PostId">Опубликовал: @item.CreatorUser</small>
-                        @if (!(ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager"))
+                        @if (!(ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager" || ViewData["CurrentUserName"].ToString() == "null"))
                         {
-                            <button class="btn btn-outline-secondary buttonPost">
+                            <button class="repButton btn btn-outline-secondary buttonPost" data-postId="@item.PostId" data-targetName="@item.CreatorUser.UserName.ToString()">
                                 <i class="fas fa-flag"></i>
                             </button>
                         }
                     </div>
                 </div>
             }
+
             @*Modal for showDetailPost*@
             <button id="postModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#postModal"></button>
             <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -79,20 +80,19 @@ else
                     </div>
                 </div>
             </div>
-            @*Modal for deletePost*@
-            <button id="delModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#deleteModal"></button>
-            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+            @*Modal for deletePost / reportPost*@
+            <button id="delOrRepButton" type="button" hidden="hidden" data-toggle="modal" data-target="#delOrRepModal"></button>
+            <div class="modal fade" id="delOrRepModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="delModalTitle"></h5>
+                            <h5 class="modal-title" id="delOrRepModalTitle" />
                         </div>
-                        <div class="modal-body">
-                            Данный рецепт удалится и у ваших подписчиков!
-                        </div>
+                        <div class="modal-body" id="delOrRepModalBody"></div>
                         <div class="modal-footer">
-                            <button type="button" class="btn buttonPost btn-secondary" data-dismiss="modal">Назад</button>
-                            <button id="delPostButton" type="button" class="btn buttonPost btn-danger" data-dismiss="modal">Удалить</button>
+                            <button class="btn buttonPost btn-secondary" type="button" data-dismiss="modal">Назад</button>
+                            <button class="btn buttonPost btn-danger" type="button" id="delOrRepModalButton" data-dismiss="modal"></button>
                         </div>
                     </div>
                 </div>
@@ -103,6 +103,73 @@ else
 
 <script src="https://kit.fontawesome.com/034d9c5f61.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
+    // Show modal info for delete post
+    $('.delButton').click(function () {
+        let postId = $(this).attr('data-postId');
+        let postTitle = $(this).attr('data-postTitle');
+        $('#delOrRepModalTitle').html("Удалить '" + postTitle + "'?")
+        $('#delOrRepModalBody').html("Данный рецепт будет удалён и его подписчиков!");
+        let button = $('#delOrRepModalButton');
+        button.data('type', 'delete');
+        button.data('postId', postId);
+        $('#delOrRepModalButton').html("Удалить");
+        $('#delOrRepButton').click();
+    });
+    // Show modal info for report post
+    $('.repButton').click(function () {
+        let postId = $(this).attr('data-postId');
+        let targetName = $(this).attr('data-targetName');
+        $('#delOrRepModalTitle').html("Пожаловаться на '" + targetName + "'?");
+        $('#delOrRepModalBody').html("Данный рецепт содержит оскорбительный материал?");
+        let button = $('#delOrRepModalButton');
+        button.data('type', 'report');
+        button.data('postId', postId);
+        button.data('targetName', targetName);
+        $('#delOrRepModalButton').html("Пожаловаться");
+        $('#delOrRepButton').click()
+    });
+    // Modal delete/report post action
+    $('#delOrRepModalButton').click(function () {
+        let postId = $(this).data("postId");
+        // Report post
+        if ($(this).data("type") == 'report') {
+            let targetName = $(this).data("targetName");
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ReportPost", "Recipe")',
+                dataType: 'html',
+                data: { 'postId': postId, 'targetName': targetName},
+                success: function (result) {
+                    if (result == 'Add') {
+                        console.log("Report post: '" + postId + "';");
+                    }
+                    else console.log("Report post: '" + postId + "' already exists;");
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        // Delete post
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Delete", "Recipe")',
+                dataType: 'html',
+                data: { 'postId': postId },
+                success: function () {
+                    console.log("Delete post: '" + postId + "';");
+                    shadowPost(this, postId);
+                    $(this).attr('class', 'btn btn-danger');
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+    });
+
+
     function shadowPost(btn, postId) {
         $('.' + postId).attr('style', 'opacity : 0.4; pointer-events: none;');
         $(btn).attr('class', 'subButton btn btn-outline-secondary buttonPost');
@@ -111,15 +178,16 @@ else
     function unshadowPost(btn, postId) {
         $('.' + postId).attr('style', 'opacity : 1.0;');
         $(btn).attr('class', 'subButton btn btn-outline-danger buttonPost');
-        $(btn).attr('style', 'opacity : 1.0'); 
+        $(btn).attr('style', 'opacity : 1.0');
     };
 
-    $('.delButton').click(function () {
+@*    $('.delButton').click(function () {
         console.log("Удалить рецепт!");
         $('#delModalButton').click();
         $('#delModalTitle').html(`Удалить рецепт '` + $(this).attr('name') + `'?`);
         $('#delPostButton').attr('value', $(this).attr('value'));
-    });
+    });*@
+    $('delB')
 
     $('#delPostButton').click(function () {
         let postId = $(this).attr('value');
@@ -138,6 +206,7 @@ else
             }
         });
     });
+
 
     $('.subButton').click(function () {
         let button = $(this);

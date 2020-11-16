@@ -42,9 +42,15 @@
         width: 100%;
         max-width: 600px;
     }
+
+    .card {
+        margin: 0 auto;
+        float: none;
+        margin-bottom: 10px;
+    }
 </style>
 
-<div class="card">
+<div class="card border-secondary shadow-lg" style="max-width: 80rem;">
     @if (Model.IsNew)
     {<h1 class="card-header alert-success">@Localizer["header_add"]</h1> }
     else
@@ -100,7 +106,7 @@
                 </div>
             </div><hr />
 
-            <div class="card">
+            <div class="card shadow border-info">
                 <div class="card-header alert-secondary" id="ingredientContainer">
                     <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseIngredient" aria-expanded="true" aria-controls="collapseOne">@Localizer["list_ingredient"]</button>
                     <span asp-validation-for="Ingredients" class="text-danger"></span>
@@ -117,7 +123,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card shadow border-info">
                 <div class="card-header alert-secondary" id="methodContainer">
                     <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseMethod" aria-expanded="true" aria-controls="collapseTwo">@Localizer["list_method"]</button>
                     <span asp-validation-for="Methods" class="text-danger"></span>
@@ -134,7 +140,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card shadow border-info">
                 <div class="card-header alert-secondary" id="tipContainer">
                     <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseTip" aria-expanded="true" aria-controls="collapseThree">@Localizer["list_tip"]</button>
                     <span asp-validation-for="Tips" class="text-danger"></span>
