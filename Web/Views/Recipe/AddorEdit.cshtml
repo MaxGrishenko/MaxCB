@@ -164,13 +164,12 @@
             <div class="text-center">
                 <img id="imageContainer" src="@Model.ImagePath" alt="Recipe photo">
             </div>
-            <input id="imageFile" asp-for="@Model.RecipeImage" type="file" hidden="hidden" />
+            <input id="imageFile" asp-for="@Model.RecipeImage" type="file" accept=".jpg, .jpeg, .png" hidden="hidden" />
             <input id="imageInput" class="form-control" type="hidden" asp-for="ImagePath" value="@Model.ImagePath" />
-            <br />
+            <br/>
 
             @if (Model.IsNew)
             {
-
                 <input class="form-control btn btn-success" type="submit" value="@Localizer["submit_add"]" />
             }
             else
@@ -183,7 +182,10 @@
 
 @section scripts{
     <script type="text/javascript">
-        window.onload = function () { AddTypes('@jsonIngredients', '@jsonMethods', '@jsonTips') };
+        window.onload = function () {
+            AddTypes('@jsonIngredients', '@jsonMethods', '@jsonTips')
+            
+        };
 
         function AddTypes(Ing, Met, Tip) {
             if (Ing != '') {
@@ -268,11 +270,13 @@
                 reader.onload = function (e) {
                     $('#imageContainer').attr('src', e.target.result);
                     $('#imageInput').attr('value', e.target.result);
+                    console.log($('#imageInput').attr('value', e.target.result));
                 }
                 reader.readAsDataURL(this.files[0]);
             }
             else {
                 alert("Не поддреживаемый формат изображения!\nТолько .jpg .png .jpeg");
+                $('#imageFile').val(null);
             }
         });
     </script>

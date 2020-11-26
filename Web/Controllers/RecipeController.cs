@@ -81,7 +81,7 @@ namespace Web.Controllers
                     Ingredients = _ingredientService.GetIngredients(recipeId).ToList().Select(u => u.Name.ToString()).ToArray(),
                     Methods = _methodService.GetMethods(recipeId).Select(u => u.Name.ToString()).ToArray(),
                     Tips = _tipService.GetTips(recipeId).Select(u => u.Name.ToString()).ToArray(),
-                    ImagePath = recipeEntity.ImagePath,
+                    ImagePath = recipeEntity.ImagePath
                 });
             }
         }
@@ -89,6 +89,7 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddorEdit(RecipeViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 if (model.IsNew)
@@ -103,9 +104,17 @@ namespace Web.Controllers
                         CookTime = (int)model.CookTime,
                         Marinade = (int)model.Marinade,
                         Difficulty = model.Difficulty,
-                        ImagePath = GetImagePath(model.RecipeImage),
                         UserId = userId
                     };
+                    if (model.RecipeImage == null)
+                    {
+                        recipeEntity.ImagePath = model.ImagePath;
+                    }
+                    else
+                    {
+                        recipeEntity.ImagePath = GetImagePath(model.RecipeImage);
+                    }
+
                     _recipeService.InsertRecipe(recipeEntity);
                     GetIngredients(model.Ingredients, recipeEntity);
                     GetMethods(model.Methods, recipeEntity);
@@ -139,7 +148,6 @@ namespace Web.Controllers
                     {
                         recipeEntity.ImagePath = GetImagePath(model.RecipeImage, recipeEntity.ImagePath.Substring(7));
                     }
-                    else recipeEntity.ImagePath = GetImagePath(model.RecipeImage);
 
                     _recipeService.UpdateRecipe(recipeEntity);
                 }
