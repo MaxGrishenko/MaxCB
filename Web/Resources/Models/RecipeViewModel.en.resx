@@ -117,7 +117,94 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Рус</value>
+  <data name="categories_name" xml:space="preserve">
+    <value>Food category:</value>
+  </data>
+  <data name="cook_time_name" xml:space="preserve">
+    <value>Preparation:</value>
+  </data>
+  <data name="description_length" xml:space="preserve">
+    <value>Description length must be between 10 and 100 characters</value>
+  </data>
+  <data name="description_name" xml:space="preserve">
+    <value>Short description:</value>
+  </data>
+  <data name="description_promt" xml:space="preserve">
+    <value>A brief description of your recipe</value>
+  </data>
+  <data name="description_regular" xml:space="preserve">
+    <value>Incorrect input * Only Latin, Cyrillic letters and symbols (.,?! :-) *</value>
+  </data>
+  <data name="description_required" xml:space="preserve">
+    <value>A brief description of the recipe is missing</value>
+  </data>
+  <data name="difficulties_name" xml:space="preserve">
+    <value>Complexity of preparation:</value>
+  </data>
+  <data name="image_path_name" xml:space="preserve">
+    <value>Upload a photo of your dish!</value>
+  </data>
+  <data name="ingredients_length" xml:space="preserve">
+    <value>Ingredient description must be between 3 and 300 characters</value>
+  </data>
+  <data name="ingredients_name" xml:space="preserve">
+    <value>Ingredients Used:</value>
+  </data>
+  <data name="ingredients_promt" xml:space="preserve">
+    <value>Enter the first ingredient!</value>
+  </data>
+  <data name="ingredients_regular" xml:space="preserve">
+    <value>Incorrect entry * Only Latin, Cyrillic letters, numbers and symbols (.,?! :-) *</value>
+  </data>
+  <data name="ingredients_required" xml:space="preserve">
+    <value>One or more ingredients are missing!</value>
+  </data>
+  <data name="marinade_name" xml:space="preserve">
+    <value>Marinade:</value>
+  </data>
+  <data name="methods_length" xml:space="preserve">
+    <value>Step description must be between 10 and 300 characters</value>
+  </data>
+  <data name="methods_name" xml:space="preserve">
+    <value>Cooking steps:</value>
+  </data>
+  <data name="methods_promt" xml:space="preserve">
+    <value>Enter the first step of the application!</value>
+  </data>
+  <data name="methods_regular" xml:space="preserve">
+    <value>Incorrect entry * Only Latin, Cyrillic letters, numbers and symbols (.,?! :-) *</value>
+  </data>
+  <data name="methods_required" xml:space="preserve">
+    <value>One or more steps are missing!</value>
+  </data>
+  <data name="prep_time_name" xml:space="preserve">
+    <value>Preparations:</value>
+  </data>
+  <data name="tips_length" xml:space="preserve">
+    <value>The description of the tooltip must be between 3 and 300 characters</value>
+  </data>
+  <data name="tips_name" xml:space="preserve">
+    <value>Hints and tips:</value>
+  </data>
+  <data name="tips_promt" xml:space="preserve">
+    <value>Share a cooking trick!</value>
+  </data>
+  <data name="tips_regular" xml:space="preserve">
+    <value>Incorrect entry * Only Latin, Cyrillic letters, numbers and symbols (.,?! :-) *</value>
+  </data>
+  <data name="title_length" xml:space="preserve">
+    <value>The name must be between 3 and 30 characters long</value>
+  </data>
+  <data name="title_name" xml:space="preserve">
+    <value>Recipe name:</value>
+  </data>
+  <data name="title_promt" xml:space="preserve">
+    <value>Enter the name of your recipe</value>
+  </data>
+  <data name="title_regular" xml:space="preserve">
+    <value>Incorrect input * Only Latin and Cyrillic letters *</value>
+  </data>
+  <data name="title_required" xml:space="preserve">
+    <value>No recipe name specified</value>
   </data>
 </root>

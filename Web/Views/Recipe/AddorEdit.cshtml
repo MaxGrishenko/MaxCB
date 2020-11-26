@@ -184,7 +184,7 @@
     <script type="text/javascript">
         window.onload = function () {
             AddTypes('@jsonIngredients', '@jsonMethods', '@jsonTips')
-            
+
         };
 
         function AddTypes(Ing, Met, Tip) {
@@ -229,14 +229,14 @@
         function AddType(type, text, id) {
             const division = document.createElement("DIV");
             switch (type) {
-                case 'ingredient': division.innerHTML = '<hr/><div class="input-group" ><input onclick="DeleteType(this, `ingredient`)" class="btn btn-outline-danger" type="button" value="Удалить"/> <input class="form-control" asp-for=Ingredients" name="Ingredients" type="text"  value="' + text + '" placeholder="Введите новый ингредиент!" aria-describedby="numberAddon"/></div>';
+                case 'ingredient': division.innerHTML = '<hr/><div class="input-group" ><input onclick="DeleteType(this, `ingredient`)" class="btn btn-outline-danger" type="button" value="@Localizer["delete"]"/> <input class="form-control" asp-for=Ingredients" name="Ingredients" type="text"  value="' + text + '" placeholder="@Localizer["placeholder_ingredient"]" aria-describedby="numberAddon"/></div>';
                     document.getElementById("IngredientDiv").appendChild(division);
                     break;
-                case 'method': division.innerHTML = '<hr/><div class="input-group"><input onclick="DeleteType(this, `method`)" class="btn btn-outline-danger" type="button" value="Удалить"/><textarea id="m' + id + '" class="form-control" asp-for="Methods" name="Methods" placeholder="Опишите новый шаг"></textarea></div>';
+                case 'method': division.innerHTML = '<hr/><div class="input-group"><input onclick="DeleteType(this, `method`)" class="btn btn-outline-danger" type="button" value="@Localizer["delete"]"/><textarea id="m' + id + '" class="form-control" asp-for="Methods" name="Methods" placeholder="@Localizer["placeholder_method"]"></textarea></div>';
                     document.getElementById("MethodDiv").appendChild(division);
                     SetTextArea(text, "m" + id)
                     break;
-                case 'tip': division.innerHTML = '<hr/><div class="input-group"><input onclick="DeleteType(this, `tip`)" class="btn btn-outline-danger" type="button" value="Удалить"/><textarea id="t' + id + '" class="form-control" asp-for="Tips" name="Tips" placeholder="Расскажите о новой подсказке"></textarea ></div>';
+                case 'tip': division.innerHTML = '<hr/><div class="input-group"><input onclick="DeleteType(this, `tip`)" class="btn btn-outline-danger" type="button" value="@Localizer["delete"]"/><textarea id="t' + id + '" class="form-control" asp-for="Tips" name="Tips" placeholder="@Localizer["placeholder_tip"]"></textarea ></div>';
                     document.getElementById("TipDiv").appendChild(division);
                     SetTextArea(text, "t" + id)
                     break;
@@ -275,7 +275,7 @@
                 reader.readAsDataURL(this.files[0]);
             }
             else {
-                alert("Не поддреживаемый формат изображения!\nТолько .jpg .png .jpeg");
+                alert("@Localizer["alert_file"]");
                 $('#imageFile').val(null);
             }
         });

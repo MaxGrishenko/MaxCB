@@ -117,7 +117,94 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Рус</value>
+  <data name="categories_name" xml:space="preserve">
+    <value>Lebensmittelkategorie:</value>
+  </data>
+  <data name="cook_time_name" xml:space="preserve">
+    <value>Vorbereitung:</value>
+  </data>
+  <data name="description_length" xml:space="preserve">
+    <value>Die Beschreibungslänge muss zwischen 10 und 100 Zeichen liegen</value>
+  </data>
+  <data name="description_name" xml:space="preserve">
+    <value>Kurzbeschreibung:</value>
+  </data>
+  <data name="description_promt" xml:space="preserve">
+    <value>Eine kurze Beschreibung Ihres Rezepts</value>
+  </data>
+  <data name="description_regular" xml:space="preserve">
+    <value>Ungültige Eingabe * Nur lateinische, kyrillische Buchstaben und Symbole (.,?! :-) *</value>
+  </data>
+  <data name="description_required" xml:space="preserve">
+    <value>Eine kurze Beschreibung des Rezepts fehlt</value>
+  </data>
+  <data name="difficulties_name" xml:space="preserve">
+    <value>Komplexität der Zubereitung:</value>
+  </data>
+  <data name="image_path_name" xml:space="preserve">
+    <value>Laden Sie ein Foto Ihres Gerichts hoch!</value>
+  </data>
+  <data name="ingredients_length" xml:space="preserve">
+    <value>Die Zutatenbeschreibung muss zwischen 3 und 300 Zeichen lang sein</value>
+  </data>
+  <data name="ingredients_name" xml:space="preserve">
+    <value>Verwendete Zutaten:</value>
+  </data>
+  <data name="ingredients_promt" xml:space="preserve">
+    <value>Geben Sie die erste Zutat ein!</value>
+  </data>
+  <data name="ingredients_regular" xml:space="preserve">
+    <value>Falsche Eingabe * Nur lateinische, kyrillische Buchstaben, Zahlen und Symbole (.,?! :-) *</value>
+  </data>
+  <data name="ingredients_required" xml:space="preserve">
+    <value>Eine oder mehrere Zutaten fehlen!</value>
+  </data>
+  <data name="marinade_name" xml:space="preserve">
+    <value>Marinade:</value>
+  </data>
+  <data name="methods_length" xml:space="preserve">
+    <value>Die Schrittbeschreibung muss zwischen 10 und 300 Zeichen lang sein</value>
+  </data>
+  <data name="methods_name" xml:space="preserve">
+    <value>Kochschritte:</value>
+  </data>
+  <data name="methods_promt" xml:space="preserve">
+    <value>Geben Sie den ersten Schritt der Anwendung ein!</value>
+  </data>
+  <data name="methods_regular" xml:space="preserve">
+    <value>Falsche Eingabe * Nur lateinische, kyrillische Buchstaben, Zahlen und Symbole (.,?! :-) *</value>
+  </data>
+  <data name="methods_required" xml:space="preserve">
+    <value>Ein oder mehrere Schritte fehlen!</value>
+  </data>
+  <data name="prep_time_name" xml:space="preserve">
+    <value>Vorbereitungen:</value>
+  </data>
+  <data name="tips_length" xml:space="preserve">
+    <value>Die Beschreibung des Tooltips muss zwischen 3 und 300 Zeichen enthalten</value>
+  </data>
+  <data name="tips_name" xml:space="preserve">
+    <value>Hinweise und Tipps:</value>
+  </data>
+  <data name="tips_promt" xml:space="preserve">
+    <value>Teilen Sie einen Kochtrick!</value>
+  </data>
+  <data name="tips_regular" xml:space="preserve">
+    <value>Falsche Eingabe * Nur lateinische, kyrillische Buchstaben, Zahlen und Symbole (.,?! :-) *</value>
+  </data>
+  <data name="title_length" xml:space="preserve">
+    <value>Der Name muss zwischen 3 und 30 Zeichen lang sein</value>
+  </data>
+  <data name="title_name" xml:space="preserve">
+    <value>Rezeptname:</value>
+  </data>
+  <data name="title_promt" xml:space="preserve">
+    <value>Geben Sie den Namen Ihres Rezepts ein</value>
+  </data>
+  <data name="title_regular" xml:space="preserve">
+    <value>Falsche Eingabe * Nur lateinische und kyrillische Buchstaben *</value>
+  </data>
+  <data name="title_required" xml:space="preserve">
+    <value>Kein Rezeptname angegeben</value>
   </data>
 </root>

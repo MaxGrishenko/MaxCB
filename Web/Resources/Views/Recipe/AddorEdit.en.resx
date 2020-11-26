@@ -118,69 +118,84 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add_ingredient" xml:space="preserve">
-    <value>Добавить новый ингредиент!R</value>
+    <value>Add a new ingredient!</value>
   </data>
   <data name="add_method" xml:space="preserve">
-    <value>Добавить новый шаг!R</value>
+    <value>Add a new step!</value>
   </data>
   <data name="add_tip" xml:space="preserve">
-    <value>Добавить новый совет!R</value>
+    <value>Add a new tip!</value>
+  </data>
+  <data name="alert_file" xml:space="preserve">
+    <value>Image format not supported!\nOnly .jpg .png .jpeg</value>
   </data>
   <data name="category_0" xml:space="preserve">
-    <value>Не указанаR</value>
+    <value>Not specified</value>
   </data>
   <data name="category_1" xml:space="preserve">
-    <value>ЗавтракR</value>
+    <value>Breakfast</value>
   </data>
   <data name="category_2" xml:space="preserve">
-    <value>ОбедR</value>
+    <value>Launch</value>
   </data>
   <data name="category_3" xml:space="preserve">
-    <value>УжинR</value>
+    <value>Dinner</value>
   </data>
   <data name="category_4" xml:space="preserve">
-    <value>ДругоеR</value>
+    <value>Other</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Delete</value>
   </data>
   <data name="difficult_0" xml:space="preserve">
-    <value>Не указанаR</value>
+    <value>Not specified</value>
   </data>
   <data name="difficult_1" xml:space="preserve">
-    <value>ПростоR</value>
+    <value>Simply</value>
   </data>
   <data name="difficult_2" xml:space="preserve">
-    <value>НормальноR</value>
+    <value>Normally</value>
   </data>
   <data name="difficult_3" xml:space="preserve">
-    <value>ТяжелоR</value>
+    <value>Hard</value>
   </data>
   <data name="difficult_4" xml:space="preserve">
-    <value>Гордон РамзиR</value>
+    <value>Gordon Ramsay</value>
   </data>
   <data name="header_add" xml:space="preserve">
-    <value>Создание рецептаR</value>
+    <value>Recipe creation</value>
   </data>
   <data name="header_edit" xml:space="preserve">
-    <value>Редактирование рецептаR</value>
+    <value>Editing a recipe</value>
   </data>
   <data name="list_ingredient" xml:space="preserve">
-    <value>Список ингредиентовR</value>
+    <value>Ingredient List</value>
   </data>
   <data name="list_method" xml:space="preserve">
-    <value>Способ приготовленияR</value>
+    <value>Cooking method</value>
   </data>
   <data name="list_tip" xml:space="preserve">
-    <value>Подсказки и советыR</value>
+    <value>Hints and tips</value>
   </data>
   <data name="minute" xml:space="preserve">
-    <value>Мин.R</value>
+    <value>Min.</value>
+  </data>
+  <data name="placeholder_ingredient" xml:space="preserve">
+    <value>Introduce a new ingredient!</value>
+  </data>
+  <data name="placeholder_method" xml:space="preserve">
+    <value>Describe the new step</value>
+  </data>
+  <data name="placeholder_tip" xml:space="preserve">
+    <value>Tell about the new tip</value>
   </data>
   <data name="submit_add" xml:space="preserve">
-    <value>Опубликовать рецепт!R</value>
+    <value>Post a recipe!</value>
   </data>
   <data name="submit_edit" xml:space="preserve">
-    <value>Изменить рецепт!R</value>
+    <value>Change the recipe!</value>
   </data>
   <data name="time_need" xml:space="preserve">
-    <value>Требуемое время дляR</value>
+    <value>Time required for</value>
   </data>
 </root>

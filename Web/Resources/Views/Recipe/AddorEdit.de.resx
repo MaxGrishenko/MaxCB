@@ -117,7 +117,85 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Header" xml:space="preserve">
-    <value>Немецкий</value>
+  <data name="add_ingredient" xml:space="preserve">
+    <value>Fügen Sie eine neue Zutat hinzu!</value>
+  </data>
+  <data name="add_method" xml:space="preserve">
+    <value>Fügen Sie einen neuen Schritt hinzu!</value>
+  </data>
+  <data name="add_tip" xml:space="preserve">
+    <value>Fügen Sie einen neuen Tipp hinzu!</value>
+  </data>
+  <data name="alert_file" xml:space="preserve">
+    <value>Bildformat wird nicht unterstützt!\nNur .jpg .png .jpeg</value>
+  </data>
+  <data name="category_0" xml:space="preserve">
+    <value>Unbestimmt</value>
+  </data>
+  <data name="category_1" xml:space="preserve">
+    <value>Frühstück</value>
+  </data>
+  <data name="category_2" xml:space="preserve">
+    <value>Abendessen</value>
+  </data>
+  <data name="category_3" xml:space="preserve">
+    <value>Das Abendbrot</value>
+  </data>
+  <data name="category_4" xml:space="preserve">
+    <value>Andere</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="difficult_0" xml:space="preserve">
+    <value>Unbestimmt</value>
+  </data>
+  <data name="difficult_1" xml:space="preserve">
+    <value>Gerade</value>
+  </data>
+  <data name="difficult_2" xml:space="preserve">
+    <value>Fein</value>
+  </data>
+  <data name="difficult_3" xml:space="preserve">
+    <value>Schwer</value>
+  </data>
+  <data name="difficult_4" xml:space="preserve">
+    <value>Gordon Ramsay</value>
+  </data>
+  <data name="header_add" xml:space="preserve">
+    <value>Rezepterstellung</value>
+  </data>
+  <data name="header_edit" xml:space="preserve">
+    <value>Rezept bearbeiten</value>
+  </data>
+  <data name="list_ingredient" xml:space="preserve">
+    <value>Zutatenliste</value>
+  </data>
+  <data name="list_method" xml:space="preserve">
+    <value>Kochmethode</value>
+  </data>
+  <data name="list_tip" xml:space="preserve">
+    <value>Hinweise und Tipps</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>Min.</value>
+  </data>
+  <data name="placeholder_ingredient" xml:space="preserve">
+    <value>Stellen Sie eine neue Zutat vor!</value>
+  </data>
+  <data name="placeholder_method" xml:space="preserve">
+    <value>Beschreiben Sie den neuen Schritt</value>
+  </data>
+  <data name="placeholder_tip" xml:space="preserve">
+    <value>Erzählen Sie uns von dem neuen Tipp</value>
+  </data>
+  <data name="submit_add" xml:space="preserve">
+    <value>Poste ein Rezept!</value>
+  </data>
+  <data name="submit_edit" xml:space="preserve">
+    <value>Ändere das Rezept!</value>
+  </data>
+  <data name="time_need" xml:space="preserve">
+    <value>Zeit benötigt für</value>
   </data>
 </root>

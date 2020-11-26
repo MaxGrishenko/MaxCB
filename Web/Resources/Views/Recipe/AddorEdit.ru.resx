@@ -126,6 +126,9 @@
   <data name="add_tip" xml:space="preserve">
     <value>Добавить новый совет!</value>
   </data>
+  <data name="alert_file" xml:space="preserve">
+    <value>Не поддреживаемый формат изображения!\nТолько .jpg .png .jpeg</value>
+  </data>
   <data name="category_0" xml:space="preserve">
     <value>Не указана</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="category_4" xml:space="preserve">
     <value>Другое</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Удалить</value>
   </data>
   <data name="difficult_0" xml:space="preserve">
     <value>Не указана</value>
@@ -173,6 +179,15 @@
   </data>
   <data name="minute" xml:space="preserve">
     <value>Мин.</value>
+  </data>
+  <data name="placeholder_ingredient" xml:space="preserve">
+    <value>Введите новый ингредиент!</value>
+  </data>
+  <data name="placeholder_method" xml:space="preserve">
+    <value>Опишите новый шаг</value>
+  </data>
+  <data name="placeholder_tip" xml:space="preserve">
+    <value>Расскажите о новой подсказке</value>
   </data>
   <data name="submit_add" xml:space="preserve">
     <value>Опубликовать рецепт!</value>
