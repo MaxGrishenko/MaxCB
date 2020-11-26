@@ -186,34 +186,40 @@
         window.onload = function () { AddTypes('@jsonIngredients', '@jsonMethods', '@jsonTips') };
 
         function AddTypes(Ing, Met, Tip) {
-            Ing = JSON.parse(Ing);
-            Met = JSON.parse(Met);
-            Tip = JSON.parse(Tip);
-            for (let i = 0; i < Ing.length; i++) {
-                if (i == 0) {
-                    $('#i0').attr('value', Ing[i]);
-                }
-                else {
-                    if (Ing[i] == null) {
-                        AddType('ingredient', '', '');
+            if (Ing != '') {
+                Ing = JSON.parse(Ing);
+                for (let i = 0; i < Ing.length; i++) {
+                    if (i == 0) {
+                        $('#i0').attr('value', Ing[i]);
                     }
-                    else AddType('ingredient', Ing[i], '');
+                    else {
+                        if (Ing[i] == null) {
+                            AddType('ingredient', '', '');
+                        }
+                        else AddType('ingredient', Ing[i], '');
+                    }
                 }
             }
-            for (let i = 0; i < Met.length; i++) {
-                if (!i) {
-                    SetTextArea(Met[i], "m0");
-                }
-                else {
-                    AddType('method', Met[i], i.toString());
+            if (Met != '') {
+                Met = JSON.parse(Met);
+                for (let i = 0; i < Met.length; i++) {
+                    if (!i) {
+                        SetTextArea(Met[i], "m0");
+                    }
+                    else {
+                        AddType('method', Met[i], i.toString());
+                    }
                 }
             }
-            for (let i = 0; i < Tip.length; i++) {
-                if (!i) {
-                    SetTextArea(Tip[i], "t0");
-                }
-                else {
-                    AddType('tip', Tip[i], i.toString());
+            if (Tip != '') {
+                Tip = JSON.parse(Tip);
+                for (let i = 0; i < Tip.length; i++) {
+                    if (!i) {
+                        SetTextArea(Tip[i], "t0");
+                    }
+                    else {
+                        AddType('tip', Tip[i], i.toString());
+                    }
                 }
             }
         }

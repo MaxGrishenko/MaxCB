@@ -17,6 +17,12 @@
         object-fit: cover;
     }
 </style>
+@*Anonim in "my" recipes*@
+@if ((ViewData["CurrentUserName"].ToString() == "null") && (ViewData["parameter"].ToString() == "my"))
+{
+    <h2 style="margin-left:10px">Для добавление новых рецептов в коллекцию зарегистрируйтесь или зайдите в аккаунт!</h2>
+    return;
+}
 @if (Model.Count == 0)
 {
     <h2 style="margin-left:10px">Нe найдено рецептов!</h2>
@@ -132,7 +138,7 @@ else
     $('#delOrRepModalButton').click(function () {
         let postId = $(this).data("postId");
         // Report post
-        if ($(this).data("type") == 'report') {
+        if ($(this).data("type") == 'report'){
             let targetName = $(this).data("targetName");
             $.ajax({
                 type: 'POST',
@@ -169,7 +175,6 @@ else
         }
     });
 
-
     function shadowPost(btn, postId) {
         $('.' + postId).attr('style', 'opacity : 0.4; pointer-events: none;');
         $(btn).attr('class', 'subButton btn btn-outline-secondary buttonPost');
@@ -180,33 +185,6 @@ else
         $(btn).attr('class', 'subButton btn btn-outline-danger buttonPost');
         $(btn).attr('style', 'opacity : 1.0');
     };
-
-@*    $('.delButton').click(function () {
-        console.log("Удалить рецепт!");
-        $('#delModalButton').click();
-        $('#delModalTitle').html(`Удалить рецепт '` + $(this).attr('name') + `'?`);
-        $('#delPostButton').attr('value', $(this).attr('value'));
-    });*@
-    $('delB')
-
-    $('#delPostButton').click(function () {
-        let postId = $(this).attr('value');
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("Delete", "Recipe")',
-            dataType: 'html',
-            data: { 'postId': postId },
-            success: function () {
-                console.log("Delete post: '" + postId + "';");
-                shadowPost(this, postId);
-                $(this).attr('class', 'btn btn-danger');
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        });
-    });
-
 
     $('.subButton').click(function () {
         let button = $(this);

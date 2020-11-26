@@ -231,7 +231,7 @@ namespace Web.Controllers
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(model);
         }
-
+        
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl)
         {

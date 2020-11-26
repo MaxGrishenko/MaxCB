@@ -25,7 +25,7 @@
     <header class="mine site-header">
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-image: linear-gradient(to right, #00733a, #188046, #298d52, #379a5e, #44a86a);">
 
-            <a class="navbar-brand" href="#">MaxCookBook</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Recipe" asp-action="Show">MaxCookBook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,22 +35,36 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="Show">@Localizer["nav_collection"]</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="AddorEdit">@Localizer["nav_add"]</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="ReportPanel">@Localizer["nav_report_panel"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="AdminPanel">@Localizer["nav_admin_panel"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="CreateInitialRoles">ПЕР Начальные роли ПЕР</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="UpdateRole">ПЕР Дать админку ПЕР</a>
-                    </li>
+                    @{ 
+                        var user = this.User;
+                    }
+                    @if (user != null)
+                    {
+                        @if (user.IsInRole("User") || user.IsInRole("Manager") || user.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="AddorEdit">@Localizer["nav_add"]</a>
+                            </li>
+                        }
+                        @if (user.IsInRole("Manager") || user.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="ReportPanel">@Localizer["nav_report_panel"]</a>
+                            </li>
+                        }
+                        @if (user.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="AdminPanel">@Localizer["nav_admin_panel"]</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="CreateInitialRoles">ПЕР Начальные роли ПЕР</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="UpdateRole">ПЕР Дать админку ПЕР</a>
+                        </li>
+                    }
                 </ul>
                 <form class="form-inline">
                     <a asp-area="" asp-controller="Recipe" asp-action="SetLanguage" asp-route-culture="ru" asp-route-returnAction="@ViewData["returnAction"]">
@@ -66,7 +80,7 @@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <form class="form-inline" method="post" asp-controller="Auth" asp-action="Logout">
-                        <a class="nav-link text-light" asp-area="" asp-controller="Profile" asp-action="Info">@User.Identity.Name</a>
+                        <a class="nav-link text-light text-lg-center">@User.Identity.Name</a>
                         <button type="submit" class="btn btn-danger">@Localizer["nav_exit"]</button>
                     </form>
                 }
