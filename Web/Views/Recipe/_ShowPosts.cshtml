@@ -1,4 +1,6 @@
 ﻿@model List<Web.Models.PostViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <style>
     .buttonPost {
@@ -17,15 +19,15 @@
         object-fit: cover;
     }
 </style>
-@*Anonim in "my" recipes*@
+
 @if ((ViewData["CurrentUserName"].ToString() == "null") && (ViewData["parameter"].ToString() == "my"))
 {
-    <h2 style="margin-left:10px">Для добавление новых рецептов в коллекцию зарегистрируйтесь или зайдите в аккаунт!</h2>
+    <h2 style="margin-left:10px">@Localizer["show_login"]</h2>
     return;
 }
 @if (Model.Count == 0)
 {
-    <h2 style="margin-left:10px">Нe найдено рецептов!</h2>
+    <h2 style="margin-left:10px">@Localizer["show_empty"]</h2>
 }
 else
 {
@@ -42,8 +44,8 @@ else
                         <p class="card-text @item.PostId">@item.Description</p>
                         @if (ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager")
                         {
-                            <button class="delButton buttonPost btn btn-outline-dark" data-postId="@item.PostId" data-postTitle="@item.Title">Удалить</button>
-                            <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn aPosts btn-outline-primary float-right @item.PostId">Редактировать</a>
+                            <button class="delButton buttonPost btn btn-outline-dark" data-postId="@item.PostId" data-postTitle="@item.Title">@Localizer["post_delete"]</button>
+                            <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn aPosts btn-outline-primary float-right @item.PostId">@Localizer["post_edit"]</a>
                         }
                         else if (ViewData["CurrentUserName"].ToString() != "null")
                         {
@@ -51,22 +53,22 @@ else
                             {
                                 if (item.SubscribeFlag == false)
                                 {
-                                    <button class="allSubButton buttonPost btn btn-outline-warning" value="@item.PostId" name="sub" type="button">Подписаться</button>
+                                    <button class="allSubButton buttonPost btn btn-outline-warning" value="@item.PostId" name="sub" type="button">@Localizer["post_sub"]</button>
                                 }
                                 else
                                 {
-                                    <button class="allSubButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">Отписаться</button>
+                                    <button class="allSubButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">@Localizer["post_unsub"]</button>
                                 }
                             }
                             else
                             {
-                                <button class="subButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">Отписаться</button>
+                                <button class="subButton buttonPost btn btn-outline-danger" value="@item.PostId" name="unsub" type="button">@Localizer["post_unsub"]</button>
                             }
                         }
-                        <button class="postButton buttonPost btn btn-outline-success @item.PostId" value="@item.PostId" type="button">Просмотреть</button>
+                        <button class="postButton buttonPost btn btn-outline-success @item.PostId" value="@item.PostId" type="button">@Localizer["post_show"]</button>
                     </div>
                     <div class="card-footer">
-                        <small class="text-muted @item.PostId">Опубликовал: @item.CreatorUser</small>
+                        <small class="text-muted @item.PostId">@Localizer["post_creator"] @item.CreatorUser</small>
                         @if (!(ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager" || ViewData["CurrentUserName"].ToString() == "null"))
                         {
                             <button class="repButton btn btn-outline-secondary buttonPost" data-postId="@item.PostId" data-targetName="@item.CreatorUser.UserName.ToString()">
@@ -97,7 +99,7 @@ else
                         </div>
                         <div class="modal-body" id="delOrRepModalBody"></div>
                         <div class="modal-footer">
-                            <button class="btn buttonPost btn-secondary" type="button" data-dismiss="modal">Назад</button>
+                            <button class="btn buttonPost btn-secondary" type="button" data-dismiss="modal">@Localizer["modal_back"]</button>
                             <button class="btn buttonPost btn-danger" type="button" id="delOrRepModalButton" data-dismiss="modal"></button>
                         </div>
                     </div>
@@ -113,25 +115,25 @@ else
     $('.delButton').click(function () {
         let postId = $(this).attr('data-postId');
         let postTitle = $(this).attr('data-postTitle');
-        $('#delOrRepModalTitle').html("Удалить '" + postTitle + "'?")
-        $('#delOrRepModalBody').html("Данный рецепт будет удалён и его подписчиков!");
+        $('#delOrRepModalTitle').html("@Localizer["post_delete"] '" + postTitle + "'?")
+        $('#delOrRepModalBody').html("@Localizer["modal_del_body"]");
         let button = $('#delOrRepModalButton');
         button.data('type', 'delete');
         button.data('postId', postId);
-        $('#delOrRepModalButton').html("Удалить");
+        $('#delOrRepModalButton').html("@Localizer["post_delete"]");
         $('#delOrRepButton').click();
     });
     // Show modal info for report post
     $('.repButton').click(function () {
         let postId = $(this).attr('data-postId');
         let targetName = $(this).attr('data-targetName');
-        $('#delOrRepModalTitle').html("Пожаловаться на '" + targetName + "'?");
-        $('#delOrRepModalBody').html("Данный рецепт содержит оскорбительный материал?");
+        $('#delOrRepModalTitle').html("@Localizer["modal_rep_title"] '" + targetName + "'?");
+        $('#delOrRepModalBody').html("@Localizer["modal_rep_body"]");
         let button = $('#delOrRepModalButton');
         button.data('type', 'report');
         button.data('postId', postId);
         button.data('targetName', targetName);
-        $('#delOrRepModalButton').html("Пожаловаться");
+        $('#delOrRepModalButton').html("@Localizer["modal_rep_button"]");
         $('#delOrRepButton').click()
     });
     // Modal delete/report post action
@@ -200,13 +202,13 @@ else
                 if (subFlag == 'unsub') {
                     shadowPost(button, postId);
                     button.attr('name', 'sub');
-                    button.html('Вернуть подписку');
+                    button.html('@Localizer["post_back_sub"]');
                     console.log("Unsub post: '" + postId + "';");
                 }
                 else {
                     unshadowPost(button, postId);
                     button.attr('name', 'unsub');
-                    button.html('Отписаться');
+                    button.html('@Localizer["post_unsub"]');
                     console.log("Sub post: '" + postId + "';");
                 }
             },
@@ -229,13 +231,13 @@ else
             success: function () {
                 if (subFlag == 'sub') {
                     button.attr('name', 'unsub');
-                    button.html('Отписаться');
+                    button.html('@Localizer["post_unsub"]');
                     button.attr('class', 'allSubButton btn btn-outline-danger buttonPost');
                     console.log("Sub post: '" + postId + "';");
                 }
                 else {
                     button.attr('name', 'sub');
-                    button.html('Подписаться');
+                    button.html('@Localizer["post_sub"]');
                     button.attr('class', 'allSubButton btn btn-outline-warning buttonPost');
                     console.log("Unsub post: '" + postId + "';");
                 }
