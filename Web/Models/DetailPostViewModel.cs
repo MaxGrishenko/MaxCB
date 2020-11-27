@@ -11,11 +11,11 @@ namespace Web.Models
         public long PostId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string CategoryName { get; set; }
+        public int Category { get; set; }
         public int PrepTime { get; set; }
         public int CookTime { get; set; }
         public int Marinade { get; set; }
-        public string DifficultyName { get; set; }
+        public int Difficulty { get; set; }
         public string ImagePath { get; set; }
         public List<Ingredient> Ingredients { get; set; }
         public List<Method> Methods { get; set; }

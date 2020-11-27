@@ -1,18 +1,166 @@
 ﻿@model DetailPostViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "_ShowRecipe";
+    string categoryName, difficultyName;
+    switch (Model.Category)
+    {
+        case 1:
+            categoryName = Localizer["category_1"].Value.Trim();
+            break;
+        case 2:
+            categoryName = Localizer["category_2"].Value.Trim();
+            break;
+        case 3:
+            categoryName = Localizer["category_3"].Value.Trim();
+            break;
+        case 4:
+            categoryName = Localizer["category_4"].Value.Trim();
+            break;
+        default:
+            categoryName = Localizer["category_0"].Value.Trim();
+            break;
+    }
+    switch (Model.Difficulty)
+    {
+        case 1:
+            difficultyName = Localizer["difficult_1"].Value.Trim();
+            break;
+        case 2:
+            difficultyName = Localizer["difficult_2"].Value.Trim();
+            break;
+        case 3:
+            difficultyName = Localizer["difficult_3"].Value.Trim();
+            break;
+        default:
+            difficultyName = Localizer["difficult_0"].Value.Trim();
+            break;
+    }
 }
 
 <script src="https://kit.fontawesome.com/034d9c5f61.js" crossorigin="anonymous"></script>
 <style>
-    img {
+    .imgRecipe {
+        border-radius: 25px;
         width: 100%;
         height: 30vw;
         object-fit: cover;
     }
-</style>
 
+    .list-rectangle {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .list-rectangle > li {
+        position: relative;
+        display: block;
+        margin-bottom: .25rem;
+        padding: .325rem .825rem .325rem 1.325rem;
+        color: #fff;
+        background: #C2185B;
+    }
+
+    .list-rectangle > li:last-child {
+        margin-bottom: 0;
+    }
+
+    .list-rectangle > li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0.5rem;
+        background: #ec407a;
+    }
+
+    .list-counter-circle {
+        list-style: none;
+        counter-reset: list;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+        .list-counter-circle > li {
+            position: relative;
+            display: block;
+            height: 2rem;
+            line-height: 2rem;
+            margin-left: 1.75rem;
+            margin-bottom: .25rem;
+            padding-left: 1rem;
+            padding-right: .5rem;
+            color: #fff;
+            background: #7b1fa2;
+            white-space: nowrap;
+            border-radius: .25rem
+        }
+
+            .list-counter-circle > li:last-child {
+                margin-bottom: 0;
+            }
+
+            .list-counter-circle > li::before {
+                content: counter(list);
+                counter-increment: list;
+                position: absolute;
+                left: -2rem;
+                top: -.25rem;
+                bottom: -.25rem;
+                width: 2.5rem;
+                line-height: 2rem;
+                border-radius: 1.25rem;
+                border: .25rem solid #fff;
+                text-align: center;
+                color: #fff;
+                background: #7b1fa2;
+            }
+
+    .list-counter-square {
+        list-style: none;
+        counter-reset: list;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+        .list-counter-square > li {
+            position: relative;
+            display: block;
+            height: 2rem;
+            line-height: 2rem;
+            margin-left: 2rem;
+            margin-bottom: .25rem;
+            padding-left: .5rem;
+            padding-right: .5rem;
+            color: #fff;
+            background: #f57c00;
+            white-space: nowrap;
+        }
+
+            .list-counter-square > li:last-child {
+                margin-bottom: 0;
+            }
+
+            .list-counter-square > li::before {
+                content: counter(list);
+                counter-increment: list;
+                position: absolute;
+                left: -2rem;
+                top: 0;
+                bottom: 0;
+                width: 2rem;
+                line-height: 2rem;
+                text-align: center;
+                color: #fff;
+                background: rgba(245, 124, 0, .75);
+            }
+</style>
 
 <div class="card-header text-center">
     <h1>@Model.Title</h1>
@@ -20,51 +168,83 @@
 <div class="card-body container-fluid">
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-main-tab" data-toggle="tab" href="#nav-main" role="tab" aria-controls="nav-main" aria-selected="true">Краткое описание</a>
-            <a class="nav-item nav-link" id="nav-ingredients-tab" data-toggle="tab" href="#nav-ingredients" role="tab" aria-controls="nav-ingredients" aria-selected="false">Ингредиенты</a>
-            <a class="nav-item nav-link" id="nav-methods-tab" data-toggle="tab" href="#nav-methods" role="tab" aria-controls="nav-methods" aria-selected="false">Способ приготовления</a>
-            <a class="nav-item nav-link" id="nav-tips-tab" data-toggle="tab" href="#nav-tips" role="tab" aria-controls="nav-tips" aria-selected="false">Подсказки и советы</a>
-            <a class="nav-item nav-link" id="nav-comments-tab" data-toggle="tab" href="#nav-comments" role="tab" aria-controls="nav-comments" aria-selected="false">Отзывы</a>
+            <a class="nav-item nav-link active" id="nav-main-tab" data-toggle="tab" href="#nav-main" role="tab" aria-controls="nav-main" aria-selected="true"><i class="fas fa-list"></i> @Localizer["nav_description"]</a>
+            <a class="nav-item nav-link" id="nav-ingredients-tab" data-toggle="tab" href="#nav-ingredients" role="tab" aria-controls="nav-ingredients" aria-selected="false"><i class="fas fa-pepper-hot"></i> @Localizer["nav_ingredients"]</a>
+            <a class="nav-item nav-link" id="nav-methods-tab" data-toggle="tab" href="#nav-methods" role="tab" aria-controls="nav-methods" aria-selected="false"><i class="fas fa-list-ol"></i> @Localizer["nav_methods"]</a>
+            <a class="nav-item nav-link" id="nav-tips-tab" data-toggle="tab" href="#nav-tips" role="tab" aria-controls="nav-tips" aria-selected="false"><i class="fas fa-info"></i> @Localizer["nav_tips"]</a>
+            <a class="nav-item nav-link" id="nav-comments-tab" data-toggle="tab" href="#nav-comments" role="tab" aria-controls="nav-comments" aria-selected="false"><i class="fas fa-pen"></i> @Localizer["nav_comments"]</a>
         </div>
-    </nav>  
+    </nav>
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-main" role="tabpanel" aria-labelledby="nav-main-tab">
-            <div>
-                <img src="@Model.ImagePath" alt="recipe image cap" />
-                <h2>@Model.Title</h2>
+            <div class="container">
+                <p></p>
+                <div class="row">
+                    <img class="imgRecipe" src="@Model.ImagePath" alt="recipe image cap" />
+                </div>
+                <p></p>
+                <div class="row justify-content-md-center">
+                    <h4>@Model.Description</h4>
+                </div>
                 <hr />
+                <div class="row justify-content-md-center">
+                    <div class="col col-lg-auto">
+                        <h5><i class="fas fa-list-alt"></i> @Localizer["li_category"]</h5>
+                        <h5><i class="fas fa-hammer"></i> @Localizer["li_time_cool"]</h5>
+                        <h5><i class="fas fa-hourglass-start"></i> @Localizer["li_time_cool"]</h5>
+                        <h5><i class="fas fa-clock"></i> @Localizer["li_time_cool"]</h5>
+                        <h5><i class="fas fa-stopwatch-20"></i> @Localizer["li_time_marinade"]</h5>
+                    </div>
+                    <div class="col col-lg-auto">
+                        <h5>@categoryName</h5>
+                        <h5>@difficultyName</h5>
+                        <h5>@Model.PrepTime @Localizer["li_min"]</h5>
+                        <h5>@Model.CookTime @Localizer["li_min"]</h5>
+                        <h5>@Model.Marinade @Localizer["li_min"]</h5>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="tab-pane fade" id="nav-ingredients" role="tabpanel" aria-labelledby="nav-ingredients-tab">
             <div id="ingredientsContainer">
-                @foreach(var item in Model.Ingredients)
-                {
-                    <p>@item.Name</p>
-                }
+                <p></p>
+                <ul class="list-rectangle">
+                    @foreach (var item in Model.Ingredients)
+                    {
+                        <li>@item.Name</li>
+                    }
+                </ul>
             </div>
         </div>
         <div class="tab-pane fade" id="nav-methods" role="tabpanel" aria-labelledby="nav-methods-tab">
             <div id="methodsContainer">
-                @for (int i = 0; i < Model.Methods.Count(); i++)
-                {
-                    <p>@(i+1). @Model.Methods[i].Name</p>
-                }
+                <p></p>
+                <ol class="list-counter-circle">
+                    @foreach (var item in Model.Methods)
+                    {
+                        <li>@item.Name</li>
+                    }
+                </ol>
             </div>
         </div>
         <div class="tab-pane fade" id="nav-tips" role="tabpanel" aria-labelledby="nav-tips-tab">
             <div id="tipsContainer">
-                @if (Model.Tips.Count == 1)
-                {
-                    <h3 class="text-center">Автор решил оставить советы при себе!</h3>
-                }
-                else
-                {
-                    @for (int i = 0; i < Model.Tips.Count(); i++)
+                <p></p>
+                <ol class="list-counter-square">
+                    @if (Model.Tips.Count == 1)
                     {
-                        <p>@(i+1). @Model.Tips[i].Name</p>
+                    <li>@Localizer["tips_empty"]</li>
                     }
-                }
+                    else
+                    {
+                        @foreach (var item in Model.Tips)
+                        {
+                            <li>@item.Name</li>
+                        }
+                    }
+                </ol>
             </div>
         </div>
 
@@ -75,14 +255,13 @@
         </div>
 
     </div>
-    
+
 </div>
 
 <script type="text/javascript">
     $('#nav-main-tab').on('hide.bs.tab', function (e) {
         $('#commentsContainer').empty();
     });
-
 
     $('#nav-comments-tab').click(function () {
         $.ajax({
