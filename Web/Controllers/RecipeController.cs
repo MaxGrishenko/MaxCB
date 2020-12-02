@@ -242,27 +242,34 @@ namespace Web.Controllers
             var comments = _postService.GetComments(postId);
             foreach(var item in comments)
             {
+                var commentUser = await _userManager.FindByIdAsync(item.UserId);
                 model.Add(new CommentViewModel()
                 {
                     CommentId = item.Id,
-                    Name = item.Name,
-                    User = await _userManager.FindByIdAsync(item.UserId)
+                    Text = item.Name,
+                    UserName = commentUser.UserName,
+                    UserId = commentUser.Id
                 });
             }
             var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
             var user = await _userManager.FindByIdAsync(userId);
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles[0].ToString();
+
             ViewData["postId"] = postId;
-            ViewData["email"] = user.Email;
-           
+            ViewData["userId"] = user.Id;
+            ViewData["userName"] = user.UserName;
+            ViewData["userRole"] = role;
+
             return PartialView("_ShowComments", model);
         }
         // Work with Comment
-        [HttpPost]
+/*        [HttpPost]
         public IActionResult MakeComment(string name, long postId)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
             return Ok(_postService.MakeComment(name,postId,userId));
-        }
+        }*/
         [HttpPost]
         public IActionResult DeleteComment(long commentId)
         {

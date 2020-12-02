@@ -259,14 +259,11 @@
 </div>
 
 <script type="text/javascript">
-    $('#nav-main-tab').on('hide.bs.tab', function (e) {
-        $('#commentsContainer').empty();
-    });
-
     $('#nav-comments-tab').click(function () {
+        $('#commentsContainer').empty();
         $.ajax({
             type: 'POST',
-            url: 'PartialComments',
+            url: '@Url.Action("PartialComments", "Recipe")',
             dataType: 'html',
             data: { 'postId': @Model.PostId },
             success: function (data) {

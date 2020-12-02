@@ -3,109 +3,196 @@
 <div class="container">
     <br />
     <div class="input-group mb-3">
-        <textarea class="form-control" id="commentArea" placeholder="Оставьте ваш отзыв!"></textarea>
-        <button id="commentButton" class="btn btn-outline-success">Отправить</button>
+        <textarea id="commentArea" class="form-control" placeholder="Оставьте ваш отзыв!"></textarea>
+        <button id="sendCommentButton" class="btn btn-outline-success" data-userId="@ViewData["userId"]" data-userName="@ViewData["userName"]" data-postId="@ViewData["postID"]">Отправить</button>
     </div>
     <hr />
-
-    <h5 id="textEmpty" class="text-center text-muted" hidden="hidden">Пока комментариев нет, но вы можете оставить его первым!</h5>
-
-    <div id="comments">
+    <div id="commentContainer">
+        @{ 
+            Model.Reverse();
+        }
         @foreach (var item in Model)
         {
-            <div id="CommentDiv" class="input-group">
-                <div>
-                    <h6>@item.User.Email</h6>
-                    <h5>@item.Name</h5>
-                </div>
-                @if (ViewData["email"].ToString() == @item.User.Email)
-                {
-                    <button value="@item.CommentId" class="btn btn-outline-danger float-right" onclick="deleteComment(this)">Удалить</button>
+            <div id="@item.CommentId" data-postId="@ViewData["postID"]">
+                <h5>@item.UserName</h5>
+                <p>@item.Text</p>
+                @if (item.UserId == ViewData["userId"].ToString() || "Admin" == ViewData["userRole"].ToString() || "Manager" == ViewData["userRole"].ToString()){
+
+                    <button class="deleteCommentButton btn btn-outline-danger">Удалить</button>
                 }
                 else
                 {
-                    <button value="@item.CommentId" name="@item.User.Id" class="btn btn-outline-warning float-right" onclick="reportComment(this)">Пожаловаться</button>
+                    <button class="btn btn-outline-secondary">Пожаловаться</button>
                 }
+                <hr />
             </div>
         }
     </div>
+
+    <h5 id="textEmpty" class="text-center text-muted" hidden="hidden">Пока комментариев нет, но вы можете оставить его первым!</h5>
 </div>
 
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript">
-    function deleteComment(button) {
-        $.ajax({
-            type: 'POST',
-            url: 'DeleteComment',
-            dataType: 'html',
-            data: { 'commentId': $(button).val() },
-            success: function (commentId) {
-                console.log('Delete comment: ' + commentId);
-                button.parentNode.innerHTML = '';
-                checkEmpty();
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        });
-    };
-    function reportComment(button) {
-        let commentId = $(button).val();
-        let targetId = $(button).attr('name');
-        $.ajax({
-            type: 'POST',
-            url: 'ReportComment',
-            dataType: 'html',
-            data: { 'commentId': commentId, 'targetId': targetId },
-            success: function (result) {
-                if (result == 'Add') {
-                    console.log(`Report comment '` + commentId + `' by '` + targetId + `'`);
-                }
-                else {
-                    console.log('This report already exist!');
-                }
-                
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        });
-    }
+    @* SignalR *@
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/commentshub").build();
 
+    connection.start().then(function () { }).catch(function (err) { return console.error(err.toString()); });
 
-    $('#commentButton').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: 'MakeComment',
-            dataType: 'html',
-            data: { 'name': $('#commentArea').val(), 'postId': @ViewData["postId"] },
-            success: function (commentId) {
-                console.log('Make comment: ' + commentId);
+    connection.on("ReceiveComment", function (text, userName, postId, commentId) {
+        if (@ViewData["PostId"] == postId) {
+            CreateComment(text, userName, commentId);
+            console.log("Get comment from:'" + userName + "' to post:'" + postId + "'");
+        }
+    });
+    connection.on("RemoveComment", function (commentId, postId) {
+        if (@ViewData["PostId"] == postId) {
+            $("#" + commentId).empty();
+            console.log("Remove comment:'" + commentId + "' from post:'" + postId + "'");
+        }
+    });
 
-                let divMain = document.createElement('div');
-                divMain.setAttribute('class', 'input-group');
-                divMain.setAttribute('id', 'CommentDiv');
-                let div = document.createElement('div');
-                let email = document.createElement('h6');
-                let name = document.createElement('h5')
-                email.textContent = '@ViewData["email"]';
-                name.textContent = $('#commentArea').val();
-                let button = document.createElement('button');
-                button.setAttribute('class', 'btn btn-outline-danger');
-                button.setAttribute('onclick', 'deleteComment(this)');
-                button.setAttribute('value', commentId);
-                button.textContent = 'Удалить';
+    $('#sendCommentButton').click(function () {
+        let text = $('#commentArea').val();
+        let userId = $(this).attr('data-userId');
+        let userName = $(this).attr('data-userName');
+        let postId = $(this).attr('data-postId');
 
-                div.appendChild(email);
-                div.appendChild(name);
-                divMain.appendChild(div);
-                divMain.appendChild(button);
-                $('#comments').append(divMain);
+        if (ValidateComment()) {
+            connection.invoke("SendComment", text, userId, userName, parseInt(postId)).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+    });
 
-                $('#commentArea').val('');
-            },
-            error: function (err) {
-                console.log(err);
-            }
+    $('.deleteCommentButton').click(function () {
+        let postId = $(this).parent().attr("data-postId");
+        let commentId = $(this).parent().attr("id");
+        console.log(postId);
+        console.log(commentId);
+        connection.invoke("DeleteComment", parseInt(commentId), parseInt(postId)).catch(function (err) {
+            return console.error(err.toString());
         });
     });
+
+    
+
+    function ValidateComment(text) {
+        // TODO
+        return true;
+    }
+
+    function CreateComment(text, userName, commentId) {
+        let commentDiv = document.createElement("div");
+        commentDiv.setAttribute("id", commentId);
+
+        let commentName = document.createElement("h5");
+        commentName.innerHTML = userName;
+        commentDiv.appendChild(commentName);
+
+        let commentText = document.createElement("p");
+        commentText.innerHTML = text;
+        commentDiv.appendChild(commentText);
+
+        let buttonAction = document.createElement("button");
+        buttonAction.setAttribute("type", "button");
+        if (userName == "@ViewData["userName"]" || "Admin" == "@ViewData["userRole"]" || "Manager" == "@ViewData["userRole"]") {
+            buttonAction.setAttribute("class", "deleteCommentButton btn btn-outline-danger");
+            buttonAction.innerHTML = "Удалить";
+        }
+        else {
+            buttonAction.setAttribute("class", "btn btn-outline-secondary");
+            buttonAction.innerHTML = "Пожаловаться";
+        }
+        commentDiv.appendChild(buttonAction);
+
+        commentDiv.appendChild(document.createElement("hr"));
+
+        $('#commentContainer').prepend(commentDiv);
+    }
 </script>
+
+@*<script src="~/js/comments.js"></script>
+
+@*
+    <script type="text/javascript">
+        function deleteComment(button) {
+
+            $.ajax({
+                type: 'POST',
+                url: 'DeleteComment',
+                dataType: 'html',
+                data: { 'commentId': $(button).val() },
+                success: function (commentId) {
+                    console.log('Delete comment: ' + commentId);
+                    button.parentNode.innerHTML = '';
+                    checkEmpty();
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        };
+
+        function reportComment(button) {
+            let commentId = $(button).val();
+            let targetId = $(button).attr('name');
+            $.ajax({
+                type: 'POST',
+                url: 'ReportComment',
+                dataType: 'html',
+                data: { 'commentId': commentId, 'targetId': targetId },
+                success: function (result) {
+                    if (result == 'Add') {
+                        console.log(`Report comment '` + commentId + `' by '` + targetId + `'`);
+                    }
+                    else {
+                        console.log('This report already exist!');
+                    }
+
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
+        $('#commentButton').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: 'MakeComment',
+                dataType: 'html',
+                data: { 'name': $('#commentArea').val(), 'postId': @ViewData["postId"] },
+                success: function (commentId) {
+                    console.log('Make comment: ' + commentId);
+
+                    let divMain = document.createElement('div');
+                    divMain.setAttribute('class', 'input-group');
+                    divMain.setAttribute('id', 'CommentDiv');
+                    let div = document.createElement('div');
+                    let email = document.createElement('h6');
+                    let name = document.createElement('h5')
+                    email.textContent = '@ViewData["email"]';
+                    name.textContent = $('#commentArea').val();
+                    let button = document.createElement('button');
+                    button.setAttribute('class', 'btn btn-outline-danger');
+                    button.setAttribute('onclick', 'deleteComment(this)');
+                    button.setAttribute('value', commentId);
+                    button.textContent = 'Удалить';
+
+                    div.appendChild(email);
+                    div.appendChild(name);
+                    divMain.appendChild(div);
+                    divMain.appendChild(button);
+                    $('#comments').append(divMain);
+
+                    $('#commentArea').val('');
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+    </script>
+*@

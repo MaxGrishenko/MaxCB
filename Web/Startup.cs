@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
@@ -15,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Repo;
 using Service;
 using Service.Interfaces;
 using Service.Services;
 using Web.Attributes.Localization;
+using Web.Hubs; 
 
 namespace Web
 {
@@ -46,6 +40,7 @@ namespace Web
             services.AddTransient<IPostService, PostService>();
 
             services.AddSingleton<IValidationAttributeAdapterProvider, LocalizationValidationAttributeAdapterProvider>();
+            services.AddSignalR();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options=>
             {
@@ -107,6 +102,7 @@ namespace Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<CommentsHub>("/commentshub");
             });
         }
     }

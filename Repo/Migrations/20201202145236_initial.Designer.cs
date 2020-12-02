@@ -10,8 +10,8 @@ using Repo;
 namespace Repo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20201116154531_Initial")]
-    partial class Initial
+    [Migration("20201202145236_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
