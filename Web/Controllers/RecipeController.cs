@@ -237,6 +237,8 @@ namespace Web.Controllers
                 Methods = _methodService.GetMethods(recipeEntity.Id).ToList(),
                 Tips = _tipService.GetTips(recipeEntity.Id).ToList(),
             };
+            if (User.Identity.IsAuthenticated) ViewData["userIsAuth"] = "true";
+            else ViewData["userIsAuth"] = "false";
             return PartialView("_ShowRecipe", model);
         }
         [HttpPost]
@@ -267,17 +269,51 @@ namespace Web.Controllers
 
             return PartialView("_ShowComments", model);
         }
+        [HttpPost]
+        public async Task<IActionResult> PartialObject(long objectId, string objectType)
+        {
+            ObjectViewModel model;
+            if (objectType == "comment")
+            {
+                var commentEntity = _postService.GetComment(objectId);
+                var user = await _userManager.FindByIdAsync(commentEntity.UserId);
+                model = new ObjectViewModel()
+                {
+                    Title = user.UserName,
+                    Description = commentEntity.Name
+                };
+            }
+            else
+            {
+                var postEntity = _postService.GetPost(objectId);
+                var recipeEntity = _recipeService.GetRecipe(postEntity.RecipeId);
+                model = new ObjectViewModel()
+                {
+                    Title = recipeEntity.Title,
+                    Description = recipeEntity.Description,
+                    ImagePath = recipeEntity.ImagePath,
+                    Ingredients = _ingredientService.GetIngredients(recipeEntity.Id).ToList(),
+                    Methods = _methodService.GetMethods(recipeEntity.Id).ToList(),
+                    Tips = _tipService.GetTips(recipeEntity.Id).ToList()
+                };
+            }
+            return PartialView("_ShowObject", model);
 
+        }
         // Work with reports
+        [Authorize(Roles = "User")]
         [HttpPost]
         public IActionResult ReportComment(long commentId, string userId, string targetId)
         {
             return Ok(_reportService.ReportComment(commentId, userId, targetId));
         }
+        [Authorize(Roles = "User")]
         [HttpPost]
-        public IActionResult ReportPost(long postId, string userId, string targetId)
+        public async Task<IActionResult> ReportPost(long postId, string targetName)
         {
-            return Ok(_reportService.ReportPost(postId, userId, targetId));
+            var target = await _userManager.FindByNameAsync(targetName);
+            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+            return Ok(_reportService.ReportPost(postId, userId, target.Id));
         }
         // =================
 

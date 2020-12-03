@@ -117,52 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="modal_back" xml:space="preserve">
-    <value>Back</value>
+  <data name="ingredients" xml:space="preserve">
+    <value>Ингредиенты</value>
   </data>
-  <data name="modal_del_body" xml:space="preserve">
-    <value>This recipe will be removed from its subscribers too!</value>
+  <data name="methods" xml:space="preserve">
+    <value>Метод приготовления</value>
   </data>
-  <data name="modal_rep_body" xml:space="preserve">
-    <value>Does this recipe contain offensive material?</value>
+  <data name="tips" xml:space="preserve">
+    <value>Подсказки и советы</value>
   </data>
-  <data name="modal_rep_button" xml:space="preserve">
-    <value>Complain</value>
-  </data>
-  <data name="modal_rep_title" xml:space="preserve">
-    <value>Complain about</value>
-  </data>
-  <data name="post_back_sub" xml:space="preserve">
-    <value>Return subscription</value>
-  </data>
-  <data name="post_creator" xml:space="preserve">
-    <value>Posted by:</value>
-  </data>
-  <data name="post_delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="post_edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="post_report_add" xml:space="preserve">
-    <value>Your complaint will be reviewed by moderation</value>
-  </data>
-  <data name="post_report_exists" xml:space="preserve">
-    <value>Your complaint has already been taken into account!</value>
-  </data>
-  <data name="post_show" xml:space="preserve">
-    <value>Show</value>
-  </data>
-  <data name="post_sub" xml:space="preserve">
-    <value>Subscribe</value>
-  </data>
-  <data name="post_unsub" xml:space="preserve">
-    <value>Unsubscribe</value>
-  </data>
-  <data name="show_empty" xml:space="preserve">
-    <value>No recipes found!</value>
-  </data>
-  <data name="show_login" xml:space="preserve">
-    <value>To add new recipes to the collection, register or log into your account!</value>
+  <data name="tips_empty" xml:space="preserve">
+    <value>Автор решил оставить подсказки при себе</value>
   </data>
 </root>

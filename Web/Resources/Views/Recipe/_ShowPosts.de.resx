@@ -144,6 +144,12 @@
   <data name="post_edit" xml:space="preserve">
     <value>Bearbeiten</value>
   </data>
+  <data name="post_report_add" xml:space="preserve">
+    <value>Ihre Beschwerde wird durch Moderation geprüft</value>
+  </data>
+  <data name="post_report_exists" xml:space="preserve">
+    <value>Ihre Beschwerde wurde bereits berücksichtigt!</value>
+  </data>
   <data name="post_show" xml:space="preserve">
     <value>Aussicht</value>
   </data>

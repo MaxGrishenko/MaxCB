@@ -119,6 +119,10 @@ namespace Service.Services
         {
             return postRepository.Get(id);
         }
+        public Comment GetComment(long id)
+        {
+            return commentRepository.Get(id);
+        }
         public void SubscribePost(long id, string userId)
         {
             postUserRepository.Insert(new PostUser()

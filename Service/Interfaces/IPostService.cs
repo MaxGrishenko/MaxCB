@@ -10,6 +10,7 @@ namespace Service.Interfaces
         IEnumerable<Post> GetPosts(string typePar, string userId, string inpPar, int catPar, int difPar);
         IEnumerable<Comment> GetComments(long postId);
         Post GetPost(long id);
+        Comment GetComment(long id);
         long MakeComment(string name, long postId, string userId);
         void DeleteComment(long commentId);
         void SubscribePost(long id, string userId);

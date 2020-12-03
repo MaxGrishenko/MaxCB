@@ -144,6 +144,12 @@
   <data name="post_edit" xml:space="preserve">
     <value>Редактировать</value>
   </data>
+  <data name="post_report_add" xml:space="preserve">
+    <value>Ваша жалоба будет рассмотрена модерацией</value>
+  </data>
+  <data name="post_report_exists" xml:space="preserve">
+    <value>Ваша жалоба уже учтена!</value>
+  </data>
   <data name="post_show" xml:space="preserve">
     <value>Просмотреть</value>
   </data>

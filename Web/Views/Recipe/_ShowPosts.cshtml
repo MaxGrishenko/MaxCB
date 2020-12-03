@@ -148,10 +148,14 @@ else
                 dataType: 'html',
                 data: { 'postId': postId, 'targetName': targetName},
                 success: function (result) {
-                    if (result == 'Add') {
+                    if (result == "true") {
+                        alert("@Localizer["post_report_add"]");
                         console.log("Report post: '" + postId + "';");
                     }
-                    else console.log("Report post: '" + postId + "' already exists;");
+                    else {
+                        alert("@Localizer["post_report_exists"]");
+                        console.log("Report post: '" + postId + "' already exists;");
+                    }
                 },
                 error: function (err) {
                     console.log(err);

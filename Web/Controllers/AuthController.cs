@@ -76,6 +76,7 @@ namespace Web.Controllers
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+                if (roles[0] == "Admin") return Ok();
                 foreach(var item in roles)
                 {
                     await _userManager.RemoveFromRoleAsync(user, item);
@@ -131,6 +132,7 @@ namespace Web.Controllers
                 else dict[key].Amount += 1;
             });
             var opa = dict.Values.ToList();
+            ViewData["returnAction"] = "/Auth/ReportPanel";
             return View(opa);
         }
         [HttpPost]
@@ -165,6 +167,7 @@ namespace Web.Controllers
             }
             return Ok();
         }
+        
         // Login/LogOut Work
         [HttpGet]
         public async Task<IActionResult> Registration(string returnAction)

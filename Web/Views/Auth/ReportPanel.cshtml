@@ -11,14 +11,14 @@
 </style>
 
 <div class="container alert alert-dark">
-    <h1 class="text-center">Репорт-панель</h1>
+    <h1 class="text-center">@Localizer["header_report"]</h1>
     <div class="container alert alert-warning">
-        <h3>Полученные жалобы:</h3>
+        <h3>@Localizer["header_main"]</h3>
         <hr />
         <div class="text-center">
             @if (Model.Count == 0)
             {
-                <h2>Нет жалоб на данный момент!</h2>
+            <h2>@Localizer["report_empty"]</h2>
             }
             else
             {
@@ -26,10 +26,10 @@
                     <table id="tableId" class="table-striped" style="width:100%">
                         <thead>
                             <tr>
-                                <th scope="col">Нарушитель:</th>
-                                <th scope="col">Количество жалоб:</th>
-                                <th scope="col">Тип:</th>
-                                <th scope="col">Итог:</th>
+                                <th scope="col">@Localizer["report_target"]</th>
+                                <th scope="col">@Localizer["report_amount"]</th>
+                                <th scope="col">@Localizer["report_type"]</th>
+                                <th scope="col">@Localizer["report_final"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,26 +46,29 @@
                                         <div>
                                             @if (item.ReportType == "comment")
                                             {
-                                                <text>Комментарий</text>
+                                                <text>@Localizer["report_comment"]</text>
+                                                <div>
+                                                    <button data-objectType="comment" class="bEnd showObjectButton btn btn-success">@Localizer["report_show"]</button>
+                                                </div>
                                             }
                                             else
                                             {
-                                                <text>Пост</text>
+                                                <text>@Localizer["report_post"]</text>
+                                                <div>
+                                                    <button data-objectType="post" class="bEnd showObjectButton btn btn-success">@Localizer["report_show"]</button>
+                                                </div>
                                             }
-                                        </div>
-                                        <div>
-                                            <button class="bEnd delButton btn btn-success">Просмотреть</button>
                                         </div>
                                     </td>
                                     <td>
                                         <div>
-                                            <button class="bEnd delRepButton btn btn-outline-primary">Снять обвинения</button>
+                                            <button class="bEnd delRepButton btn btn-outline-primary">@Localizer["report_clear"]</button>
                                         </div>
                                         <div>
-                                            <button class="bEnd delObjButton btn btn-outline-danger">Удалить объект</button>
+                                            <button class="bEnd delObjButton btn btn-outline-danger">@Localizer["report_delete"]</button>
                                         </div>
                                         <div>
-                                            <button class="bEnd banButton btn btn-outline-dark">Удалить и заблокировать</button>
+                                            <button class="bEnd banButton btn btn-outline-dark">@Localizer["report_ban"]</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -74,6 +77,16 @@
                     </table>
                 </div>
             }
+        </div>
+    </div>
+
+    @*Modal for showDetailPost*@
+    <button id="postModalButton" type="button" hidden="hidden" data-toggle="modal" data-target="#postModal"></button>
+    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div id="postContainer" class="modal-content">
+                @*Parial View*@
+            </div>
         </div>
     </div>
 </div>
@@ -126,7 +139,7 @@
             if (document.getElementById("tableId").rows.length == 2) {
                 document.getElementById("tableId").remove();
                 let h5 = document.createElement("h5");
-                h5.textContent = "Нет жалоб на данный момент!";
+                h5.textContent = "@Localizer["report_empty"]";
                 $('#mainContainer').append(h5);
             }
             else $(tr).remove();
@@ -159,5 +172,25 @@
             BanUser(targetId);
             Clean(infoTr);
         });
+
+        $('.showObjectButton').click(function () {
+            let objectId = $(this).parent().parent().parent().parent().attr('id');
+            let objectType = $(this).attr('data-objectType');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialObject", "Recipe")',
+                dataType: 'html',
+                data: { 'objectId': parseInt(objectId), 'objectType': objectType },
+                success: function (data) {
+                    $('#postContainer').children().remove();
+                    console.log("Show object: '" + objectId + "' of type '" + objectType + "';");
+                    $('#postContainer').append(data);
+                    $('#postModalButton').click();
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+    });
     </script>
 }

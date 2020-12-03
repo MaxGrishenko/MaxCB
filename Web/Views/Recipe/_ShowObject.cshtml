@@ -1,0 +1,85 @@
+﻿@model Web.Models.ObjectViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    .imgReport {
+        border-radius: 25px;
+        width: 100%;
+        height: 30vw;
+        object-fit: cover;
+    }
+</style>
+
+
+@if (Model.Ingredients == null)
+{
+    <div class="card-header">
+        <h1>@Model.Title</h1>
+    </div>
+
+    <div class="card-body container-fluid">
+        <h5>@Model.Description</h5>
+    </div>
+}
+else
+{
+    <div class="card-header text-center">
+        <h1>@Model.Title</h1>
+    </div>
+    <div class="card-body container-fluid">
+        <div class="tab-content" id="nav-tabContent">
+            <div class="container">
+                <p></p>
+                <div class="row">
+                    <img class="imgReport" src="@Model.ImagePath" alt="recipe image cap" />
+                </div>
+                <p></p>
+                <div class="row justify-content-md-center">
+                    <h4>@Model.Description</h4>
+                </div>
+                <hr />
+
+                <div class="row justify-content-md-center">
+                    <h5>@Localizer["ingredients"]</h5>
+                </div>
+                <ul>
+                    @foreach (var item in Model.Ingredients)
+                    {
+                        <li>@item.Name</li>
+                    }
+                </ul>
+                <hr />
+
+                <div class="row justify-content-md-center">
+                    <h5>@Localizer["methods"]</h5>
+                </div>
+                <ol>
+                    @foreach (var item in Model.Methods)
+                    {
+                        <li>@item.Name</li>
+                    }
+                </ol>
+                <hr />
+
+                <div class="row justify-content-md-center">
+                    <h5>@Localizer["tips"]</h5>
+                </div>
+                <ol>
+                    @if (Model.Tips.Count == 1)
+                    {
+                    <li>@Localizer["tips_empty"]</li>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.Tips)
+                        {
+                            <li>@item.Name</li>
+                        }
+                    }
+                </ol>
+                <hr />
+            </div>
+        </div>
+    </div>
+}
+

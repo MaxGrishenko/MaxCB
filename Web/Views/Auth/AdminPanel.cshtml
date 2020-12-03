@@ -76,7 +76,7 @@
             $('#userContainer').empty();
             $.ajax({
                 type: 'POST',
-                url: 'PartialUsers',
+                url: '@Url.Action("PartialUsers", "Auth")',
                 dataType: 'html',
                 data: { 'inputPar': $('#inputPar').val(), 'comboPar': getSearchString() },
                 success: function (data) {
