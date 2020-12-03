@@ -21,23 +21,16 @@ namespace Service.Services
 
         private IRepository<Recipe> recipeRepository;
         private IRepository<Comment> commentRepository;
-        
-        private IRepository<Report> reportRepository;
-        private IRepository<ReportUser> reportUserRepository;
 
         public PostService(IRepository<Post> postRepository, 
                            IRepository<PostUser> postUserRepository,
                            IRepository<Recipe> recipeRepository, 
-                           IRepository<Comment> commentRepository,
-                           IRepository<Report> reportRepository,
-                           IRepository<ReportUser> reportUserRepository)
+                           IRepository<Comment> commentRepository)
         {
             this.postRepository = postRepository;
             this.postUserRepository = postUserRepository;
             this.recipeRepository = recipeRepository;
             this.commentRepository = commentRepository;
-            this.reportRepository = reportRepository;
-            this.reportUserRepository = reportUserRepository;
         }
 
         public IEnumerable<Post> GetPosts(string typePar, string userId, string inpPar, int catPar, int difPar)
@@ -189,7 +182,6 @@ namespace Service.Services
             postRepository.SaveChanges();
             postUserRepository.SaveChanges();
         }
-
         public void DeleteUserComments(string userId)
         {
             commentRepository.GetAll().ToList().ForEach(u => {
@@ -226,81 +218,6 @@ namespace Service.Services
                     }
                 });
             }
-        }
-
-        // Work with reports
-        public IEnumerable<Report> GetReports()
-        {
-            var reports = new List<Report>();
-            reportUserRepository.GetAll().ToList().ForEach(u =>
-            {
-                reports.Add(reportRepository.Get(u.ReportId));
-            });
-            return reports;
-        }
-        public void MakeReport(Report report, string userId)
-        {
-            reportRepository.Insert(report);
-            reportUserRepository.Insert(new ReportUser()
-            {
-                ReportId = report.Id,
-                UserId = userId,
-            });
-        }
-
-        public bool CheckReportCommentExist(string userId, long commentId)
-        {
-            var reportUsers = reportUserRepository.GetAll().ToList();
-            foreach(var reportUser in reportUsers)
-            {
-                if (reportUser.UserId == userId && reportRepository.Get(reportUser.ReportId).CommentId == commentId)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public bool CheckReportPostExist(string userId, long postId)
-        {
-            var reportUsers = reportUserRepository.GetAll().ToList();
-            foreach (var reportUser in reportUsers)
-            {
-                if (reportUser.UserId == userId && reportRepository.Get(reportUser.ReportId).PostId == postId)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        public void DeleteReportsFromComment(string targetId, long commentId)
-        {
-            reportUserRepository.GetAll().ToList().ForEach(u =>
-            {
-                var report = reportRepository.Get(u.ReportId);
-                if (report.TargetId == targetId && report.CommentId == commentId)
-                {
-                    reportUserRepository.Remove(u);
-                    reportRepository.Remove(report);
-     
-                }
-            });
-            reportUserRepository.SaveChanges();
-            reportRepository.SaveChanges();
-        }
-        public void DeleteReportsFromPost(string targetId, long postId)
-        {
-            reportUserRepository.GetAll().ToList().ForEach(u =>
-            {
-                var report = reportRepository.Get(u.ReportId);
-                if (report.TargetId == targetId && report.PostId == postId)
-                {
-                    reportUserRepository.Remove(u);
-                    reportRepository.Remove(report);  
-                }
-            });
-            reportUserRepository.SaveChanges();
-            reportRepository.SaveChanges();
         }
     }
 }

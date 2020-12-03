@@ -117,70 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="category_0" xml:space="preserve">
-    <value>Not specified</value>
+  <data name="comment_delete" xml:space="preserve">
+    <value>Удалить</value>
   </data>
-  <data name="category_1" xml:space="preserve">
-    <value>Breakfast</value>
+  <data name="comment_placeholder" xml:space="preserve">
+    <value>Оставьте ваш отзыв!</value>
   </data>
-  <data name="category_2" xml:space="preserve">
-    <value>Dinner</value>
+  <data name="comment_report" xml:space="preserve">
+    <value>Пожаловаться</value>
   </data>
-  <data name="category_3" xml:space="preserve">
-    <value>Supper</value>
+  <data name="comment_send" xml:space="preserve">
+    <value>Отправить</value>
   </data>
-  <data name="category_4" xml:space="preserve">
-    <value>Other</value>
+  <data name="comment_wrong" xml:space="preserve">
+    <value>Длина отзыва должна быть от 6 до 200 символов</value>
   </data>
-  <data name="difficult_0" xml:space="preserve">
-    <value>Not specified</value>
+  <data name="report_add" xml:space="preserve">
+    <value>Ваша жалоба будет рассмотрена модерацией</value>
   </data>
-  <data name="difficult_1" xml:space="preserve">
-    <value>Simply</value>
-  </data>
-  <data name="difficult_2" xml:space="preserve">
-    <value>Normally</value>
-  </data>
-  <data name="difficult_3" xml:space="preserve">
-    <value>Heavy</value>
-  </data>
-  <data name="difficult_4" xml:space="preserve">
-    <value>Gordon Ramsay</value>
-  </data>
-  <data name="li_category" xml:space="preserve">
-    <value>Category:</value>
-  </data>
-  <data name="li_difficulty" xml:space="preserve">
-    <value>Complexity:</value>
-  </data>
-  <data name="li_min" xml:space="preserve">
-    <value>Min.</value>
-  </data>
-  <data name="li_time_cool" xml:space="preserve">
-    <value>Cooking time:</value>
-  </data>
-  <data name="li_time_marinade" xml:space="preserve">
-    <value>Pickling time:</value>
-  </data>
-  <data name="li_time_prepare" xml:space="preserve">
-    <value>Preparation time:</value>
-  </data>
-  <data name="nav_comments" xml:space="preserve">
-    <value>Reviews</value>
-  </data>
-  <data name="nav_description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="nav_ingredients" xml:space="preserve">
-    <value>Ingredients</value>
-  </data>
-  <data name="nav_methods" xml:space="preserve">
-    <value>Instructions</value>
-  </data>
-  <data name="nav_tips" xml:space="preserve">
-    <value>Hints</value>
-  </data>
-  <data name="tips_empty" xml:space="preserve">
-    <value>The author decided to keep the secrets to himself!</value>
+  <data name="report_exist" xml:space="preserve">
+    <value>Ваша жалоба уже учтена!</value>
   </data>
 </root>

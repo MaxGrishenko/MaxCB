@@ -17,16 +17,19 @@ namespace Web.Controllers
     public class AuthController : Controller
     {
         private readonly IPostService _postService;
+        private readonly IReportService _reportService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AuthController(IPostService postService,
+                              IReportService reportService,
                               UserManager<ApplicationUser> userManager,
                               SignInManager<ApplicationUser> signInManager,
                               RoleManager<IdentityRole> roleManager)
         {
             this._postService = postService;
+            this._reportService = reportService;
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
@@ -98,7 +101,7 @@ namespace Web.Controllers
         public IActionResult ReportPanel()
         {
             var dict = new Dictionary<string, ReportViewModel>();
-            _postService.GetReports().ToList().ForEach(u =>
+            _reportService.GetReports().ToList().ForEach(u =>
             {
                 var key = u.TargetId;
                 string type;
@@ -136,10 +139,10 @@ namespace Web.Controllers
             switch (type)
             {
                 case "comment":
-                    _postService.DeleteReportsFromComment(targetId, objectId);
+                    _reportService.DeleteReportsFromComment(objectId, targetId);
                     break;
                 case "post":
-                    _postService.DeleteReportsFromPost(targetId, objectId);
+                    _reportService.DeleteReportsFromPost(objectId, targetId);
                     break;
                 default:
                     break;
@@ -286,6 +289,7 @@ namespace Web.Controllers
                             Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                         };
                         await _userManager.CreateAsync(user);
+                        await _userManager.AddToRoleAsync(user, "User");
                     }
 
                     await _userManager.AddLoginAsync(user, info);

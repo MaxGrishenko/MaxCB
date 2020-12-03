@@ -38,6 +38,7 @@ namespace Web
             services.AddTransient<IMethodService, MethodService>();
             services.AddTransient<ITipService, TipService>();
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<IReportService, ReportService>();
 
             services.AddSingleton<IValidationAttributeAdapterProvider, LocalizationValidationAttributeAdapterProvider>();
             services.AddSignalR();

@@ -21,13 +21,5 @@ namespace Service.Interfaces
 
         void DeleteUserComments(string userId);
         void DeleteUserPosts(string userId);
-
-        //Work with Reports
-        IEnumerable<Report> GetReports();
-        void MakeReport(Report report, string userId);
-        bool CheckReportCommentExist(string userId, long commentId);
-        bool CheckReportPostExist(string userId, long postId);
-        void DeleteReportsFromComment(string targetId, long commentId);
-        void DeleteReportsFromPost(string targetId, long postId);
     }
 }
