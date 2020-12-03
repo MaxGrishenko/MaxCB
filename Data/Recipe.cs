@@ -13,7 +13,7 @@ namespace Data
         public int CookTime { get; set; }
         public int Marinade { get; set; }
         public int Difficulty { get; set; }
-        public string? ImagePath { get; set; }
+        public string ImagePath { get; set; }
 
         public virtual Post Post { get; set; }
         
