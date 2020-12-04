@@ -7,8 +7,6 @@ using Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualBasic.CompilerServices;
 using Service.Interfaces;
 using Web.Models;
 
@@ -97,7 +95,9 @@ namespace Web.Controllers
             }
             return Ok();
         }
+
         // ManagerPanelWork
+        [HttpGet]
         [Authorize(Roles = "Admin, Manager")]
         public IActionResult ReportPanel()
         {
@@ -237,7 +237,6 @@ namespace Web.Controllers
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(model);
         }
-        
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl)
         {
@@ -306,13 +305,13 @@ namespace Web.Controllers
                 return View("Error");
             }
         }
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
         // InitialAction
         public async Task<bool> CreateInitialRoles()
         {

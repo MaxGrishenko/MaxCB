@@ -2,19 +2,40 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
+<style>
+    .bottom-text {
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        font-size: 35px;
+        margin-left: 20px;
+        padding-right: 40px;
+        opacity: 40inherit;
+        text-align: right;
+    }
+</style>
+
 <div class="container">
-    @* send comment area*@
     <br />
-    <div class="input-group mb-3">
-        <textarea id="commentArea" class="form-control" placeholder="@Localizer["comment_placeholder"]"></textarea>
-        <button id="sendCommentButton" class="btn btn-outline-success" data-userId="@ViewData["userId"]" data-userName="@ViewData["userName"]" data-postId="@ViewData["postID"]">@Localizer["comment_send"]</button>
-    </div>
+    @* send comment area*@
+    @if (ViewData["userRole"].ToString() == "Banned")
+    {
+        <div>
+            <h2 class="bottom-text text-center">@Localizer["comment_blocked"]</h2>
+        </div>
+    }
+    else
+    {
+        <div class="input-group mb-3">
+            <textarea id="commentArea" class="form-control" placeholder="@Localizer["comment_placeholder"]"></textarea>
+            <button id="sendCommentButton" class="btn btn-outline-success" data-userId="@ViewData["userId"]" data-userName="@ViewData["userName"]" data-postId="@ViewData["postID"]">@Localizer["comment_send"]</button>
+        </div>
+    }
     <hr />
+
     @* all comments to post *@
     <div id="commentContainer">
         @{
             // For showing comments from newest to oldest
-            Model.Reverse(); 
+            Model.Reverse();
         }
         @foreach (var item in Model)
         {
