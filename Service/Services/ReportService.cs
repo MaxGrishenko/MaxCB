@@ -28,6 +28,18 @@ namespace Service.Services
             });
             return reports;
         }
+        public IEnumerable<Report> GetReports(string userId)
+        {
+            var reports = new List<Report>();
+            reportUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.UserId == userId)
+                {
+                    reports.Add(reportRepository.Get(u.ReportId));
+                }
+            });
+            return reports;
+        }
         public bool ReportComment(long commentId, string userId, string targetId)
         {
             var reportUsers = reportUserRepository.GetAll().ToList();
@@ -78,12 +90,27 @@ namespace Service.Services
             });
             return true;
         }
-        public void DeleteReportsFromComment(long commentId, string targetId)
+
+        public void DeleteReport(long id)
+        {
+            reportUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.ReportId == id)
+                {
+                    reportUserRepository.Remove(u);
+                    reportRepository.Remove(reportRepository.Get(id));
+                }
+            });
+            reportUserRepository.SaveChanges();
+            reportRepository.SaveChanges();
+        }
+
+        public void DeleteReportsFromComment(long commentId)
         {
             reportUserRepository.GetAll().ToList().ForEach(u =>
             {
                 var report = reportRepository.Get(u.ReportId);
-                if (report.TargetId == targetId && report.CommentId == commentId)
+                if (report.CommentId == commentId)
                 {
                     reportUserRepository.Remove(u);
                     reportRepository.Remove(report);
@@ -93,12 +120,12 @@ namespace Service.Services
             reportUserRepository.SaveChanges();
             reportRepository.SaveChanges();
         }
-        public void DeleteReportsFromPost(long postId, string targetId)
+        public void DeleteReportsFromPost(long postId)
         {
             reportUserRepository.GetAll().ToList().ForEach(u =>
             {
                 var report = reportRepository.Get(u.ReportId);
-                if (report.TargetId == targetId && report.PostId == postId)
+                if (report.PostId == postId)
                 {
                     reportUserRepository.Remove(u);
                     reportRepository.Remove(report);

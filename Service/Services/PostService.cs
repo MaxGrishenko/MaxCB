@@ -22,9 +22,9 @@ namespace Service.Services
         private IRepository<Recipe> recipeRepository;
         private IRepository<Comment> commentRepository;
 
-        public PostService(IRepository<Post> postRepository, 
+        public PostService(IRepository<Post> postRepository,
                            IRepository<PostUser> postUserRepository,
-                           IRepository<Recipe> recipeRepository, 
+                           IRepository<Recipe> recipeRepository,
                            IRepository<Comment> commentRepository)
         {
             this.postRepository = postRepository;
@@ -32,67 +32,30 @@ namespace Service.Services
             this.recipeRepository = recipeRepository;
             this.commentRepository = commentRepository;
         }
-
-        public IEnumerable<Post> GetPosts(string typePar, string userId, string inpPar, int catPar, int difPar)
+        public IEnumerable<Post> GetPosts()
+        {
+            return postRepository.GetAll().ToList();
+        }
+        public IEnumerable<Post> GetPosts(string userId)
         {
             var posts = new List<Post>();
-            if (typePar == "all")
+            postRepository.GetAll().ToList().ForEach(u =>
             {
-                var postsEntity = postRepository.GetAll();
-                foreach (var postEntity in postsEntity)
-                {
-                    var recipeEntity = recipeRepository.Get(postEntity.Id);
-                    if (catPar != 0 && catPar != recipeEntity.Category)
-                    {
-                        continue;
-                    }
-                    if (difPar != 0 && difPar != recipeEntity.Difficulty)
-                    {
-                        continue;
-                    }
-                    if (inpPar != null && !recipeEntity.Title.ToLower().Contains(inpPar.ToLower()))
-                    {
-                        continue;
-                    }
-                    posts.Add(postEntity);
+                if (recipeRepository.Get(u.RecipeId).UserId == userId){
+                    posts.Add(u);
                 }
-            }
-            else
-            {
-                var postUsers = postUserRepository.GetAll();
-                foreach (var postUser in postUsers)
-                {
-                    if (userId == postUser.UserId || userId == null)
-                    {
-                        var postEntity = GetPost(postUser.PostId);
-                        var recipeEntity = recipeRepository.Get(postEntity.Id);
-                        if (catPar != 0 && catPar != recipeEntity.Category)
-                        {
-                            continue;
-                        }
-                        if (difPar != 0 && difPar != recipeEntity.Difficulty)
-                        {
-                            continue;
-                        }
-                        if (inpPar != null && !recipeEntity.Title.ToLower().Contains(inpPar.ToLower()))
-                        {
-                            continue;
-                        }
-                        posts.Add(postEntity);
-                    }
-                }
-            }
+            });
             return posts;
         }
-        
-
-
-
+        public IEnumerable<PostUser> GetPostUsers()
+        {
+            return postUserRepository.GetAll().ToList();
+        }
         public Post GetPost(long id)
         {
             return postRepository.Get(id);
         }
-        
+
         public void SubscribePost(long id, string userId)
         {
             postUserRepository.Insert(new PostUser()
@@ -112,6 +75,20 @@ namespace Service.Services
                 }
             });
         }
+        public void UnsubscribeUser(string userId)
+        {
+            postUserRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.UserId == userId)
+                {
+                    if (recipeRepository.Get(postRepository.Get(u.PostId).RecipeId).UserId != userId)
+                    {
+                        postUserRepository.Remove(u);
+                    }
+                }
+            });
+            postUserRepository.SaveChanges();
+        }
         public bool SubscribeCheck(long id, string userId)
         {
             var postUsers = postUserRepository.GetAll().ToList();
@@ -125,6 +102,7 @@ namespace Service.Services
             }
             return false;
         }
+
         public void InsertPost(Post post, string userId)
         {
             postRepository.Insert(post);
@@ -134,10 +112,6 @@ namespace Service.Services
                 UserId = userId
             };
             postUserRepository.Insert(postUserEntity);
-        }
-        public void UpdatePost(Post post)
-        {
-            postRepository.Update(post);
         }
         public void DeletePost(long id)
         {
@@ -156,34 +130,6 @@ namespace Service.Services
             postRepository.SaveChanges();
             postUserRepository.SaveChanges();
         }
-        
-
-        public void DeleteUserPosts(string userId)
-        {
-            DeleteUserComments(userId);
-
-            var postsId = new List<long>();
-            postUserRepository.GetAll().ToList().ForEach(u =>
-            {
-                var postEntity = postRepository.Get(u.PostId);
-                var recipeEntity = recipeRepository.Get(postEntity.RecipeId);
-                if (recipeEntity.UserId == userId)
-                {
-                    postsId.Add(u.PostId);
-                }
-            });
-            
-            foreach (var postId in postsId)
-            {
-                postUserRepository.GetAll().ToList().ForEach(u =>
-                {
-                    if (u.PostId == postId)
-                    {
-                        DeletePost(postId);
-                    }
-                });
-            }
-        }
 
         public IEnumerable<Comment> GetComments(long postId)
         {
@@ -192,7 +138,19 @@ namespace Service.Services
             {
                 if (u.PostId == postId)
                 {
-                    comments.Add(commentRepository.Get(u.Id));
+                    comments.Add(u);
+                }
+            });
+            return comments;
+        }
+        public IEnumerable<Comment> GetComments(string userId)
+        {
+            var comments = new List<Comment>();
+            commentRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.UserId == userId)
+                {
+                    comments.Add(u);
                 }
             });
             return comments;
@@ -217,16 +175,6 @@ namespace Service.Services
             commentRepository.Remove(commentRepository.Get(commentId));
             commentRepository.SaveChanges();
         }
-        public void DeleteUserComments(string userId)
-        {
-            commentRepository.GetAll().ToList().ForEach(u => {
-                if (u.UserId == userId)
-                {
-                    commentRepository.Remove(u);
-                }
-            });
-            commentRepository.SaveChanges();
-        }
         public bool CommentOwnerCheck(long commentId, string userId)
         {
             var comments = commentRepository.GetAll().ToList();
@@ -239,5 +187,6 @@ namespace Service.Services
             }
             return false;
         }
+
     }
 }

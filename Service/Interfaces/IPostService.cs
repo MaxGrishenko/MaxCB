@@ -7,24 +7,25 @@ namespace Service.Interfaces
 {
     public interface IPostService
     {
-        IEnumerable<Post> GetPosts(string typePar, string userId, string inpPar, int catPar, int difPar);
-        
+        IEnumerable<Post> GetPosts();
+        IEnumerable<Post> GetPosts(string userId);
+        IEnumerable<PostUser> GetPostUsers();
         Post GetPost(long id);
-
+        
         void SubscribePost(long id, string userId);
         void UnsubscribePost(long id, string userId);
+        void UnsubscribeUser(string userId);
         bool SubscribeCheck(long id, string userId);
+
         void InsertPost(Post post, string userId);
-        void UpdatePost(Post post);
         void DeletePost(long id);
-        void DeleteUserPosts(string userId);
 
         // Work with comments
         IEnumerable<Comment> GetComments(long postId);
+        IEnumerable<Comment> GetComments(string userId);
         Comment GetComment(long id);
         long MakeComment(string name, long postId, string userId);
         void DeleteComment(long commentId);
-        void DeleteUserComments(string userId);
         bool CommentOwnerCheck(long commentId, string userId);
     }
 }

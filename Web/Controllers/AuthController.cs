@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 using Service.Interfaces;
 using Web.Models;
 
@@ -14,20 +16,26 @@ namespace Web.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
+        private readonly IRecipeService _recipeService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(IPostService postService,
+        public AuthController(IWebHostEnvironment webHostEnvironment, 
+                              IPostService postService,
                               IReportService reportService,
+                              IRecipeService recipeService,
                               UserManager<ApplicationUser> userManager,
                               SignInManager<ApplicationUser> signInManager,
                               RoleManager<IdentityRole> roleManager)
         {
+            this._webHostEnvironment = webHostEnvironment;
             this._postService = postService;
             this._reportService = reportService;
+            this._recipeService = recipeService;
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
@@ -42,29 +50,40 @@ namespace Web.Controllers
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PartialUsers(string inputPar = null, string comboPar = "empty")
         {
             var model = new List<UserViewModel>();
-            foreach (var user in _userManager.Users)
+            Dictionary<ApplicationUser, string> users = new Dictionary<ApplicationUser, string>();
+            string[] roles = { "Moderator", "User", "Banned" };
+            foreach(string role in roles)
             {
-                var roles = await _userManager.GetRolesAsync(user);
-                var role = roles[0].ToString();
-                if (comboPar.Contains(role) || (comboPar == "empty" && role != "Admin")) 
+                var tempUsers = await _userManager.GetUsersInRoleAsync(role);
+                foreach(var user in tempUsers)
                 {
-                    var emailCheck = user.Email.Substring(0, user.Email.IndexOf('@')).ToLower();
-                    var nameCheck = user.UserName.ToLower();
+                    users.Add(user, role);
+                }
+            }
+       
+            foreach (var user in users)
+            {
+                if (comboPar == "empty" || comboPar.Contains(user.Value))
+                {
+                    var emailCheck = user.Key.Email.Substring(0, user.Key.Email.IndexOf('@')).ToLower();
+                    var nameCheck = user.Key.UserName.ToLower();
                     if (inputPar == null || emailCheck.Contains(inputPar.ToLower()) || nameCheck.Contains(inputPar.ToLower()))
                     {
                         model.Add(new UserViewModel()
                         {
-                            userId = user.Id,
-                            name = user.UserName,
-                            email = user.Email,
-                            role = roles[0].ToString()
+                            userId = user.Key.Id,
+                            name = user.Key.UserName,
+                            email = user.Key.Email,
+                            role = user.Value
                         });
                     }
                 }
             }
+
             return PartialView("~/Views/Auth/_ShowUsers.cshtml", model);
         }
         [HttpPost]
@@ -86,11 +105,40 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string userId)
         {
+            
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                _postService.DeleteUserPosts(userId);
-                _postService.DeleteUserPosts(userId);
+                // user comments (and reports on them)
+                _postService.GetComments(userId).ToList().ForEach(c =>
+                {
+                    _reportService.DeleteReportsFromComment(c.Id);
+                    _postService.DeleteComment(c.Id);
+                });
+                
+                // user reports
+                _reportService.GetReports(userId).ToList().ForEach(r =>
+                {
+                    _reportService.DeleteReport(r.Id);
+                });
+
+                // unsubscribe user from others
+                _postService.UnsubscribeUser(userId);
+
+                // delete posts
+                _postService.GetPosts(userId).ToList().ForEach(u =>
+                {
+                    _postService.GetComments(u.Id).ToList().ForEach(c =>
+                    {
+                        _reportService.DeleteReportsFromComment(c.Id);
+                    });
+                    _reportService.DeleteReportsFromPost(u.Id);
+
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string imagePath = _recipeService.GetRecipe(_postService.GetPost(u.Id).RecipeId).ImagePath;
+                    _postService.DeletePost(u.Id);
+                    if (imagePath != "/Image/test1.jpg" && imagePath != "/Image/emptyImage.png") { System.IO.File.Delete(wwwRootPath + imagePath); }
+                });
                 await _userManager.DeleteAsync(user);
             }
             return Ok();
@@ -136,15 +184,15 @@ namespace Web.Controllers
             return View(opa);
         }
         [HttpPost]
-        public IActionResult DeleteReports(long objectId, string targetId, string type)
+        public IActionResult DeleteReports(long objectId, string type)
         {
             switch (type)
             {
                 case "comment":
-                    _reportService.DeleteReportsFromComment(objectId, targetId);
+                    _reportService.DeleteReportsFromComment(objectId);
                     break;
                 case "post":
-                    _reportService.DeleteReportsFromPost(objectId, targetId);
+                    _reportService.DeleteReportsFromPost(objectId);
                     break;
                 default:
                     break;
@@ -223,10 +271,17 @@ namespace Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Password", "Неправильный логин и (или) пароль");
+                    }
                 }
                 else
                 {

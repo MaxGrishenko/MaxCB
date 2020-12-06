@@ -53,7 +53,7 @@ else
                         <p class="card-text @item.PostId">@item.Description</p>
                         @if (ViewData["CurrentUserName"].ToString() == item.CreatorUser.UserName || ViewData["CurrentUserRole"].ToString() == "Admin" || ViewData["CurrentUserRole"].ToString() == "Manager")
                         {
-                            <button class="delButton aPosts buttonPost btn btn-outline-dark" data-postId="@item.PostId" data-postTitle="@item.Title">@Localizer["post_delete"]</button>
+                            <button class="delButton aPosts btn btn-outline-dark" id="@item.PostId" data-postId="@item.PostId" data-postTitle="@item.Title">@Localizer["post_delete"]</button>
                             <a asp-controller="Recipe" asp-action="AddorEdit" asp-route-recipeId="@item.RecipeId" class="btn aPosts btn-outline-primary float-right @item.PostId">@Localizer["post_edit"]</a>
                         }
                         else if (ViewData["CurrentUserName"].ToString() != "null")
@@ -180,8 +180,9 @@ else
                 data: { 'postId': postId },
                 success: function () {
                     console.log("Delete post: '" + postId + "';");
-                    shadowPost(this, postId);
-                    $(this).attr('class', 'btn btn-danger');
+                    $('.' + postId).attr('style', 'opacity : 0.4; pointer-events: none;');
+                    $('#' + postId).attr('style', 'opacity : 0.4; pointer-events: none;');
+
                 },
                 error: function (err) {
                     console.log(err);

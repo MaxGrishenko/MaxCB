@@ -174,6 +174,12 @@ namespace Web.Controllers
         {
             string wwwRootPath = _webHostEnvironment.WebRootPath;
             string imagePath = _recipeService.GetRecipe(_postService.GetPost(postId).RecipeId).ImagePath;
+            _postService.GetComments(postId).ToList().ForEach(u =>
+            {
+                _reportService.DeleteReportsFromComment(u.Id);
+            });
+            _reportService.DeleteReportsFromPost(postId);
+            
             _postService.DeletePost(postId);
             if (imagePath != "/Image/test1.jpg" && imagePath != "/Image/emptyImage.png") { System.IO.File.Delete(wwwRootPath + imagePath);}
             return Ok();
@@ -184,7 +190,7 @@ namespace Web.Controllers
         public async Task<IActionResult> PartialPost(string typePar, string inpPar, int catPar, int difPar)
         {
             var model = new List<PostViewModel>();
-            IEnumerable<Post> posts;
+            List<Post> posts = new List<Post>();
             string userId;
             ViewData["parameter"] = typePar;
             if (User.Identity.IsAuthenticated)
@@ -194,15 +200,65 @@ namespace Web.Controllers
                 var roles = await _userManager.GetRolesAsync(currentUser);
                 ViewData["CurrentUserName"] = currentUser.UserName;
                 ViewData["CurrentUserRole"] = roles[0];
-                posts = _postService.GetPosts(typePar, userId, inpPar, catPar, difPar);
+                
             }
             else
             {
                 userId = null;
-                posts = _postService.GetPosts(typePar, userId, inpPar, catPar, difPar);
                 ViewData["CurrentUserName"] = "null";
                 ViewData["CurrentUserRole"] = "null";
             }
+       
+            // Sorting
+            if (typePar == "all")
+            {
+                var postsEntity = _postService.GetPosts();
+                foreach (var post in postsEntity)
+                {
+                    var recipeEntity = _recipeService.GetRecipe(post.Id);
+                    if (catPar != 0 && catPar != recipeEntity.Category)
+                    {
+                        continue;
+                    }
+                    if (difPar != 0 && difPar != recipeEntity.Difficulty)
+                    {
+                        continue;
+                    }
+                    if (inpPar != null && !recipeEntity.Title.ToLower().Contains(inpPar.ToLower()))
+                    {
+                        continue;
+                    }
+                    posts.Add(post);
+                }
+            }
+            else
+            {
+                var postUsers = _postService.GetPostUsers();
+                foreach (var postUser in postUsers)
+                {
+                    if (userId == postUser.UserId || userId == null)
+                    {
+                        var postEntity = _postService.GetPost(postUser.PostId);
+                        var recipeEntity = _recipeService.GetRecipe(postEntity.RecipeId);
+                        
+                        if (catPar != 0 && catPar != recipeEntity.Category)
+                        {
+                            continue;
+                        }
+                        if (difPar != 0 && difPar != recipeEntity.Difficulty)
+                        {
+                            continue;
+                        }
+                        if (inpPar != null && !recipeEntity.Title.ToLower().Contains(inpPar.ToLower()))
+                        {
+                            continue;
+                        }
+                        posts.Add(postEntity);
+                    }
+                }
+            }
+
+
             foreach (var item in posts)
             {
                 var recipeEntity = _recipeService.GetRecipe(item.RecipeId);
@@ -303,13 +359,13 @@ namespace Web.Controllers
         }
 
         // Work with reports
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User, Banned")]
         [HttpPost]
         public IActionResult ReportComment(long commentId, string userId, string targetId)
         {
             return Ok(_reportService.ReportComment(commentId, userId, targetId));
         }
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User, Banned")]
         [HttpPost]
         public async Task<IActionResult> ReportPost(long postId, string targetName)
         {

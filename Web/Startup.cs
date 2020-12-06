@@ -1,13 +1,17 @@
+using System;
 using System.Globalization;
+using System.IO;
 using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Repo;
 using Service;
@@ -61,7 +65,6 @@ namespace Web
                 options.ClientId = "930067103957-4q37v0u22ghdoimarclkqimnlp4pqbnk.apps.googleusercontent.com";
                 options.ClientSecret = "wmcdX3PuWcHTCOzEZjT3kkbX";
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

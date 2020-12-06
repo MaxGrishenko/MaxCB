@@ -52,25 +52,11 @@ namespace Web.Hubs
                 if ((roles[0] == "Admin" || roles[0] == "Manager") || (roles[0] == "User" && _postService.CommentOwnerCheck(commentId, user.Id)))
                 {
                     string groupName = postId.ToString();
-                    _reportService.DeleteReportsFromComment(commentId, targetId);
+                    _reportService.DeleteReportsFromComment(commentId);
                     _postService.DeleteComment(commentId);
                     await Clients.Group(groupName).SendAsync("Remove", commentId);
                 }
             }
         }
-
-/*
-        public async Task SendComment(string text, string userId, string userName, long postId)
-        {
-            long commentId = _postService.MakeComment(text, postId, userId);
-            await Clients.All.SendAsync("ReceiveComment", text, userId, userName, postId, commentId);
-        }
-        public async Task DeleteComment(long commentId, long postId, string targetId)
-        {
-            _reportService.DeleteReportsFromComment(commentId, targetId);
-            _postService.DeleteComment(commentId);
-            await Clients.All.SendAsync("RemoveComment", commentId, postId);
-        }
-*/
     }
 }

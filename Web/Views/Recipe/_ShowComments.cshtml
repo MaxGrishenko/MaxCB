@@ -86,6 +86,7 @@
         let postId = $(this).attr('data-postId');
 
         if (ValidateComment(text) == true) {
+            $('#commentArea').val('');
             connection.invoke("Send", text, parseInt(postId)).catch(function (err) {
                 return console.error(err.toString());
             });
