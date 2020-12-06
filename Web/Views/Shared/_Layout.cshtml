@@ -9,16 +9,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Web</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
         .site-header {
             overflow: hidden;
         }
-        .site-header::-webkit-scrollbar {
-            height: 0;
-            width: 0;
-        }
+
+            .site-header::-webkit-scrollbar {
+                height: 0;
+                width: 0;
+            }
     </style>
 </head>
 <body style="background-image: linear-gradient(to bottom, #f6d9bb, #f8e1c8, #fbe9d5, #fdf0e2, #fff8f0);">
@@ -35,7 +37,7 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Recipe" asp-action="Show">@Localizer["nav_collection"]</a>
                     </li>
-                    @{ 
+                    @{
                         var user = this.User;
                     }
                     @if (user != null)
@@ -93,6 +95,7 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)

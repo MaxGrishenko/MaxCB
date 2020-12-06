@@ -65,7 +65,7 @@ namespace Web.Controllers
                     }
                 }
             }
-            return PartialView("_ShowUsers", model);
+            return PartialView("~/Views/Auth/_ShowUsers.cshtml", model);
         }
         [HttpPost]
         public async Task<IActionResult> ChangeRole(string userId, string role)

@@ -59,35 +59,68 @@
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript">
     "use strict";
+    if (typeof connection != "undefined") {
+        connection.stop();
+    }
     var connection = new signalR.HubConnectionBuilder().withUrl("/commentshub").build();
 
-    connection.start().then(function () { }).catch(function (err) { return console.error(err.toString()); });
-
-    connection.on("ReceiveComment", function (text, userId, userName, postId, commentId) {
-        if (@ViewData["PostId"] == postId) {
-            CreateComment(text, userId, userName, commentId);
-            console.log("Get comment from:'" + userName + "' to post:'" + postId + "'");
-        }
+    connection.start().then(function () {
+        let postId = "@ViewData["postId"]";
+        connection.invoke("Enter", parseInt(postId)).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }).catch(function (err) {
+        return console.error(err.toString());
     });
-
-    connection.on("RemoveComment", function (commentId, postId) {
-        if (@ViewData["PostId"] == postId) {
-            $("#" + commentId).empty();
-            console.log("Remove comment:'" + commentId + "' from post:'" + postId + "'");
-        }
+    connection.on("Receive", function (text, userId, userName, commentId) {
+        CreateComment(text, userId, userName, commentId);
+        console.log("Get comment from:'" + userName + "';");
+    });
+    connection.on("Remove", function (commentId) {
+        $('#' + commentId).empty();
+        console.log("Remove comment:'" + commentId + "';");
     });
 
     $('#sendCommentButton').click(function () {
         let text = $('#commentArea').val();
-        let userId = $(this).attr('data-userId');
-        let userName = $(this).attr('data-userName');
         let postId = $(this).attr('data-postId');
 
         if (ValidateComment(text) == true) {
-            connection.invoke("SendComment", text, userId, userName, parseInt(postId)).catch(function (err) {
+            connection.invoke("Send", text, parseInt(postId)).catch(function (err) {
                 return console.error(err.toString());
             });
         }
+    });
+    $('.deleteCommentButton').click(function () {
+        let postId = "@ViewData["postId"]";
+        let commentId = $(this).parent().attr("id");
+        let targetId = $(this).parent().attr("name");
+        connection.invoke("Delete", parseInt(commentId), parseInt(postId), targetId).catch(function (err) {
+            return console.error(err.toString());
+        });
+    });
+    $('.reportCommentButton').click(function () {
+        let commentId = $(this).parent().attr("id");
+        let targetId = $(this).parent().attr("name");
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ReportComment", "Recipe")',
+            dataType: 'html',
+            data: { 'commentId': commentId, 'userId': "@ViewData["userId"]", 'targetId': targetId },
+            success: function (result) {
+                if (result == "true") {
+                    console.log("Make report to comment:'" + commentId + "' by user '" + "@ViewData["userName"]" + "';");
+                    alert("@Localizer["report_add"]");
+                }
+                else {
+                    console.log("Report to comment:'" + commentId + "' by user '" + "@ViewData["userName"]" + "' already exists;");
+                    alert("@Localizer["report_exist"]");
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
     });
 
     function CreateComment(text, userId, userName, commentId) {
@@ -109,7 +142,7 @@
                 let postId = "@ViewData["postId"]";
                 let commentId = $(this).parent().attr("id");
                 let targetId = $(this).parent().attr("name");
-                connection.invoke("DeleteComment", parseInt(commentId), parseInt(postId), targetId).catch(function (err) {
+                connection.invoke("Delete", parseInt(commentId), parseInt(postId), targetId).catch(function (err) {
                     return console.error(err.toString());
                 });
             });
@@ -156,38 +189,6 @@
         }
         return true;
     }
-
-    $('.deleteCommentButton').click(function () {
-        let postId = "@ViewData["postId"]";
-        let commentId = $(this).parent().attr("id");
-        let targetId = $(this).parent().attr("name");
-        connection.invoke("DeleteComment", parseInt(commentId), parseInt(postId), targetId).catch(function (err) {
-            return console.error(err.toString());
-        });
-    });
-    $('.reportCommentButton').click(function () {
-        let commentId = $(this).parent().attr("id");
-        let targetId = $(this).parent().attr("name");
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("ReportComment", "Recipe")',
-            dataType: 'html',
-            data: { 'commentId': commentId, 'userId': "@ViewData["userId"]", 'targetId': targetId },
-            success: function (result) {
-                if (result == "true") {
-                    console.log("Make report to comment:'" + commentId + "' by user '" + "@ViewData["userName"]" + "';");
-                    alert("@Localizer["report_add"]");
-                }
-                else {
-                    console.log("Report to comment:'" + commentId + "' by user '" + "@ViewData["userName"]" + "' already exists;");
-                    alert("@Localizer["report_exist"]");
-                }
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        });
-    });
 </script>
 
 

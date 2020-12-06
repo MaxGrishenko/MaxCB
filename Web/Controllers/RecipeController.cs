@@ -217,7 +217,7 @@ namespace Web.Controllers
                     CreatorUser = await _userManager.FindByIdAsync(recipeEntity.UserId)
                 });
             }
-            return PartialView("_ShowPosts", model);
+            return PartialView("~/Views/Recipe/_ShowPosts.cshtml", model);
         }
         [HttpPost]
         public IActionResult PartialRecipe(long postId)
@@ -240,7 +240,7 @@ namespace Web.Controllers
             };
             if (User.Identity.IsAuthenticated) ViewData["userIsAuth"] = "true";
             else ViewData["userIsAuth"] = "false";
-            return PartialView("_ShowRecipe", model);
+            return PartialView("~/Views/Recipe/_ShowRecipe.cshtml", model);
         }
         [HttpPost]
         public async Task<IActionResult> PartialComments(long postId)
@@ -268,7 +268,7 @@ namespace Web.Controllers
             ViewData["userName"] = user.UserName;
             ViewData["userRole"] = role;
 
-            return PartialView("_ShowComments", model);
+            return PartialView("~/Views/Recipe/_ShowComments.cshtml", model);
         }
         [HttpPost]
         public async Task<IActionResult> PartialObject(long objectId, string objectType)
@@ -298,7 +298,7 @@ namespace Web.Controllers
                     Tips = _tipService.GetTips(recipeEntity.Id).ToList()
                 };
             }
-            return PartialView("_ShowObject", model);
+            return PartialView("~/Views/Recipe/_ShowObject.cshtml", model);
 
         }
 

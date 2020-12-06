@@ -85,44 +85,14 @@ namespace Service.Services
             return posts;
         }
         
-        public IEnumerable<Comment> GetComments(long postId)
-        {
-            var comments = new List<Comment>();
-            commentRepository.GetAll().ToList().ForEach(u =>
-            {
-                if (u.PostId == postId)
-                {
-                    comments.Add(commentRepository.Get(u.Id));
-                }
-            });
-            return comments;
-        }
-        public long MakeComment(string name, long postId, string userId)
-        {
-            var commentEntity = new Comment()
-            {
-                Name = name,
-                PostId = postId,
-                UserId = userId
-            };
-            commentRepository.Insert(commentEntity);
-            return commentEntity.Id;
-        }
-        public void DeleteComment(long commentId)
-        {
-            commentRepository.Remove(commentRepository.Get(commentId));
-            commentRepository.SaveChanges();
-        }
 
-        
+
+
         public Post GetPost(long id)
         {
             return postRepository.Get(id);
         }
-        public Comment GetComment(long id)
-        {
-            return commentRepository.Get(id);
-        }
+        
         public void SubscribePost(long id, string userId)
         {
             postUserRepository.Insert(new PostUser()
@@ -186,16 +156,7 @@ namespace Service.Services
             postRepository.SaveChanges();
             postUserRepository.SaveChanges();
         }
-        public void DeleteUserComments(string userId)
-        {
-            commentRepository.GetAll().ToList().ForEach(u => {
-                if (u.UserId == userId)
-                {
-                    commentRepository.Remove(u);
-                }
-            });
-            commentRepository.SaveChanges();
-        }
+        
 
         public void DeleteUserPosts(string userId)
         {
@@ -222,6 +183,61 @@ namespace Service.Services
                     }
                 });
             }
+        }
+
+        public IEnumerable<Comment> GetComments(long postId)
+        {
+            var comments = new List<Comment>();
+            commentRepository.GetAll().ToList().ForEach(u =>
+            {
+                if (u.PostId == postId)
+                {
+                    comments.Add(commentRepository.Get(u.Id));
+                }
+            });
+            return comments;
+        }
+        public Comment GetComment(long id)
+        {
+            return commentRepository.Get(id);
+        }
+        public long MakeComment(string name, long postId, string userId)
+        {
+            var commentEntity = new Comment()
+            {
+                Name = name,
+                PostId = postId,
+                UserId = userId
+            };
+            commentRepository.Insert(commentEntity);
+            return commentEntity.Id;
+        }
+        public void DeleteComment(long commentId)
+        {
+            commentRepository.Remove(commentRepository.Get(commentId));
+            commentRepository.SaveChanges();
+        }
+        public void DeleteUserComments(string userId)
+        {
+            commentRepository.GetAll().ToList().ForEach(u => {
+                if (u.UserId == userId)
+                {
+                    commentRepository.Remove(u);
+                }
+            });
+            commentRepository.SaveChanges();
+        }
+        public bool CommentOwnerCheck(long commentId, string userId)
+        {
+            var comments = commentRepository.GetAll().ToList();
+            foreach (var comment in comments)
+            {
+                if ((comment.Id == commentId) && (comment.UserId == userId))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

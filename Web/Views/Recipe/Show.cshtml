@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@{ 
+
+@{
     var Cat = new SelectListItem[]
     {
         new SelectListItem() {Text = @Localizer["category_0"].Value.Trim(), Value = "0"},
@@ -19,11 +20,12 @@
 }
 
 <style>
-    .left{
-        margin-left:10px;
+    .left {
+        margin-left: 10px;
     }
-    .right{
-        margin-right:10px;
+
+    .right {
+        margin-right: 10px;
     }
 </style>
 
@@ -32,7 +34,7 @@
         <div class="row">
             <h1 class="left display-4 font-weight-bold">@Localizer["card_header"]</h1>
             <div class="form-inline input-group left">
-                <input  id="inpPar" type="text" class="form-control" placeholder="@Localizer["search_placeholder"]" aria-describedby="basic-addon1">
+                <input id="inpPar" type="text" class="form-control" placeholder="@Localizer["search_placeholder"]" aria-describedby="basic-addon1">
                 <select id="catPar" class="form-control left" asp-items=Cat></select>
                 <select id="difPar" class="form-control left" asp-items=Dif></select>
                 <div class="input-group-prepend">
@@ -41,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <hr/>
+        <hr />
         <div class="row">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item left">
