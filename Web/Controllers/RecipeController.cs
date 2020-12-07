@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Repo;
 using Service;
 using Service.Interfaces;
@@ -21,6 +22,7 @@ namespace Web.Controllers
 {
     public class RecipeController : Controller
     {
+        private readonly ILogger<RecipeController> _logger;
         private readonly ApplicationContext _applicationContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,7 +34,8 @@ namespace Web.Controllers
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
 
-        public RecipeController(ApplicationContext applicationContext,
+        public RecipeController(ILogger<RecipeController> logger,
+                                 ApplicationContext applicationContext,
                                  IWebHostEnvironment webHostEnvironment,
                                  UserManager<ApplicationUser> userManager,
                                  RoleManager<IdentityRole> roleManager,
@@ -43,6 +46,7 @@ namespace Web.Controllers
                                  IPostService postService,
                                  IReportService reportService)
         {
+            _logger = logger;
             _applicationContext = applicationContext;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
@@ -82,6 +86,9 @@ namespace Web.Controllers
                     Description = recipeEntity.Description,
                     Category = recipeEntity.Category,
                     Difficulty = recipeEntity.Difficulty,
+                    PrepTime = recipeEntity.PrepTime,
+                    CookTime = recipeEntity.CookTime,
+                    Marinade = recipeEntity.Marinade,
                     Ingredients = _ingredientService.GetIngredients(recipeId).ToList().Select(u => u.Name.ToString()).ToArray(),
                     Methods = _methodService.GetMethods(recipeId).Select(u => u.Name.ToString()).ToArray(),
                     Tips = _tipService.GetTips(recipeId).Select(u => u.Name.ToString()).ToArray(),
@@ -370,8 +377,13 @@ namespace Web.Controllers
         public async Task<IActionResult> ReportPost(long postId, string targetName)
         {
             var target = await _userManager.FindByNameAsync(targetName);
-            var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok(_reportService.ReportPost(postId, userId, target.Id));
+            if (target != null){
+                var userId = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+                return Ok(_reportService.ReportPost(postId, userId, target.Id));
+                
+            }
+            _logger.LogError("No such user {Auth->ChangeRole}");
+            return BadRequest();
         }
 
 

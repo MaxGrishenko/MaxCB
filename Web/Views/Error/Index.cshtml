@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<style>
+    .bottom-text {
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        opacity: 40inherit;
+    }
+</style>
+
+<div class="container">
+    <p class="bottom-text text-center" style="font-size:45px">Упс! Что-то пошло не по плану!</p>
+    <p class="bottom-text text-center" style="font-size:25px">Ошибка: @ViewData["Error"]</p>
+</div>

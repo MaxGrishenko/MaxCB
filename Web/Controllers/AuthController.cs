@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Service;
 using Service.Interfaces;
 using Web.Models;
@@ -16,6 +17,7 @@ namespace Web.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly ILogger<AuthController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
@@ -24,7 +26,8 @@ namespace Web.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(IWebHostEnvironment webHostEnvironment, 
+        public AuthController(ILogger<AuthController> logger,
+                              IWebHostEnvironment webHostEnvironment, 
                               IPostService postService,
                               IReportService reportService,
                               IRecipeService recipeService,
@@ -32,6 +35,7 @@ namespace Web.Controllers
                               SignInManager<ApplicationUser> signInManager,
                               RoleManager<IdentityRole> roleManager)
         {
+            this._logger = logger;
             this._webHostEnvironment = webHostEnvironment;
             this._postService = postService;
             this._reportService = reportService;
@@ -55,7 +59,7 @@ namespace Web.Controllers
         {
             var model = new List<UserViewModel>();
             Dictionary<ApplicationUser, string> users = new Dictionary<ApplicationUser, string>();
-            string[] roles = { "Moderator", "User", "Banned" };
+            string[] roles = { "Manager", "User", "Banned" };
             foreach(string role in roles)
             {
                 var tempUsers = await _userManager.GetUsersInRoleAsync(role);
@@ -83,26 +87,35 @@ namespace Web.Controllers
                     }
                 }
             }
-
             return PartialView("~/Views/Auth/_ShowUsers.cshtml", model);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> ChangeRole(string userId, string role)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                if (roles[0] == "Admin") return Ok();
+                if (roles[0] == "Admin")
+                {
+                    _logger.LogError("Can't change admin role {Auth->ChangeRole}");
+                    return Ok();
+                }
                 foreach(var item in roles)
                 {
                     await _userManager.RemoveFromRoleAsync(user, item);
                 }
                 var result = await _userManager.AddToRoleAsync(user, role);
             }
+            else
+            {
+                _logger.LogError("No such user {Auth->ChangeRole}");
+            }
             return Ok();
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             
@@ -140,6 +153,10 @@ namespace Web.Controllers
                     if (imagePath != "/Image/test1.jpg" && imagePath != "/Image/emptyImage.png") { System.IO.File.Delete(wwwRootPath + imagePath); }
                 });
                 await _userManager.DeleteAsync(user);
+            }
+            else
+            {
+                _logger.LogError("No such user {Auth->DeleteUse}");
             }
             return Ok();
         }
@@ -184,6 +201,7 @@ namespace Web.Controllers
             return View(opa);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
         public IActionResult DeleteReports(long objectId, string type)
         {
             switch (type)
@@ -200,6 +218,7 @@ namespace Web.Controllers
             return Ok();
         }
         [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
         public IActionResult DeleteObject(long objectId, string type)
         {
             switch (type)
@@ -208,7 +227,16 @@ namespace Web.Controllers
                     _postService.DeleteComment(objectId);
                     break;
                 case "post":
+                    _postService.GetComments(objectId).ToList().ForEach(c =>
+                    {
+                        _reportService.DeleteReportsFromComment(objectId);
+                    });
+                    _reportService.DeleteReportsFromPost(objectId);
+
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string imagePath = _recipeService.GetRecipe(_postService.GetPost(objectId).RecipeId).ImagePath;
                     _postService.DeletePost(objectId);
+                    if (imagePath != "/Image/test1.jpg" && imagePath != "/Image/emptyImage.png") { System.IO.File.Delete(wwwRootPath + imagePath); }
                     break;
                 default:
                     break;
