@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'maxcookbook'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_80f299a768f34f93a4daef3d3363d468 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_069865ff9d87449dac4afa73fff4db88 }}
         package: ${{env.DOTNET_ROOT}}/myapp 
